@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd" xmlns:tx="http://www.springframework.org/schema/tx">
+
+
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/test"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="123456"></property>
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.connection.autocommit">true</prop>
+				<prop key="hibernate.current_session_context_class">thread</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>com/sdu/entity/Admin.hbm.xml</value>
+				<value>com/sdu/entity/Work.hbm.xml</value>
+				<value>com/sdu/entity/DataFile.hbm.xml</value>
+				<value>com/sdu/entity/Advice.hbm.xml</value>
+				<value>com/sdu/entity/Project.hbm.xml</value>
+				<value>com/sdu/entity/Model.hbm.xml</value>
+			</list>
+		</property></bean>
+	<!-- 声明事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 定义实体类 -->
+	<bean id="dataFile" class="com.sdu.entity.DataFile">
+	</bean>
+	<!-- 定义workInfoDaoImpl类 -->
+	<bean id="workInfoDao" class="com.sdu.dao.impl.workInfoDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 定义workInfoBizImpl类 -->
+	<bean id="workInfoBiz" class="com.sdu.biz.impl.workInfoBizImpl">
+			<property name="workDao" ref="workInfoDao" />
+	</bean>
+	
+	<!-- 定义AdminDaoImpl类 -->
+	<bean id="adminDao" class="com.sdu.dao.impl.AdminDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<!-- 定义AdminBizImpl类 -->
+	<bean id="adminBiz" class="com.sdu.biz.impl.AdminBizImpl">
+			<property name="adminDao" ref="adminDao" />
+	</bean>
+	
+	<!-- 定义DataFileDaoImpl类 -->
+	<bean id="dataFileDao" class="com.sdu.dao.impl.DataFileDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<!-- 定义DataFileBizImpl类 -->
+<!-- 	<bean id="dataFileBizImpl" class="com.sdu.biz.impl.DataFileBizImpl">
+		<property name="dataFileDao" ref="dataFileDao" />
+	</bean> -->
+	<bean id="dataFileBiz" class="com.sdu.biz.impl.DataFileBizImpl">
+		<property name="dataFileDao" ref="dataFileDao" />
+		<property name="adminDao" ref="adminDao"/>
+	</bean>
+	
+	<!-- 定义loginRegister类 -->
+	<bean id="userAction" class="com.sdu.action.LoginAndRegisterAction" scope="prototype">
+			<property name="adminBizImpl" ref="adminBiz" />
+	</bean>
+	<!-- 定义DataFileAction类 -->
+	<bean id="dataFileAction" class="com.sdu.action.DataFileAction">
+			<property name="dataFile" ref="dataFile"/>
+		<!-- 	<property name="dataFileBiz" ref="dataFileBizImpl" /> -->
+		<property name="dataFileBiz" ref="dataFileBiz" /> 
+	</bean>
+	<!-- 定义modelDao类 -->
+	<bean id="modelDaoImpl" class="com.sdu.dao.impl.ModelDaoImpl">
+			<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 定义modelBizImpl -->
+	<bean id="modelBizImpl" class="com.sdu.biz.impl.ModelBizImpl">
+		<property name="modelDaoImpl" ref="modelDaoImpl"/>
+	</bean>
+	<!-- 定义ModelAction类 -->
+	<bean id="modelAction" class="com.sdu.action.ModelAction">
+		<property name="modelBizImpl" ref="modelBizImpl" />
+	</bean>
+	<!-- 定义projectDao -->
+	<bean id="projectDao" class="com.sdu.dao.impl.ProjectDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 定义projectBiz -->
+	<bean id="projectBiz" class="com.sdu.biz.impl.ProjectBizImpl">
+		<property name="modelDaoImpl" ref="modelDaoImpl" />
+		<property name="dataFileDao" ref="dataFileDao" />
+		<property name="projectDao" ref="projectDao" />
+	</bean>
+
+	<!-- 定义projectAction -->
+	<bean id="projectAction" class="com.sdu.action.ProjetAction">
+		<property name="projectBiz" ref="projectBiz"/>
+		<property name="modelBizImpl" ref="modelBizImpl" />
+	</bean>
+	
+	<!-- 定义adviceDao -->
+	<bean id="adviceDao" class="com.sdu.dao.impl.AdviceDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<!-- 定义projectBiz -->
+	<bean id="adviceBiz" class="com.sdu.biz.impl.AdviceBizImpl">
+		<property name="adviceDao" ref="adviceDao" />
+		<property name="adminDao" ref="adminDao" />
+	</bean>
+	
+	<!-- 定义AdviceAction -->
+	<bean id="adviceAction" class="com.sdu.action.AdviceAction">
+		<property name="adviceBiz" ref="adviceBiz"/>
+		
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager" /></beans>

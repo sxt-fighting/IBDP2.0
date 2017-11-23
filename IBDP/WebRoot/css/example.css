@@ -1,0 +1,6 @@
+@CHARSET "UTF-8";
+
+form#workform table tr
+{
+	height:40px;
+}

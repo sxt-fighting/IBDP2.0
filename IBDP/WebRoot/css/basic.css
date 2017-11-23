@@ -1,0 +1,14 @@
+@CHARSET "UTF-8";
+html {
+  min-height: 100%;
+  position: relative;
+}
+body {
+  background-color: #e4e6e9;
+  min-height: 100%;
+  padding-bottom: 0;
+  font-family: 'Open Sans';
+  font-size: 13px;
+  color: #393939;
+  line-height: 1.5;
+}

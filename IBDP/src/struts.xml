@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+<constant name="struts.i18n.encoding" value="UTF-8" />
+<constant name='struts.custom.i18n.resources' value="FileUploadError" />
+<constant name="struts.multipart.maxSize" value="9000000000"/> 
+<package name="dowork" extends="struts-default,json-default" namespace="/">
+ <interceptors>
+   <interceptor-stack name="myStack">
+    <interceptor-ref name="json"></interceptor-ref>
+    <interceptor-ref name="defaultStack" />  
+   </interceptor-stack>
+  </interceptors>
+  <default-interceptor-ref name="myStack" />
+  
+<action name="doworkAction" class="com.sdu.action.doworkAction">
+<param name="savePath">/MyUploadFile</param>
+<result type="chain" name="success">correlation</result>
+<result name="input">/index.jsp</result>
+<interceptor-ref name="fileUpload">
+<param name="maximumSize">1073741824</param><!--  -->
+</interceptor-ref>
+<interceptor-ref name="defaultStack"></interceptor-ref>
+</action>
+
+<!-- 计算相关性 -->
+<action name="correlation" class="com.sdu.action.computeCorrelation">
+<result name="success">/basic.jsp</result>
+</action>
+<!--统计量分析 -->
+<action name="Statistic" class="com.sdu.action.StatisticAction">
+<param name="savePath">/MyUploadFile</param>
+<result name="success">/basic.jsp</result>
+<result name="input">/index.jsp</result>
+</action>
+
+<action name="MyRprocedure" class="com.sdu.action.RunMyR">
+<param name="savePath">/MyUploadFile</param>
+<result name="success">/basic.jsp</result>
+<result name="input">/index.jsp</result>
+</action>
+
+<!-- 线性回归 -->
+<action name="Regression" class="com.sdu.action.RegreesionAction">
+<param name="savePath">/MyUploadFile</param>
+<result name="success">/basic.jsp</result>
+<result name="input">/index.jsp</result>
+</action>
+
+<!-- Logistic回归 -->
+<action name="Logistic" class="com.sdu.action.LogisticAction">
+<param name="savePath">/MyUploadFile</param>
+<result name="success">/basic.jsp</result>
+<result name="input">/index.jsp</result>
+</action>
+
+<!-- K-means -->
+<action name="Kmeans" class="com.sdu.action.KmeansAction">
+<param name="savePath">/MyUploadFile</param>
+<result name="success">/basic.jsp</result>
+<result name="input">/index.jsp</result>
+</action>
+
+<!-- PAM -->
+<action name="PAM" class="com.sdu.action.PAMAction">
+<param name="savePath">/MyUploadFile</param>
+<result name="success">/basic.jsp</result>
+<result name="input">/index.jsp</result>
+</action>
+
+<!-- 层此聚类 -->
+<action name="Hcluster" class="com.sdu.action.HclusterAction">
+<param name="savePath">/MyUploadFile</param>
+<result name="success">/basic.jsp</result>
+<result name="input">/index.jsp</result>
+</action>
+
+<!-- 决策树 -->
+<action name="DecisionTree" class="com.sdu.action.DecisionTreeAction">
+<param name="savePath">/MyUploadFile</param>
+<result name="success">/basic.jsp</result>
+<result name="input">/index.jsp</result>
+</action>
+
+<!-- BP神经网络 -->
+<action name="BPAction" class="com.sdu.action.BPAction">
+<param name="savePath">/MyUploadFile</param>
+<result name="success">/basic.jsp</result>
+<result name="input">/index.jsp</result>
+</action>
+
+<!-- Apriori -->
+<action name="Apriori" class="com.sdu.action.AprioriAction">
+<param name="savePath">/MyUploadFile</param>
+<result name="success">/basic.jsp</result>
+<result name="input">/index.jsp</result>
+</action>
+
+<!-- Probility -->
+<action name="Probility" class="com.sdu.action.ProbilityAction">
+<param name="savePath">/MyUploadFile</param>
+<result name="success">/basic.jsp</result>
+<result name="input">/index.jsp</result>
+</action>
+
+<!-- PCA -->
+<action name="PCAAction" class="com.sdu.action.PCAAction">
+<param name="savePath">/MyUploadFile</param>
+<result name="success">/basic.jsp</result>
+<result name="input">/index.jsp</result>
+</action>
+
+<!-- Login -->
+<action name="Login" class="userAction" method="Login">
+<result name="login">/basic.jsp</result>
+<result name="fail">/login.jsp</result>
+</action>
+
+<!-- register -->
+<action name="Register" class="userAction" method="register">
+<result name="login">/basic.jsp</result>
+<result name="fail">/login.jsp</result>
+</action>
+<!-- logout -->
+<action name="Logout" class="userAction" method="logout">
+<result name="success">/login.jsp</result>
+</action>
+<!-- modelAction -->
+<action name="Model_*" class="com.sdu.action.ModelAction" method="{1}" >
+	<result name="success" type="json">
+	<param name="root">map</param>
+	 </result>
+</action>
+<!-- projectAction -->
+<action name="Project_*" class="com.sdu.action.ProjetAction" method="{1}">
+	<result name="success">/basic.jsp</result>
+</action>
+<!-- dataFileAction -->
+<action name="DataFile_*" class="com.sdu.action.DataFileAction" method="{1}">
+	<result name="saveSuccess" type="json">
+		<param name="root">map</param>
+	</result>
+	<result name="getSuccess" type="json">
+		<param name="root">list</param>
+	</result>
+	<result name="delSuccess" type="json">
+		<param name="root">map</param>
+	</result>
+	<result name="updateSuccess" type="json">
+		<param name="root">map</param>
+	</result>
+	<result name="downloadFile" type="stream">
+		<param name="contentType">application/octet-stream</param>
+		<!--attachment另存为downfilename从值栈中取出-->
+		<param name="contentDisposition">attachment;filename=${downfilename}</param>
+		<param name="inputName">downFile</param>
+		<param name="bufferSize">2048</param>
+	</result>
+</action>
+
+<!-- projectAction -->
+<action name="Advice_*" class="com.sdu.action.AdviceAction" method="{1}">
+	<result name="success" type="json">
+		<param name="root">map</param>
+	</result>
+</action>
+
+<!--  ajax更新中间提交页面-->
+<action name="ajaxAction" class="com.sdu.action.ajaxAction">
+<result name="regression">/ajax/Regression.jsp</result>
+<result name="MyR">/ajax/MyR.jsp</result>
+<result name="correlation">/ajax/correlation.jsp</result>
+<result name="Statistics">/ajax/Statistics_analyze.jsp</result>
+<result name="Logistic">/ajax/Logistic.jsp</result>
+<result name="Kmeans">/ajax/Kmeans.jsp</result>
+<result name="PAM">/ajax/PAM.jsp</result>
+<result name="Hcluster">/ajax/Hcluster.jsp</result>
+<result name="DecisionTree">/ajax/DecisionTree.jsp</result>
+<result name="BP">/ajax/BP.jsp</result>
+<result name="Apriori">/ajax/Apriori.jsp</result>
+<result name="Probility">/ajax/Probility.jsp</result>
+<result name="Profile">/ajax/Profile.jsp</result>
+<result name="basic">basic.jsp</result>
+<result name="PCA">/ajax/PCA.jsp</result>
+</action>
+</package>
+</struts>       
