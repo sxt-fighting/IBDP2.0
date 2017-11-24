@@ -23,6 +23,7 @@ import com.sdu.biz.impl.ModelBizImpl;
 import com.sdu.biz.impl.ProjectBizImpl;
 import com.sdu.dao.impl.ProjectDaoImpl;
 import com.sdu.entity.Admin;
+import com.sdu.entity.DataFile;
 import com.sdu.entity.Model;
 import com.sdu.entity.Project;
 
@@ -35,8 +36,8 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 	
 	private ProjectBizImpl projectBiz;
 	private ModelBizImpl modelBizImpl;
-	private DataFileBizImpl dataFileBizImpl;
-//	private ModelBizImpl modelbiz; //获取model相关信息
+	private DataFileBizImpl dataFileBiz;
+	//	private ModelBizImpl modelbiz; //获取model相关信息
 	private Admin user;//系统用户
 	private int projectid;//项目保存成功后，获取projectid，用于最终保存在中间文件和结果文件
 	private JSONObject obj; 
@@ -96,14 +97,14 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 	public void setModelBizImpl(ModelBizImpl modelBizImpl) {
 		this.modelBizImpl = modelBizImpl;
 	}
+	public DataFileBizImpl getDataFileBiz() {
+		return dataFileBiz;
+	}
+	public void setDataFileBiz(DataFileBizImpl dataFileBiz) {
+		this.dataFileBiz = dataFileBiz;
+	}
 	
 	
-	public DataFileBizImpl getDataFileBizImpl() {
-		return dataFileBizImpl;
-	}
-	public void setDataFileBizImpl(DataFileBizImpl dataFileBizImpl) {
-		this.dataFileBizImpl = dataFileBizImpl;
-	}
 	//--------------------------------------------------------------
 	public String addProject(){
 		System.out.println("projectJSON:  "+projectJSONStr);
@@ -127,8 +128,10 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 			public void run() {
 				
 				try {
-					
-					HDFSTools.LoadSingleFileToHDFS(dataFileBizImpl.getById(fileId));
+					//上传数据文件到hdfs上
+					 DataFile sourceFile=dataFileBiz.getById(fileId);
+					System.out.println(sourceFile.getD_localpath());
+					HDFSTools.LoadSingleFileToHDFS(sourceFile);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

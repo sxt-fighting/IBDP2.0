@@ -115,6 +115,7 @@
 	<bean id="projectAction" class="com.sdu.action.ProjetAction">
 		<property name="projectBiz" ref="projectBiz"/>
 		<property name="modelBizImpl" ref="modelBizImpl" />
+		<property name="dataFileBiz" ref="dataFileBiz" />
 	</bean>
 	
 	<!-- 定义adviceDao -->
