@@ -28,8 +28,8 @@ public class bayesAction extends BasicMethod{
 			String dataFileName=dataFile.getD_name();	
 			JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 			JSONArray params= algorithm_obj.getJSONArray("param");
-			String hasheader=params.getJSONObject(0).getString("value");
-			String formula=params.getJSONObject(1).getString("value");
+			//String hasheader=params.getJSONObject(0).getString("value");
+			String formula=params.getJSONObject(0).getString("value");
 			
 			
 	    	System.out.println("链接Rserve，开始分析任务");
@@ -38,7 +38,7 @@ public class bayesAction extends BasicMethod{
 			RConnection c= new RConnection();
 			
 	    	System.out.println("Rserve连接成功");
-	    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+formula+"   "+hasheader);
+	    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+formula);
 	    	//String  savePath="/home/jc/IBDP2/"+user.getId()+"/DataFiles";
 	    	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
 	    	System.out.println(savePath);
@@ -51,11 +51,11 @@ public class bayesAction extends BasicMethod{
 	    		c.eval("datafile <- read.xlsx(\""+dataFileName+"\",1)");
 			  }else  if (aa.equals(".txt"))
 			  {
-				  c.eval("datafile <- read.table(\""+dataFileName+"\",header="+hasheader+")");
+				  c.eval("datafile <- read.table(\""+dataFileName+"\",header="+dataFile.getD_hasheader()+")");
 			
 			  }else if (aa.equals(".csv"))
 			  {
-				  c.eval("datafile<-read.csv(\""+dataFileName+"\",header="+hasheader+",sep=\",\")");
+				  c.eval("datafile<-read.csv(\""+dataFileName+"\",header="+dataFile.getD_hasheader()+",sep=\",\")");
 			  }else if(aa.equals(".Rdata"))
 			  {
 				  c.eval("load(\""+dataFileName+"\")");
@@ -106,7 +106,7 @@ public class bayesAction extends BasicMethod{
 			
 			resultFile.setD_createTime(sdf.format(date));
 			resultFile.setD_admin(user);
-			resultFile.setD_hasheader("false");
+			resultFile.setD_hasheader("FALSE");
 			resultFile.setD_name(resultFileName);
 			resultFile.setD_suffix("txt");
 			
@@ -122,6 +122,9 @@ public class bayesAction extends BasicMethod{
 			if(index==algorithmJSON.length()-1)
 			{
 				resultFile.setD_type("ResultFile");
+				DataFileHibernate.saveDataFile(resultFile);
+				HDFSTools.LoadSingleFileToHDFS(resultFile);
+				
 				Advice advice=new Advice();
 				advice.setA_content(project.getP_name()+"分析结果完成");
 				advice.setA_isread(false);
@@ -134,9 +137,9 @@ public class bayesAction extends BasicMethod{
 			}
 			else {
 				resultFile.setD_type("IntermediateFile");
+				
 			}
-			DataFileHibernate.saveDataFile(resultFile);
-			//HDFSTools.loadFileToHDFS(resultFile);
+			
 		} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -154,7 +154,7 @@ public class DataFileAction extends ActionSupport{
 		os.close();		
 		dataFile.setD_size(size+"KB");
 		dataFile.setD_localpath("D:/user/"+uploadFileFileName);
-		dataFile.setD_type("0");
+		dataFile.setD_type("DataFile");
 		Date date=new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			
@@ -210,9 +210,9 @@ public class DataFileAction extends ActionSupport{
 	//	System.out.println("hasheader:"+hasheader);
 		System.out.println("更改表头");
 		if("是".equals(hasheader)){
-			dataFileBiz.updateHasheader(fileid, "true");
+			dataFileBiz.updateHasheader(fileid, "TRUE");
 		}else{
-			dataFileBiz.updateHasheader(fileid, "false");
+			dataFileBiz.updateHasheader(fileid, "FALSE");
 		}
 		map =new HashMap<String,Object>();
 		map.put("message","deleteSuccess");

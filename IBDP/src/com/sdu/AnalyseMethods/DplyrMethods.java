@@ -28,7 +28,7 @@ public class DplyrMethods extends BasicMethod{
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		String variable=params.getJSONObject(0).getString("value");
-		String hasheader=params.getJSONObject(1).getString("value");
+		
 		
 		
     	System.out.println("链接Rserve，开始分析任务");
@@ -46,11 +46,11 @@ public class DplyrMethods extends BasicMethod{
     		c.eval("datafile <- read.xlsx(\""+dataFileName+"\",1)");
 		  }else  if (aa.equals(".txt"))
 		  {
-			  c.eval("datafile <- read.table(\""+dataFileName+"\",header="+hasheader+")");
+			  c.eval("datafile <- read.table(\""+dataFileName+"\",header="+dataFile.getD_hasheader()+")");
 		
 		  }else if (aa.equals(".csv"))
 		  {
-			  c.eval("datafile<-read.csv(\""+dataFileName+"\",header="+hasheader+",sep=\",\")");
+			  c.eval("datafile<-read.csv(\""+dataFileName+"\",header="+dataFile.getD_hasheader()+",sep=\",\")");
 		  }else if(aa.equals(".Rdata"))
 		  {
 			  c.eval("load(\""+dataFileName+"\")");
@@ -91,7 +91,7 @@ public class DplyrMethods extends BasicMethod{
 		
 		resultFile.setD_createTime(sdf.format(date));
 		resultFile.setD_admin(user);
-		resultFile.setD_hasheader("false");
+		resultFile.setD_hasheader("FALSE");
 		resultFile.setD_name(resultFileName);
 		resultFile.setD_suffix("txt");
 		
@@ -103,10 +103,13 @@ public class DplyrMethods extends BasicMethod{
 		else {
 		resultFile.setD_size("Unknown");
 		}
-		
+		//算法为最后一个时，将目录下所有文件上传到hdfs，并修改数据库
 		if(index==algorithmJSON.length()-1)
 		{
 			resultFile.setD_type("ResultFile");
+			DataFileHibernate.saveDataFile(resultFile);
+			HDFSTools.LoadSingleFileToHDFS(resultFile);
+			
 			Advice advice=new Advice();
 			advice.setA_content(project.getP_name()+"分析结果完成");
 			advice.setA_isread(false);
@@ -120,8 +123,7 @@ public class DplyrMethods extends BasicMethod{
 		else {
 			resultFile.setD_type("IntermediateFile");
 		}
-		DataFileHibernate.saveDataFile(resultFile);
-		HDFSTools.loadFileToHDFS(resultFile);
+		
 	} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

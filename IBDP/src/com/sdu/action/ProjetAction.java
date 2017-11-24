@@ -18,6 +18,7 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sdu.ToolsUse.ElementsTasks;
 import com.sdu.ToolsUse.HDFSTools;
+import com.sdu.biz.impl.DataFileBizImpl;
 import com.sdu.biz.impl.ModelBizImpl;
 import com.sdu.biz.impl.ProjectBizImpl;
 import com.sdu.dao.impl.ProjectDaoImpl;
@@ -34,6 +35,7 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 	
 	private ProjectBizImpl projectBiz;
 	private ModelBizImpl modelBizImpl;
+	private DataFileBizImpl dataFileBizImpl;
 //	private ModelBizImpl modelbiz; //获取model相关信息
 	private Admin user;//系统用户
 	private int projectid;//项目保存成功后，获取projectid，用于最终保存在中间文件和结果文件
@@ -94,6 +96,14 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 	public void setModelBizImpl(ModelBizImpl modelBizImpl) {
 		this.modelBizImpl = modelBizImpl;
 	}
+	
+	
+	public DataFileBizImpl getDataFileBizImpl() {
+		return dataFileBizImpl;
+	}
+	public void setDataFileBizImpl(DataFileBizImpl dataFileBizImpl) {
+		this.dataFileBizImpl = dataFileBizImpl;
+	}
 	//--------------------------------------------------------------
 	public String addProject(){
 		System.out.println("projectJSON:  "+projectJSONStr);
@@ -110,7 +120,21 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 		//System.out.println(obj.getInt("modelid"));
 	    projectid=projectBiz.saveProject(project,obj.getInt("modelid"),obj.getInt("datafileid"));
 		//多线程运行
-       	ThreadPoolExecutor poolExecutor=new ThreadPoolExecutor(2, 3, 1, TimeUnit.MINUTES, new LinkedBlockingDeque());
+       	ThreadPoolExecutor poolExecutor=new ThreadPoolExecutor(3, 4, 1, TimeUnit.MINUTES, new LinkedBlockingDeque());
+       	poolExecutor.submit(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				try {
+					
+					HDFSTools.LoadSingleFileToHDFS(dataFileBizImpl.getById(fileId));
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}); 
        	try {
 				Future future=poolExecutor.submit(new Callable<String>() {
 					public String call() throws Exception

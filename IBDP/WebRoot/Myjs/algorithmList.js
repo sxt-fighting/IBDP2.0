@@ -12,7 +12,7 @@ var algorithmJSONList=[
     				actionName:'BPAction',
     				introduction:'R语言中的关于神经网络的一种算法',
     				param:[
-    					{name:'是否包含表头',field:'hasheader',type:'Boolean'},
+    					
     					{name:'公式',field:'formula',type:'String'}
     				]
     			},
@@ -21,7 +21,6 @@ var algorithmJSONList=[
     				actionName:'bayesAction',
     				introduction:'R语言中的关于贝叶斯的一种算法',
     				param:[
-    					{name:'是否包含表头',field:'hasheader',type:'Boolean'},
     					{name:'公式',field:'formula',type:'String'}
     				]
     			},
@@ -31,8 +30,7 @@ var algorithmJSONList=[
     				introduction:'变量删选是数据处理的一种方法',
     				param:[
     					
-    					{name:'筛选变量',field:'variable',type:'String'},
-    					{name:'是否包含表头',field:'hasheader',type:'Boolean'},
+    					{name:'筛选变量',field:'variable',type:'String'}
     				]
     			}
     			];
