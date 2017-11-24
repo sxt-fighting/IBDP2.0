@@ -36,6 +36,7 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 	private ProjectBizImpl projectBiz;
 	private ModelBizImpl modelBizImpl;
 	private DataFileBizImpl dataFileBizImpl;
+	private String aaaa;
 //	private ModelBizImpl modelbiz; //获取model相关信息
 	private Admin user;//系统用户
 	private int projectid;//项目保存成功后，获取projectid，用于最终保存在中间文件和结果文件
