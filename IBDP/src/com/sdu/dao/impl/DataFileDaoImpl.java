@@ -19,7 +19,7 @@ public class DataFileDaoImpl {
 		   this.sessionFactory = sessionFactory;
 	}
 	
-	public List<DataFile> getByUserId(int userid){
+	/*public List<DataFile> getByUserId(int userid){
 		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
 		//hql没有分号结尾
@@ -29,6 +29,26 @@ public class DataFileDaoImpl {
 		try {
 			String hql = "from DataFile datafile ";
 			Query query = session.createQuery(hql);
+			list = query.list();
+			tx.commit();
+		} catch (HibernateException e) {
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return list;
+	}*/
+	public List<Object> getByUserId(int userid){
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		System.out.println("getByUserId=="+userid);
+		//hql没有分号结尾
+
+//		String hql = "from DataFile datafile where datafile.userid = '"+userid+"'";
+		List<Object> list = null;
+		try {
+			String sql ="select d.d_id id ,d.d_name name,p.p_name projectname,d.d_type type,d.d_size size,d.d_createTime uploadDate from datafile as d,project as p where d.pro_dataid = p.p_id and d.admin_dataid = '"+userid+"';";
+			System.out.println("sql===="+sql);
+			Query query = session.createSQLQuery(sql);
 			list = query.list();
 			tx.commit();
 		} catch (HibernateException e) {
@@ -107,5 +127,19 @@ public class DataFileDaoImpl {
 			return null;
 		}
 		return list.get(0);
+	}
+	public List<Object> getDataFileByAdminId(int adminId){
+		List<Object> list = null;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select distinct datafile.pro_dataid,datafile.d_type from datafile where datafile.admin_dataid = '"+adminId+"';";
+			list = session.createSQLQuery(sql).list();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return list;
 	}
 }

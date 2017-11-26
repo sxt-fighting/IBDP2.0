@@ -257,7 +257,7 @@
 		<script src="assets/js/ace.min.js"></script>
 		<script type="text/javascript">
         $(function(){
-        var treeStr=[
+    /*     var treeStr=[
                 {
                     "text":"全部文件",
                     "nodes":[
@@ -288,7 +288,7 @@
                         ]
                     }
                     ]
-                }];
+                }]; */
             
             onLoad();
             BindEvent();
@@ -328,17 +328,28 @@
              //页面加载
              function onLoad()
              {
-              $('#left-tree').treeview({
-                    data: treeStr,
-                    levels: 3,
-                    onNodeSelected:function(event, node){
-                       // $('#editName').val(node.text);
-                    },
-                    showCheckbox:false//是否显示多选
-                    // collapseIcon:'ace-icon tree-plus'
-                    
-                }); 
-                  
+            	 var nodess=[];
+            	 $.ajax({
+            		 type:"post",
+            		 url:"DataFile_getTree.action",
+            		 success:function(data,status){
+            			 var treeStr = [{
+            				 "text":data.text,"nodes":JSON.parse(data.nodes),"height":1
+            			 }];
+            			//var treeStr=data;
+            			 $('#left-tree').treeview({
+                             data: treeStr,
+                             levels: 3,
+                             onNodeSelected:function(event, node){
+                            	 console.log('node=='+JSON.stringify(node));
+                                // $('#editName').val(node.text);
+                             },
+                             showCheckbox:false//是否显示多选
+                             // collapseIcon:'ace-icon tree-plus'
+                             
+                         }); 
+            		 }
+            	 });
              }
              //事件注册
              function BindEvent()
@@ -420,6 +431,14 @@
               pageSize: 10, // 页面数据条数
               pageNumber: 1, // 首页页码
               //sidePagination: 'server', // 设置为服务器端分页
+              //对后台返回的数据进行处理
+              responseHandler:function(res) {
+            	  console.log("到了前台");
+            	  console.log('DataJson'+JSON.stringify(res.DataJson));
+            	 
+                   return JSON.parse(res.DataJson) ; //数据
+                    
+              },
               queryParams: function (params) { // 请求服务器数据时发送的参数，可以在这里添加额外的查询参数，返回false则终止请求
 
                   return {
@@ -475,9 +494,9 @@
               formatter: function (value, row, index) {
             	  console.log(row.name);
             	  console.log(row.did);
-                   return '<button class="btn btn-xs btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="预览" onclick="like(\'' + row.did + '\')"><i class="ace-icon fa fa-search-plus bigger-120"></i></button>'
-                   			+'<button class="btn btn-xs btn-success btn-sm" onclick="download(\'' + row.did + '\')"><i class="ace-icon fa fa-download bigger-120"></i></button>'
-              				 +'<button class="btn btn-xs btn-danger btn-sm" onclick="del(\'' + row.did + '\')"><i class="ace-icon fa fa-trash-o bigger-120"></i></button>';
+                   return '<button class="btn btn-xs btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="预览" onclick="like(\'' + row.id + '\')"><i class="ace-icon fa fa-search-plus bigger-120"></i></button>'
+                   			+'<button class="btn btn-xs btn-success btn-sm" onclick="download(\'' + row.id + '\')"><i class="ace-icon fa fa-download bigger-120"></i></button>'
+              				 +'<button class="btn btn-xs btn-danger btn-sm" onclick="del(\'' + row.id + '\')"><i class="ace-icon fa fa-trash-o bigger-120"></i></button>';
               }
           }
             ],

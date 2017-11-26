@@ -4,15 +4,16 @@ import java.util.List;
 
 import com.sdu.dao.impl.AdminDaoImpl;
 import com.sdu.dao.impl.DataFileDaoImpl;
+import com.sdu.dao.impl.ProjectDaoImpl;
 import com.sdu.entity.Admin;
 import com.sdu.entity.DataFile;
+import com.sdu.entity.Project;
 
 
 
 public class DataFileBizImpl {
 	private DataFileDaoImpl dataFileDao;
 	private AdminDaoImpl adminDao;
-	
 	public AdminDaoImpl getAdminDao() {
 		return adminDao;
 	}
@@ -28,8 +29,7 @@ public class DataFileBizImpl {
 	public DataFileDaoImpl getDataFileDao() {
 		return dataFileDao;
 	}
-
-	public List<DataFile> getAllByUseId(int userid){
+	public List<Object> getAllByUseId(int userid){
 		return dataFileDao.getByUserId(userid);
 	}
 	public boolean remove(int did){
@@ -54,5 +54,9 @@ public class DataFileBizImpl {
 	public DataFile getById(int did){
 		System.out.println(did);
 		return dataFileDao.getDataFileById(did);
+	}
+	public List<Object> getDateFileTree(int adminId){
+		System.out.println("进入DataFile");
+		return dataFileDao.getDataFileByAdminId(adminId);
 	}
 }

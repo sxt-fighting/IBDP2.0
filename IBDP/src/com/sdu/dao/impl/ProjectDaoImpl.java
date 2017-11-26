@@ -55,4 +55,20 @@ public class ProjectDaoImpl {
 		}
 		return list.get(0);
 	}
+	public List<Project> getProjectByAdminId(int adminId){
+		System.out.println("进入projectDao");
+		List<Project> list = null;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select * from project where project.admin_proid = '"+adminId+"';";
+			list = session.createSQLQuery(sql).addEntity(Project.class).list();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		System.out.println("结束projectDao");
+		return list;
+	}
 }

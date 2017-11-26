@@ -29,7 +29,7 @@ public class ModelAction extends ActionSupport{
 	private	Map<String,Object> map;
 	//由ajax传的值
 	private String modelJSONStr;
-	private String searchString;
+	private String searchString; 
 	
 //-------------------------------------------gets和sets
 	
