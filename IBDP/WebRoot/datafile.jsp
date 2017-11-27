@@ -256,6 +256,11 @@
 		<script src="assets/js/ace-elements.min.js"></script>
 		<script src="assets/js/ace.min.js"></script>
 		<script type="text/javascript">
+		var $table = $('#project-table'),
+	        $remove = $('#remove'),
+	       
+	        selections = [];
+	    var project_id,datafile_type;
         $(function(){
     /*     var treeStr=[
                 {
@@ -328,8 +333,7 @@
              //页面加载
              function onLoad()
              {
-            	 var nodess=[];
-            	 $.ajax({
+     	      	 $.ajax({
             		 type:"post",
             		 url:"DataFile_getTree.action",
             		 success:function(data,status){
@@ -341,8 +345,20 @@
                              data: treeStr,
                              levels: 3,
                              onNodeSelected:function(event, node){
-                            	 console.log('node=='+JSON.stringify(node));
+                            	 //console.log('node=='+JSON.stringify(node));
                                 // $('#editName').val(node.text);
+                                //console.log(node.level);
+                                if(node.level==1){
+                                	project_id = -1;
+                                	datafile_type="null";
+                                }else if(node.level ==2){
+                                	project_id = node.project_id;
+                                	datafile_type = "null";
+                                }else if(node.level ==3){
+                                	project_id = node.project_id;
+                                	datafile_type = node.datafile_type;
+                                }
+                                $table.bootstrapTable('refresh');
                              },
                              showCheckbox:false//是否显示多选
                              // collapseIcon:'ace-icon tree-plus'
@@ -415,11 +431,6 @@
                 "createtime":"2017-10-31 15:00:56"
             }
         ]; */
-    var $table = $('#project-table'),
-        $remove = $('#remove'),
-       
-        selections = [];
-        var data=[{"createtime":"2017-10-28 15:00:56","name":"水质分析文件.csv","size":"37MB"},{"createtime":"2017-10-28 15:00:57","name":"煤矿数据.sql","size":"319MB"}];
     function initTable() {
         $table.bootstrapTable({
         	  url: "<%=request.getContextPath()%>/DataFile_showAllDataFiles.action", // 获取表格数据的url
@@ -446,7 +457,10 @@
                       offset: params.offset, // 每页显示数据的开始行号
                       sort: params.sort, // 要排序的字段
                       sortOrder: params.order, // 排序规则
-                      dataId: $("#dataId").val() // 额外添加的参数
+                      project_id:project_id,
+                      datafile_type:datafile_type
+                      //dataId:$("#dataId").val() // 额外添加的参数
+                      
                   }
               },
               sortName: 'id', // 要排序的字段
@@ -464,8 +478,8 @@
               align: 'center', // 左右居中
               valign: 'middle' // 上下居中
           }, {
-              field: 'projectid', // 返回json数据中的name
-              title: '项目id', // 表格表头显示文字
+              field: 'projectName', // 返回json数据中的name
+              title: '项目名称', // 表格表头显示文字
               width: 200,
               align: 'center', // 左右居中
               valign: 'middle' // 上下居中

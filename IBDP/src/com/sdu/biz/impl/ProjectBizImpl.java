@@ -43,7 +43,7 @@ public class ProjectBizImpl {
 		return projectDao.getProjectById(projectid);
 	}
 	public List<Project> getProjectTree(int adminId){
-		System.out.println("进入ProjectTre");
+	//	System.out.println("进入ProjectTre");
 		return projectDao.getProjectByAdminId(adminId);
 	}
 }

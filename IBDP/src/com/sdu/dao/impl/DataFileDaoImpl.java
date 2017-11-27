@@ -40,14 +40,14 @@ public class DataFileDaoImpl {
 	public List<Object> getByUserId(int userid){
 		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
-		System.out.println("getByUserId=="+userid);
+		//System.out.println("getByUserId=="+userid);
 		//hql没有分号结尾
 
 //		String hql = "from DataFile datafile where datafile.userid = '"+userid+"'";
 		List<Object> list = null;
 		try {
-			String sql ="select d.d_id id ,d.d_name name,p.p_name projectname,d.d_type type,d.d_size size,d.d_createTime uploadDate from datafile as d,project as p where d.pro_dataid = p.p_id and d.admin_dataid = '"+userid+"';";
-			System.out.println("sql===="+sql);
+			String sql ="select d.d_id,d.d_name,p.p_name,d.d_type,d.d_size,d.d_createTime from datafile as d,project as p where d.pro_dataid = p.p_id and d.admin_dataid = '"+userid+"';";
+		//	System.out.println("sql===="+sql);
 			Query query = session.createSQLQuery(sql);
 			list = query.list();
 			tx.commit();
@@ -108,9 +108,9 @@ public class DataFileDaoImpl {
 	public DataFile getDataFileById(int did){
 		//System.out.println("进入dataFile");
 		Session session = sessionFactory.getCurrentSession();
-		System.out.println("1");
+	//	System.out.println("1");
 		Transaction tx = session.beginTransaction();
-		System.out.println("2");
+		//System.out.println("2");
 		//hql没有分号结尾
 		List<DataFile> list = null;
 		try {
@@ -120,7 +120,7 @@ public class DataFileDaoImpl {
 			
 			list = query.list();
 			tx.commit();
-			System.out.println("查询成功");
+		//	System.out.println("查询成功");
 		} catch (HibernateException e) {
 			tx.rollback();
 			e.printStackTrace();
@@ -134,6 +134,36 @@ public class DataFileDaoImpl {
 		Transaction tx = session.beginTransaction();
 		try{
 			String sql = "select distinct datafile.pro_dataid,datafile.d_type from datafile where datafile.admin_dataid = '"+adminId+"';";
+			list = session.createSQLQuery(sql).list();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return list;
+	}
+	public List<Object> getDataFilesByProjectId(int projectId) {
+		List<Object> list = null;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select d.d_id,d.d_name,p.p_name,d.d_type,d.d_size,d.d_createTime  from datafile as d,project as p where d.pro_dataid = p.p_id and d.pro_dataid = '"+projectId+"';";
+	//		System.out.println("sql:"+sql);
+			list = session.createSQLQuery(sql).list();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return list;
+	}
+	public List<Object> getDataFilesByProjectIdAndDataFileType(int projectId,String datafile_type) {
+		List<Object> list = null;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select d.d_id,d.d_name,p.p_name,d.d_type,d.d_size,d.d_createTime  from datafile as d,project as p where p.p_id = d.pro_dataid and d.pro_dataid = '"+projectId+"' and d.d_type='"+datafile_type+"';";
+	//		System.out.println("sql:"+sql);
 			list = session.createSQLQuery(sql).list();
 			tx.commit();
 		}catch(Exception e){

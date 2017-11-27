@@ -4,10 +4,8 @@ import java.util.List;
 
 import com.sdu.dao.impl.AdminDaoImpl;
 import com.sdu.dao.impl.DataFileDaoImpl;
-import com.sdu.dao.impl.ProjectDaoImpl;
 import com.sdu.entity.Admin;
 import com.sdu.entity.DataFile;
-import com.sdu.entity.Project;
 
 
 
@@ -56,7 +54,13 @@ public class DataFileBizImpl {
 		return dataFileDao.getDataFileById(did);
 	}
 	public List<Object> getDateFileTree(int adminId){
-		System.out.println("进入DataFile");
+		//System.out.println("进入DataFile");
 		return dataFileDao.getDataFileByAdminId(adminId);
+	}
+	public List<Object> getAllByProjectId(int projectId) {
+		return dataFileDao.getDataFilesByProjectId(projectId);
+	}
+	public List<Object> getAllByProjectIdAndDataFileType(int projectId,String datafile_type) {
+		return dataFileDao.getDataFilesByProjectIdAndDataFileType(projectId, datafile_type);
 	}
 }

@@ -56,7 +56,7 @@ public class ProjectDaoImpl {
 		return list.get(0);
 	}
 	public List<Project> getProjectByAdminId(int adminId){
-		System.out.println("进入projectDao");
+		//System.out.println("进入projectDao");
 		List<Project> list = null;
 		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
@@ -68,7 +68,7 @@ public class ProjectDaoImpl {
 			tx.rollback();
 			e.printStackTrace();
 		}
-		System.out.println("结束projectDao");
+	//	System.out.println("结束projectDao");
 		return list;
 	}
 }

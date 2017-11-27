@@ -152,7 +152,7 @@
 		<script src="assets/js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 	$(function(){
-			window.setTimeout("queryUploadMessage()",1000);
+			window.setTimeout("queryUploadMessage()",100);
 			window.setInterval("queryUploadMessage()",10000);
 		/* queryUploadMessage(); */
 	});
@@ -162,7 +162,7 @@
 			//console.log("进入function");
 			if(data.count>0){
 				//console.log("进入if");
-				console.log("upload:"+($("#dropdown_content").length<=0));
+				//console.log("upload:"+($("#dropdown_content").length<=0));
 				if($("#dropdown_content").length<=0){
 					$("#uploadMessage").empty();
 					$("#messageCount").text(data.count);

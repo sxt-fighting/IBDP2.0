@@ -48,6 +48,8 @@ public class DataFileAction extends ActionSupport{
 	private String hasheader;
 	//由ajax传的值
 	private int did;
+	private int project_id = -1;
+	private String datafile_type = "null";
 	//struts封装的Inputstream
 	private InputStream downFile;
 	private String downfilename;
@@ -55,6 +57,12 @@ public class DataFileAction extends ActionSupport{
 	
 	public File getUploadFile() {
 		return uploadFile;
+	}
+	public void setProject_id(int project_id) {
+		this.project_id = project_id;
+	}
+	public void setDatafile_type(String datafile_type) {
+		this.datafile_type = datafile_type;
 	}
 	public int getFileid() {
 		return fileid;
@@ -195,8 +203,16 @@ public class DataFileAction extends ActionSupport{
 	}*/
 	public String showAllDataFiles(){
 //		System.out.println("11111111111111111");
+		System.out.println("project_id:"+project_id);
+		System.out.println("datafile_type:"+datafile_type);
 		List<Object> list = new ArrayList<>();
-		list = dataFileBiz.getAllByUseId(((Admin)ActionContext.getContext().getSession().get("user")).getId());
+		if(project_id==-1 && "null".equals(datafile_type)){	
+			list = dataFileBiz.getAllByUseId(((Admin)ActionContext.getContext().getSession().get("user")).getId());
+		}else if(project_id!=-1 && "null".equals(datafile_type)){
+			list = dataFileBiz.getAllByProjectId(project_id); 
+		}else if(project_id!=-1){
+			list = dataFileBiz.getAllByProjectIdAndDataFileType(project_id,datafile_type);
+		}
 		JSONArray array = new JSONArray();
 		for(int i = 0;i<list.size();i++){
 			JSONObject jobj = new JSONObject();
@@ -280,11 +296,11 @@ public class DataFileAction extends ActionSupport{
 			projectObject.put("nodes", dataFileArray);
 			projectArray.put(projectObject);
 		}
-		System.out.println("--------------------projectArray-----------------");
-		System.out.println("projectArray:"+projectArray);
+		//System.out.println("--------------------projectArray-----------------");
+		//System.out.println("projectArray:"+projectArray);
 		map.put("text","所有文件");
 		map.put("nodes", projectArray.toString());
-		System.out.println("map==="+map);
+		//System.out.println("map==="+map);
 		return "getTreeSuccess";
 	}
 }
