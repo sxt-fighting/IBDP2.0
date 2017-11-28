@@ -453,7 +453,7 @@
               pageList: [10, 20], // 设置页面可以显示的数据条数
               pageSize: 10, // 页面数据条数
               pageNumber: 1, // 首页页码
-              //sidePagination: 'server', // 设置为服务器端分页
+              sidePagination: 'server', // 设置为服务器端分页
               //对后台返回的数据进行处理
               responseHandler:function(res) {
             	  console.log("到了前台");
@@ -581,7 +581,10 @@
     });
     //下载
     function downClick(){
-    	window.location.href="d:/";
+    	var ids =  getIdSelections();
+    	for(var i = 0;i<ids.length;i++){
+    		download(ids[i]);
+    	}
     }
     //上传
     $("#upload").change(function(){

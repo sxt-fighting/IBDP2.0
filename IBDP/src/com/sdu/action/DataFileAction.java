@@ -13,15 +13,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.hadoop.hdfs.tools.DFSAdmin;
-import org.apache.struts2.ServletActionContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-import com.sdu.ToolsUse.HDFSTools;
 import com.sdu.biz.impl.DataFileBizImpl;
 import com.sdu.biz.impl.ProjectBizImpl;
 import com.sdu.entity.Admin;
@@ -47,6 +42,8 @@ public class DataFileAction extends ActionSupport{
 	private int fileid;
 	private String hasheader;
 	private String ids;
+	private int offset;
+	private int pageSize;
 	//由ajax传的值
 	private int did;
 	private int project_id = -1;
@@ -58,6 +55,12 @@ public class DataFileAction extends ActionSupport{
 	
 	public File getUploadFile() {
 		return uploadFile;
+	}
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
 	public void setIds(String ids) {
 		this.ids = ids;
@@ -220,13 +223,14 @@ public class DataFileAction extends ActionSupport{
 //		System.out.println("11111111111111111");
 	//	System.out.println("project_id:"+project_id);
 	//	System.out.println("datafile_type:"+datafile_type);
+		int userId = ((Admin)ActionContext.getContext().getSession().get("user")).getId();
 		List<Object> list = new ArrayList<>();
 		if(project_id==-1 && "null".equals(datafile_type)){	
-			list = dataFileBiz.getAllByUseId(((Admin)ActionContext.getContext().getSession().get("user")).getId());
+			list = dataFileBiz.getAllByUseId(userId,offset,pageSize);
 		}else if(project_id!=-1 && "null".equals(datafile_type)){
-			list = dataFileBiz.getAllByProjectId(project_id); 
+			list = dataFileBiz.getAllByProjectId(userId,project_id,offset,pageSize); 
 		}else if(project_id!=-1){
-			list = dataFileBiz.getAllByProjectIdAndDataFileType(project_id,datafile_type);
+			//list = dataFileBiz.getAllByProjectIdAndDataFileType(userId,project_id,datafile_type,offset,pageSize);
 		}
 		JSONArray array = new JSONArray();
 		for(int i = 0;i<list.size();i++){
@@ -244,8 +248,11 @@ public class DataFileAction extends ActionSupport{
 			//System.out.println("array:"+array.toString());
 		}
 		/*datafileJson =*/ 
+		JSONObject json = new JSONObject();
+		json.put("total",list.size());
+		json.put("rows", array);
 		map = new HashMap<String,Object>();
-		map.put("DataJson",array.toString());
+		map.put("DataJson",json.toString());
 		return "getSuccess";
 	}
 	public String delDataFile(){

@@ -34,8 +34,8 @@ public class DataFileBizImpl {
 	public DataFileDaoImpl getDataFileDao() {
 		return dataFileDao;
 	}
-	public List<Object> getAllByUseId(int userid){
-		return dataFileDao.getByUserId(userid);
+	public List<Object> getAllByUseId(int userid,int offset,int pageSize){
+		return dataFileDao.getByUserId(userid,offset,pageSize);
 	}
 	public boolean remove(int did){
 		return dataFileDao.removeById(did);
@@ -63,8 +63,8 @@ public class DataFileBizImpl {
 		//System.out.println("进入DataFile");
 		return dataFileDao.getDataFileByAdminId(adminId);
 	}
-	public List<Object> getAllByProjectId(int projectId) {
-		return dataFileDao.getDataFilesByProjectId(projectId);
+	public List<Object> getAllByProjectId(int userId, int project_id, int offset, int pageSize) {
+		return dataFileDao.getDataFilesByProjectId(userId,project_id,offset,pageSize);
 	}
 	public List<Object> getAllByProjectIdAndDataFileType(int projectId,String datafile_type) {
 		return dataFileDao.getDataFilesByProjectIdAndDataFileType(projectId, datafile_type);

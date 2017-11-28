@@ -37,7 +37,7 @@ public class DataFileDaoImpl {
 		}
 		return list;
 	}*/
-	public List<Object> getByUserId(int userid){
+	public List<Object> getByUserId(int userid,int offset,int pageSize){
 		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
 		//System.out.println("getByUserId=="+userid);
@@ -45,8 +45,8 @@ public class DataFileDaoImpl {
 //		String hql = "from DataFile datafile where datafile.userid = '"+userid+"'";
 		List<Object> list = null;
 		try {
-			String sql ="select d.d_id,d.d_name,p.p_name,d.d_type,d.d_size,d.d_createTime from datafile as d,project as p where d.pro_dataid = p.p_id and d.admin_dataid = '"+userid+"';";
-		//	System.out.println("sql===="+sql);
+			String sql ="select d.d_id,d.d_name,p.p_name,d.d_type,d.d_size,d.d_createTime from datafile as d,project as p where d.pro_dataid = p.p_id and d.admin_dataid = '"+userid+"' limit "+offset+","+pageSize+";";
+//			System.out.println("sql===="+sql);
 			Query query = session.createSQLQuery(sql);
 			list = query.list();
 			tx.commit();
@@ -141,12 +141,12 @@ public class DataFileDaoImpl {
 		}
 		return list;
 	}
-	public List<Object> getDataFilesByProjectId(int projectId) {
+	public List<Object> getDataFilesByProjectId(int adminId, int project_id, int offset, int pageSize) {
 		List<Object> list = null;
 		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
 		try{
-			String sql = "select d.d_id,d.d_name,p.p_name,d.d_type,d.d_size,d.d_createTime  from datafile as d,project as p where d.pro_dataid = p.p_id and d.pro_dataid = '"+projectId+"';";
+			String sql = "select d.d_id,d.d_name,p.p_name,d.d_type,d.d_size,d.d_createTime  from datafile as d,project as p where d.pro_dataid = p.p_id and d.pro_dataid = '"+project_id+"' and d.admin_dataid = '"+adminId+"';";
 	//		System.out.println("sql:"+sql);
 			list = session.createSQLQuery(sql).list();
 			tx.commit();
