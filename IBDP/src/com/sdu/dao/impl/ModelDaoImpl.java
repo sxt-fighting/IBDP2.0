@@ -57,5 +57,26 @@ public class ModelDaoImpl {
 	
 			return list.get(0);
 	 }
+
+	public List getModelsBySearchString(String searchString,
+			int u_id) {
+	 	Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		//hql没有分号结尾
+		List<Model> list = null;
+		try {
+//			String sql = "from Model model LEFT OUTER JOIN fetch model.m_admin where model.m_admin.id = '"+u_id+"'";
+			String sql="select m.*,a.* from (select * from model where admin_moid = '"+u_id+"' or m_state='1') as m,admin as a " +
+					"where m.admin_moid=a.ID  and( m.m_name like '%"+searchString+"%' or a.name  like '%"+searchString+"%')";
+			Query query = session.createSQLQuery(sql).addEntity("m", Model.class).addEntity("a", Admin.class);
+			list = query.list();
+			System.out.println("list size="+list.size());
+			tx.commit();
+		} catch (HibernateException e) {
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return list;
+	}
 	 
 }

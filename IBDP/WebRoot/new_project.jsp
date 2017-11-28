@@ -222,7 +222,7 @@
 														
 														<div class="hr hr-dotted"></div>
 														<h3 class="lighter block green">模型详情</h3>
-														<%-- <div class="center"><span>模型为空，请选择导入模型或添加算法</span></div> --%>
+														<div class="center" ng-show="algorithmValList.length==0"><span>模型为空，请选择导入模型或添加算法</span></div> 
 														 <div class="row">
 														<div id="accordion" class="accordion-style1 panel-group" ng-repeat="a in algorithmValList track by $index">
 											
@@ -332,15 +332,15 @@
 								                        <tr ng-repeat="m in searched_models">
 								                            <td WIDTH="50px" align="center"><input type="radio" ng-click="select_modelID($index)" value="true"
 								                                                      name="radio"></td>
-								                            <td WIDTH="200px">{{m.name}}</td>
+								                            <td WIDTH="200px">{{m.m_name}}</td>
 								                            <td WIDTH="150px">{{m.author}}</td>
-								                            <td WIDTH="100px">{{m.used}}</td>
-								                            <td WIDTH="100px">{{m.collection}}</td>
+								                            <td WIDTH="100px">{{m.m_used}}</td>
+								                            <td WIDTH="100px">{{m.m_collect}}</td>
 								
 								                        </tr>
 								                    </table>
 								                    <div class="modal-footer">
-								                        <button type="button" class="btn btn-sm btn-info" ng-click="importModel()" data-dismiss="modal">确定
+								                        <button type="button" class="btn btn-sm btn-info" ng-click="importModel()"  data-dismiss="modal">确定
 								                        </button>
 								                        <button type="button" class="btn  btn-sm btn-default" data-dismiss="modal">关闭</button>
 								                    </div>
@@ -365,7 +365,7 @@
 								            </div>
 								        </div>
 								    </div>
-								    <div class="modal fade" id="newModelInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+								    <div class="modal fade" id="newModelInfo" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 								         aria-hidden="true">
 								         
 								          <div class="modal-dialog" style="width: 50%">
@@ -395,9 +395,9 @@
 								                <div  style="margin: 10px 10px">
 								                    
 								                    <div class="modal-footer">
-								                        <button type="button" class="btn btn-sm btn-info" ng-click="importModel()" data-dismiss="modal">确定
+								                        <button type="button" class="btn btn-sm btn-info" ng-click="saveModelInfo()" data-dismiss="modal">确定
 								                        </button>
-								                        <button type="button" class="btn  btn-sm btn-default" data-dismiss="modal">关闭</button>
+								                        <button type="button" class="btn  btn-sm btn-default" ng-click="cancel_newModel()" data-dismiss="modal">关闭</button>
 								                    </div>
 								                </div>
 								            </div>
@@ -493,6 +493,7 @@
 		<script type="text/javascript">
 			var project_modelapp=angular.module('newProject', ['ngRoute']);
 			project_modelapp.controller('project_modelCtrl', ['$http','$scope','$location',function($http,$scope,$location) {
+			$scope.searchString='';
 			$scope.project={
 			name:'',
 			describe:'',
@@ -502,7 +503,8 @@
 			};
 			$scope.isChanged=false;
 			
-			$scope.searched_models=[{
+			$scope.searched_models=[];
+		/* 	[{
 				name:'模型A12',
 				type:'训练模型',
 				createDate:new Date(),
@@ -517,7 +519,7 @@
 				collection:13,
 				author:'administrator'		
 			}
-			];
+			]; */
 			$scope.algorithmList=algorithmJSONList;//从静态文件Myjs/algorithmList.js中读取
 			$scope.algorithmValList=[];//将要被传到后台的对象数组
 			$scope.model={
@@ -527,30 +529,73 @@
 				m_describe:'',
 				m_createTime:'',
 				m_type:'',
-				algorithmString:$scope.algorithmValList,
+				m_used:'',
+				m_collect:'',
+				author:'',
+				algorithmString:''
 			};
 			//$scope.models=null;
+				$scope.search_models=function(){
+					$http({
+                           method:'POST',
+                           url:"<%=request.getContextPath()%>/Model_getModels.action",
+                           data:{searchString:$scope.searchString}
+                       })
+                           .success(function (data) {
+                           	$scope.searched_models=JSON.parse(data.searched_models);
+                           	//console.log(data.searched_models);
+                              //alert("搜索成功"+JSON.stringify(data));    
+	                       })
+                            .error(function (data) {
+                              alert("搜索models时出现问题:");
+	                       }); 
+				};
 				$scope.select_modelID=function(ID){
 		            $scope.selectIndex=ID;
 		        };
 		        $scope.changeState=function(){
+		        	$scope.model.m_id='';
+		        	$scope.model.m_name='';
+					$scope.model.m_state='';
+					$scope.model.m_describe='';
 		        	$scope.isChanged=true;
+		        };
+		        $scope.saveModelInfo=function(){
+		        	$scope.isChanged=false;
 		        };
 		        
 		        $scope.importModel=function () {
-		           /*  if($scope.selectIndex!=-1){
-		                $scope.models.push($scope.searched_models[$scope.selectIndex]);
-		            } */
+		             if($scope.selectIndex!=-1){
+		                //$scope.models.push($scope.searched_models[$scope.selectIndex]);
+		                //$scope.algorithmValList=[];
+		                $scope.algorithmValList.splice(0,$scope.algorithmValList.length);
+		                //console.log("$scope.algorithmValList清空了");
+		                $scope.algorithmValList=JSON.parse($scope.searched_models[$scope.selectIndex].algorithmString);
+		                $scope.model.m_id=$scope.searched_models[$scope.selectIndex].m_id;
+		                $scope.project.modelid=$scope.searched_models[$scope.selectIndex].m_id;
+		                $scope.isChanged=false;
+		                //console.log(JSON.stringify( $scope.algorithmValList));
+		            } 
+		        };
+		        $scope.cancel_newModel=function(){
+		        	$scope.model.m_name='';
+					$scope.model.m_state='';
+					$scope.model.m_describe='';
 		        };
 		        $scope.addAlgorithm=function(algorithm){
 		        	$scope.algorithmValList.push(angular.copy(algorithm));
-		        	$scope.isChanged=true;
+		        	$scope.changeState();
 		        };
 		        
 		        $scope.delModel=function(modelID,$index) {
 		        	$scope.models.splice($index,1);
 		        };
 		        $scope.hasLegalVal=function(){
+		        	if($scope.algorithmValList.length==0){
+		        	alert('请选择至少一个算法再提交');
+		        		return false;
+		        	}
+		        	else{
 		        	for(var i=0;i<$scope.algorithmValList.length;i++){
 		        		for(var j=0;j<$scope.algorithmValList[i].param.length;j++){
 		        		if($scope.algorithmValList[i].param[j].value==undefined||$scope.algorithmValList[i].param[j].value==null||$scope.algorithmValList[i].param[j].value==""){
@@ -561,6 +606,7 @@
 		        		}
 		        	}
 		        	return true;
+		        	}
 		        };
 		        $scope.createProject=function(){
 		        		 $http({
@@ -588,6 +634,7 @@
 	                       });
 		        };
 		        $scope.createModel=function(){
+		        	$scope.model.algorithmString=$scope.algorithmValList;
 		        		 $http({
                            method:'POST',
                            url:"<%=request.getContextPath()%>/Model_addModel.action",
@@ -628,6 +675,7 @@
 				error:function(){
 					console.log("上传失败!");
 					alert("上传失败!");
+				//	window.location.reload();刷新代码
 				}
 			});
 		});

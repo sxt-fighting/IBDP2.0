@@ -152,17 +152,17 @@
 		<script src="assets/js/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 	$(function(){
-			window.setTimeout("queryUploadMessage()",1000);
+			window.setTimeout("queryUploadMessage()",100);
 			window.setInterval("queryUploadMessage()",10000);
 		/* queryUploadMessage(); */
 	});
 	function queryUploadMessage(){
 		$.post("Advice_QueryNotRead.action",
 		{},function(data,status){
-			console.log("进入function");
+			//console.log("进入function");
 			if(data.count>0){
-				console.log("进入if");
-				console.log("upload:"+($("#dropdown_content").length<=0));
+				//console.log("进入if");
+				//console.log("upload:"+($("#dropdown_content").length<=0));
 				if($("#dropdown_content").length<=0){
 					$("#uploadMessage").empty();
 					$("#messageCount").text(data.count);
@@ -170,15 +170,15 @@
 					$("#uploadMessage").append("<li  id='dropdown_content'  class='dropdown-content'></li>");
 					$("#dropdown_content").append("<ul id='dropdown_menu' class='dropdown-menu dropdown-navbar'></ul>");
 				}
+				var message = JSON.parse(data.data);
 				var i;
 				for( i = 0;i<data.count&& i<5;i++){
-					var message = JSON.parse(data.data);
-					if( $("#"+message[i].id).length<=0){
-						$("#dropdown_menu").append("<li id='"+message[i].id+"'><a href='datafile.jsp'><div class='clearfix'><span class='pull-left'><i class='btn btn-xs no-hover btn-pink fa fa-comment'>"+message[i].a_content+"</i></span></div></a><li>");
+					if( $("#"+message[i].a_id).length<=0){
+						$("#dropdown_menu").append("<li id='"+message[i].a_id+"'><a href='datafile.jsp'><div class='clearfix'><span class='pull-left'><i class='btn btn-xs no-hover btn-pink fa fa-comment'>"+message[i].a_content+"</i></span></div></a><li>");
 					}
 				}
-				if(i ==5){
-					$("#uploadMessage").append("<li class='dropdown-footer'><a href='#'>查看所有消息<i class='ace-icon fa fa-arrow-right'></i></a></li>");
+				if(i ==5 &&$("#showAllMessage").length<=0){
+					$("#uploadMessage").append("<li id='showAllMessage' class='dropdown-footer'><a href='#'>查看所有消息<i class='ace-icon fa fa-arrow-right'></i></a></li>");
 				}
 			}
 		});

@@ -110,7 +110,7 @@
                 <div style="border: 1px solid;border-color: rgba(175,175,175,0.16);width: 100%;text-align: center;margin:0 auto;padding: 10px 30px">
 											 <div id="toolbar" class="row"  >
 											  <div class="btn-group" >
-												<button data-toggle="dropdown" class="btn btn-primary btn-white dropdown-toggle" aria-expanded="false">
+												<button id="uploadButton" data-toggle="dropdown" class="btn btn-primary btn-white dropdown-toggle" aria-expanded="false">
 													<i class="fa  fa-cloud-upload"></i> 上传
 													<i class="ace-icon fa fa-angle-down icon-on-right"></i>
 												</button>
@@ -142,7 +142,7 @@
 											 <button id="new" class="btn btn-white btn-info"  >
 											            <i class="fa  fa-folder"></i> 新建文件夹
 											        </button>
-   											 <button id="remove" class="btn btn-white btn-danger"  >
+   											 <button id="remove" class="btn btn-white btn-danger" >
 											            <i class="glyphicon glyphicon-trash"></i> 删除
 											        </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 											        <button class="btn btn-minier btn-primary">全部文件</button>
@@ -256,8 +256,13 @@
 		<script src="assets/js/ace-elements.min.js"></script>
 		<script src="assets/js/ace.min.js"></script>
 		<script type="text/javascript">
+		var $table = $('#project-table'),
+	        $remove = $('#remove'),
+	       
+	        selections = [];
+	    var project_id,datafile_type;
         $(function(){
-        var treeStr=[
+    /*     var treeStr=[
                 {
                     "text":"全部文件",
                     "nodes":[
@@ -288,7 +293,7 @@
                         ]
                     }
                     ]
-                }];
+                }]; */
             
             onLoad();
             BindEvent();
@@ -328,17 +333,51 @@
              //页面加载
              function onLoad()
              {
-              $('#left-tree').treeview({
-                    data: treeStr,
-                    levels: 3,
-                    onNodeSelected:function(event, node){
-                       // $('#editName').val(node.text);
-                    },
-                    showCheckbox:false//是否显示多选
-                    // collapseIcon:'ace-icon tree-plus'
-                    
-                }); 
-                  
+            	 $("#uploadButton").hide();
+                 $("#new").hide();
+     	      	 $.ajax({
+            		 type:"post",
+            		 url:"DataFile_getTree.action",
+            		 success:function(data,status){
+            			 var treeStr = [{
+            				 "text":data.text,"nodes":JSON.parse(data.nodes),"height":1,
+            				 "state":{selected:true}
+            			 }];
+            			//var treeStr=data;
+            			 $('#left-tree').treeview({
+                             data: treeStr,
+                             levels: 3,
+                             onNodeSelected:function(event, node){
+                            	 //console.log('node=='+JSON.stringify(node));
+                                // $('#editName').val(node.text);
+                                //console.log(node.level);
+                                if(node.level==1){
+                                	project_id = -1;
+                                	datafile_type="null";
+                                	$("#uploadButton").hide();
+                //                	$("#download").show();
+                                	$("#new").hide();
+                                }else if(node.level ==2){
+                                	project_id = node.project_id;
+                                	datafile_type = "null";
+                                	$("#uploadButton").show();
+                   //             	$("#download").show();
+                                	$("#new").show();
+                                }else if(node.level ==3){
+                                	project_id = node.project_id;
+                                	datafile_type = node.datafile_type;
+                                	$("#uploadButton").show();
+                  //              	$("#download").show();
+                                	$("#new").hide();
+                                }
+                                $table.bootstrapTable('refresh');
+                             },
+                             showCheckbox:false//是否显示多选
+                             // collapseIcon:'ace-icon tree-plus'
+                             
+                         }); 
+            		 }
+            	 });
              }
              //事件注册
              function BindEvent()
@@ -404,11 +443,6 @@
                 "createtime":"2017-10-31 15:00:56"
             }
         ]; */
-    var $table = $('#project-table'),
-        $remove = $('#remove'),
-       
-        selections = [];
-        var data=[{"createtime":"2017-10-28 15:00:56","name":"水质分析文件.csv","size":"37MB"},{"createtime":"2017-10-28 15:00:57","name":"煤矿数据.sql","size":"319MB"}];
     function initTable() {
         $table.bootstrapTable({
         	  url: "<%=request.getContextPath()%>/DataFile_showAllDataFiles.action", // 获取表格数据的url
@@ -419,7 +453,15 @@
               pageList: [10, 20], // 设置页面可以显示的数据条数
               pageSize: 10, // 页面数据条数
               pageNumber: 1, // 首页页码
-              //sidePagination: 'server', // 设置为服务器端分页
+              sidePagination: 'server', // 设置为服务器端分页
+              //对后台返回的数据进行处理
+              responseHandler:function(res) {
+            	  console.log("到了前台");
+            	  console.log('DataJson'+JSON.stringify(res.DataJson));
+            	 
+                   return JSON.parse(res.DataJson) ; //数据
+                    
+              },
               queryParams: function (params) { // 请求服务器数据时发送的参数，可以在这里添加额外的查询参数，返回false则终止请求
 
                   return {
@@ -427,7 +469,10 @@
                       offset: params.offset, // 每页显示数据的开始行号
                       sort: params.sort, // 要排序的字段
                       sortOrder: params.order, // 排序规则
-                      dataId: $("#dataId").val() // 额外添加的参数
+                      project_id:project_id,
+                      datafile_type:datafile_type
+                      //dataId:$("#dataId").val() // 额外添加的参数
+                      
                   }
               },
               sortName: 'id', // 要排序的字段
@@ -445,8 +490,8 @@
               align: 'center', // 左右居中
               valign: 'middle' // 上下居中
           }, {
-              field: 'projectid', // 返回json数据中的name
-              title: '项目id', // 表格表头显示文字
+              field: 'projectName', // 返回json数据中的name
+              title: '项目名称', // 表格表头显示文字
               width: 200,
               align: 'center', // 左右居中
               valign: 'middle' // 上下居中
@@ -475,9 +520,9 @@
               formatter: function (value, row, index) {
             	  console.log(row.name);
             	  console.log(row.did);
-                   return '<button class="btn btn-xs btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="预览" onclick="like(\'' + row.did + '\')"><i class="ace-icon fa fa-search-plus bigger-120"></i></button>'
-                   			+'<button class="btn btn-xs btn-success btn-sm" onclick="download(\'' + row.did + '\')"><i class="ace-icon fa fa-download bigger-120"></i></button>'
-              				 +'<button class="btn btn-xs btn-danger btn-sm" onclick="del(\'' + row.did + '\')"><i class="ace-icon fa fa-trash-o bigger-120"></i></button>';
+                   return '<button class="btn btn-xs btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="预览" onclick="like(\'' + row.id + '\')"><i class="ace-icon fa fa-search-plus bigger-120"></i></button>'
+                   			+'<button class="btn btn-xs btn-success btn-sm" onclick="download(\'' + row.id + '\')"><i class="ace-icon fa fa-download bigger-120"></i></button>'
+              				 +'<button class="btn btn-xs btn-danger btn-sm" onclick="del(\'' + row.id + '\')"><i class="ace-icon fa fa-trash-o bigger-120"></i></button>';
               }
           }
             ],
@@ -488,11 +533,18 @@
        
         $remove.click(function () {
             var ids = getIdSelections();
+            console.log(typeof(ids));
             alert("ids=="+ids);
             $table.bootstrapTable('remove', {
                 field: 'name',
                 values: ids
             });
+            $.post("DataFile_delDataFiles.action",{
+            	//ids以字符串的形式传给后台
+            	ids:JSON.stringify(ids)
+            },function(data,status){
+				  $table.bootstrapTable('refresh');
+			   });
             //$remove.prop('disabled', true);
         });
         
@@ -500,7 +552,7 @@
     }
     function getIdSelections() {
         return $.map($table.bootstrapTable('getSelections'), function (row) {
-            return row.name;
+            return row.id;
         });
     }
     
@@ -529,7 +581,10 @@
     });
     //下载
     function downClick(){
-    	window.location.href="d:/";
+    	var ids =  getIdSelections();
+    	for(var i = 0;i<ids.length;i++){
+    		download(ids[i]);
+    	}
     }
     //上传
     $("#upload").change(function(){
@@ -540,6 +595,10 @@
 		$.ajaxFileUpload({
 			url:'DataFile_saveDataFile.action',
 			type:'post',
+			data:{
+				project_id:project_id,
+				datafile_type:datafile_type
+			},
 			secureuri:false,
 			cache:false,
 			fileElementId:'upload',
@@ -548,14 +607,14 @@
             processData:false,
 			async:false,
 			success:function(data){
-				console.log("上传成功!");
+/* 				console.log("上传成功!");
 				console.log(data);
-				console.log("执行inittable之前");
+				console.log("执行inittable之前"); */
 				 $table.bootstrapTable('refresh');
-		    	console.log("支持inittable之后!");
+/* 		    	console.log("支持inittable之后!"); */
 			},
 			error:function(){
-				console.log("服务器响应失败!");
+//				console.log("服务器响应失败!");
 			}
 		});
 		$("#upload").change(function(){

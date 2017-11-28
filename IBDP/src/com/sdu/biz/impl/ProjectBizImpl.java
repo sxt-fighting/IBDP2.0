@@ -1,5 +1,7 @@
 package com.sdu.biz.impl;
 
+import java.util.List;
+
 import com.sdu.dao.impl.DataFileDaoImpl;
 import com.sdu.dao.impl.ModelDaoImpl;
 import com.sdu.dao.impl.ProjectDaoImpl;
@@ -39,5 +41,9 @@ public class ProjectBizImpl {
 	}
 	public Project getById(int projectid){
 		return projectDao.getProjectById(projectid);
+	}
+	public List<Project> getProjectTree(int adminId){
+	//	System.out.println("进入ProjectTre");
+		return projectDao.getProjectByAdminId(adminId);
 	}
 }

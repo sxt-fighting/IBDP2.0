@@ -43,25 +43,13 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="F:/IBDP2.0/JiNing11月20日/JiNing_wang/mysql-connector-java-5.1.22-bin.jar">
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/hadoop">
 		<attributes>
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="F:/IBDP2.0/JiNing11月20日/JiNing_wang/REngine.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="F:/IBDP2.0/JiNing11月20日/JiNing_wang/RserveEngine.jar">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Hadoop">
-		<attributes>
-			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/rad/git/sxt/IBDP2.0/IBDP/mysql-connector-java-5.1.22-bin.jar"/>
+	<classpathentry kind="lib" path="C:/Users/rad/git/sxt/IBDP2.0/IBDP/REngine.jar"/>
+	<classpathentry kind="lib" path="C:/Users/rad/git/sxt/IBDP2.0/IBDP/RserveEngine.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>
