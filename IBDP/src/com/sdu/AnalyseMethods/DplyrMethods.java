@@ -26,8 +26,9 @@ public class DplyrMethods extends BasicMethod{
 		String filepath=dataFile.getD_localpath();
 		String dataFileName=dataFile.getD_name();	
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
+		String method_name=algorithm_obj.getString("method");
 		JSONArray params= algorithm_obj.getJSONArray("param");
-		String variable=params.getJSONObject(0).getString("value");
+		String variable=null;
 		
 		
 		
@@ -61,9 +62,46 @@ public class DplyrMethods extends BasicMethod{
  	c.eval("library(ggplot2)");
  	//c.eval("sc<-spark_connect(master = \"local\" )"); 
  	System.out.println("spark连接成功");
- 	variable.replaceAll("，", ",");
- 	c.eval("datafile<-collect(datafile,"+variable+")");
-	
+ 	//开始考虑具体的数据清理算法
+ 	if(method_name.equals("collect"))
+ 	{
+ 		variable=params.getJSONObject(0).getString("value");
+ 		variable=variable.replaceAll("，", ",");
+ 	 	c.eval("datafile<-collect(datafile,"+variable+")");
+ 	}
+	if(method_name.equals("filter"))
+ 	{
+ 		variable=params.getJSONObject(0).getString("value");
+ 		variable=variable.replaceAll("，", ",");
+ 	 	c.eval("datafile<-filter(datafile,"+variable+")");
+ 	}
+	if(method_name.equals("distinct"))
+ 	{
+ 		variable=params.getJSONObject(0).getString("value");
+ 		variable=variable.replaceAll("，", ",");
+ 		String returnVariable =params.getJSONObject(1).getString("value");
+ 		
+ 	 	c.eval("datafile<-collect(datafile,"+variable+")");
+ 	}
+	if(method_name.equals("sample_n"))
+ 	{
+ 		variable=params.getJSONObject(0).getString("value");
+ 	    String replace=params.getJSONObject(1).getString("value");
+ 	 	c.eval("datafile<-sample_n(datafile,"+variable+",replace="+replace.toUpperCase()+")");
+ 	}
+	if(method_name.equals("na"))
+ 	{
+ 		variable=params.getJSONObject(0).getString("value");
+ 		 String naMethod=params.getJSONObject(1).getString("value");
+ 		 if(variable.equals("all"))
+ 		 {
+ 			c.eval("datafile<-na.omit(datafile)");
+ 		 }
+ 		 else
+ 	 	c.eval("datafile<-datafile[!is.na(datafile$"+variable+"),]");
+ 	}
+		
+ 	
  	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_bayes";
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
@@ -74,55 +112,26 @@ public class DplyrMethods extends BasicMethod{
  	    c.eval("sink(\""+resultFileName+"\")");
 		c.eval("print(as.data.frame(datfile))");
 		c.eval("sink()");
+		//生成结果文件并进行保存修改数据库
+		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName);
+		 
+	    resultFile.setD_type("ResultFile");
+		DataFileHibernate.saveDataFile(resultFile);
+		HDFSTools.LoadSingleFileToHDFS(resultFile);
+			
+		//通知分析完成
+		FormResultFileAndAdvice.FormAdvice(user, project);
 	}
  	else
  	{
  		resultFileName=resultFileName+".Rdata";
  		c.eval("save(datafile,file=\""+resultFileName+"\" )");
+ 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName+".png");
+		resultFile.setD_type("IntermediateFile");
  	}
  	//c.eval("save(bayes_predict,"+resultFileName+")");
 		c.close();
 		System.out.println("Rserve连接关闭");
-		
-		//将结果文件上传到hdfs中
-		
-		Date date=new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
-		resultFile.setD_createTime(sdf.format(date));
-		resultFile.setD_admin(user);
-		resultFile.setD_hasheader("FALSE");
-		resultFile.setD_name(resultFileName);
-		resultFile.setD_suffix("txt");
-		
-		resultFile.setD_project(project);
-		resultFile.setD_localpath(savePath+"/"+resultFileName);
-		File f= new File(savePath+"/"+resultFileName);  
-		if (f.exists() && f.isFile())  
-		        resultFile.setD_size(f.length()/1024.0+"KB");
-		else {
-		resultFile.setD_size("Unknown");
-		}
-		//算法为最后一个时，将目录下所有文件上传到hdfs，并修改数据库
-		if(index==algorithmJSON.length()-1)
-		{
-			resultFile.setD_type("ResultFile");
-			DataFileHibernate.saveDataFile(resultFile);
-			HDFSTools.LoadSingleFileToHDFS(resultFile);
-			
-			Advice advice=new Advice();
-			advice.setA_content(project.getP_name()+"分析结果完成");
-			advice.setA_isread(false);
-			Date date2=new Date();
-			advice.setA_time(sdf.format(date2));
-			advice.setA_name(project.getP_name()+"分析结果完成");
-			advice.setAdvice_admin(user);
-			advice.setA_type("AnalyseDone");
-			AdviceHibernate.CreateAdvice(advice);
-		}
-		else {
-			resultFile.setD_type("IntermediateFile");
-		}
 		
 	} catch (Exception e) {
 			// TODO Auto-generated catch block

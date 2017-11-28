@@ -83,62 +83,34 @@ public class bayesAction extends BasicMethod{
      	System.out.println("开始写入结果文件:"+resultFileName);
      	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
      	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
-     	if(index==algorithmJSON.length()-1)
-		{
-     		resultFileName=resultFileName+".txt";
-     	    c.eval("sink(\""+resultFileName+"\")");
-			c.eval("print(as.data.frame(bayes_predict))");
-			c.eval("sink()");
-		}
-     	else
-     	{
-     		resultFileName=resultFileName+".Rdata";
-     		c.eval("save(bayes_predict,\""+resultFileName+"\" )");
-     	}
-     	//c.eval("save(bayes_predict,"+resultFileName+")");
-			c.close();
-			System.out.println("Rserve连接关闭");
-			
-			//将结果文件上传到hdfs中
-			
-			Date date=new Date();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			
-			resultFile.setD_createTime(sdf.format(date));
-			resultFile.setD_admin(user);
-			resultFile.setD_hasheader("FALSE");
-			resultFile.setD_name(resultFileName);
-			resultFile.setD_suffix("txt");
-			
-			resultFile.setD_project(project);
-			resultFile.setD_localpath(savePath+"/"+resultFileName);
-			File f= new File(savePath+"/"+resultFileName);  
-			if (f.exists() && f.isFile())  
-			        resultFile.setD_size(f.length()/1024.0+"KB");
-			else {
-			resultFile.setD_size("Unknown");
-			}
-			
-			if(index==algorithmJSON.length()-1)
+    
+		 	if(index==algorithmJSON.length()-1)
 			{
-				resultFile.setD_type("ResultFile");
+		 		resultFileName=resultFileName+".txt";
+	     	    c.eval("sink(\""+resultFileName+"\")");
+				c.eval("print(as.data.frame(bayes_predict))");
+				c.eval("sink()");
+				//生成结果文件并进行保存修改数据库
+				resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName);
+				 
+			    resultFile.setD_type("ResultFile");
 				DataFileHibernate.saveDataFile(resultFile);
 				HDFSTools.LoadSingleFileToHDFS(resultFile);
-				
-				Advice advice=new Advice();
-				advice.setA_content(project.getP_name()+"分析结果完成");
-				advice.setA_isread(false);
-				Date date2=new Date();
-				advice.setA_time(sdf.format(date2));
-				advice.setA_name(project.getP_name()+"分析结果完成");
-				advice.setAdvice_admin(user);
-				advice.setA_type("AnalyseDone");
-				AdviceHibernate.CreateAdvice(advice);
+					
+				//通知分析完成
+				FormResultFileAndAdvice.FormAdvice(user, project);
 			}
-			else {
+		 	else
+		 	{
+		 		resultFileName=resultFileName+".Rdata";
+	     		c.eval("save(bayes_predict,\""+resultFileName+"\" )");
+	     	    resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName+".png");
 				resultFile.setD_type("IntermediateFile");
+		 	}
+		 	//c.eval("save(bayes_predict,"+resultFileName+")");
+				c.close();
+				System.out.println("Rserve连接关闭");
 				
-			}
 			
 		} catch (Exception e) {
 				// TODO Auto-generated catch block
