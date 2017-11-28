@@ -2,11 +2,14 @@ package com.sdu.action;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.google.gson.JsonObject;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sdu.biz.impl.ModelBizImpl;
@@ -23,10 +26,11 @@ public class ModelAction extends ActionSupport{
 	private Model model;
 	private ModelBizImpl modelBizImpl;
 	//自己new
-	private List<DataFile> list;
 	private	Map<String,Object> map;
 	//由ajax传的值
 	private String modelJSONStr;
+	private String searchString;
+	
 //-------------------------------------------gets和sets
 	
 	
@@ -58,13 +62,42 @@ public class ModelAction extends ActionSupport{
 	public void setMap(Map<String, Object> map) {
 		this.map = map;
 	}
-	public void setList(List<DataFile> list) {
-		this.list = list;
+	
+	public String getSearchString() {
+		return searchString;
 	}
-	public List<DataFile> getList() {
-		return list;
+	public void setSearchString(String searchString) {
+		this.searchString = searchString;
 	}
 	//--------------------------------------action
+	public String getModels(){
+//		System.out.println("searchString====="+searchString);
+		List modellists=modelBizImpl.getModelsBySearchString(searchString,((Admin) ActionContext.getContext().getSession().get("user")).getId());
+		JSONArray array=new JSONArray();
+		for(Iterator iterator = modellists.iterator();iterator.hasNext();){  
+			    //每个集合元素都是Model、Admin所组成的数组  
+			    Object[] objects = (Object[]) iterator.next();  
+			   Model model = (Model) objects[0];  
+			   Admin admin = (Admin) objects[1];  
+			   model.setM_admin(admin);
+			   JSONObject jobj=new JSONObject();
+			   if(!(model.getM_name().equals("")||model.getM_name().isEmpty())){
+				   jobj.put("m_id", model.getM_id());
+				   jobj.put("m_name", model.getM_name());
+				   jobj.put("algorithmString", model.getAlgorithmString());
+				   jobj.put("m_used", model.getM_used());
+				   jobj.put("m_collect", model.getM_collect());
+				   jobj.put("author", model.getM_admin().getName());
+//				   System.out.println(model.getM_admin().getName());
+//				    System.out.println("model_name="+model.getM_name()+" model_id="+model.getM_id()+" Admin_name="+admin.getName());  
+				   array.put(jobj);
+			   }
+		    }  
+//		System.out.println("array===========:"+array.toString());
+		map = new HashMap<String,Object>();
+		map.put("searched_models",array.toString());
+		return "success";
+	}
 	public String addModel() throws IOException{
 	System.out.println("modelJSONStr==="+modelJSONStr);
 	JSONObject obj = new JSONObject(modelJSONStr);

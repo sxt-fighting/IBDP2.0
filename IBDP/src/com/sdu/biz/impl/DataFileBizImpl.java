@@ -20,7 +20,7 @@ public class DataFileBizImpl {
 		this.adminDao = adminDao;
 	}
 	public DataFileBizImpl() {
-		System.out.println("构造函数被调用");
+		//System.out.println("构造函数被调用");
 	}
 	public void setDataFileDao(DataFileDaoImpl dataFileDao){
 		this.dataFileDao = dataFileDao;

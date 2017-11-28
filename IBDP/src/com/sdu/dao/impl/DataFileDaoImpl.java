@@ -13,7 +13,7 @@ import com.sdu.entity.DataFile;
 public class DataFileDaoImpl {
 	SessionFactory sessionFactory;
 	public DataFileDaoImpl() {
-		System.out.println("DataFileDaoImpl构造函数被调用!");
+		//System.out.println("DataFileDaoImpl构造函数被调用!");
 	}
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		   this.sessionFactory = sessionFactory;
