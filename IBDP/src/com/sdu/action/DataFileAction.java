@@ -179,7 +179,7 @@ public class DataFileAction extends ActionSupport{
 			unit="GB";
 		}
 		String temp=size+"";
-		temp = temp.substring(0,temp.indexOf(".")+1);
+		temp = temp.substring(0,temp.indexOf(".")+2);
 		dataFile.setD_size(temp+unit);
 		dataFile.setD_localpath("D:/user/"+uploadFileFileName);
 		dataFile.setD_type("DataFile");

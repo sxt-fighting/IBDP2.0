@@ -101,8 +101,8 @@ public class ModelAction extends ActionSupport{
 	public String addModel() throws IOException{
 	System.out.println("modelJSONStr==="+modelJSONStr);
 	JSONObject obj = new JSONObject(modelJSONStr);
-	System.out.println("m_name:"+obj.getString("m_name"));
-	System.out.println("algorithmString"+obj.getJSONArray("algorithmString").toString());
+//	System.out.println("m_name:"+obj.getString("m_name"));
+//	System.out.println("algorithmString"+obj.getJSONArray("algorithmString").toString());
 	model = new Model();
 	model.setM_name(obj.getString("m_name"));
 	model.setM_state(obj.getString("m_state"));
@@ -112,13 +112,13 @@ public class ModelAction extends ActionSupport{
 	model.setM_used(1);
 	model.setAlgorithmString(obj.getJSONArray("algorithmString").toString());
 /*	System.out.println((Admin) ActionContext.getContext().getSession().get("user"));*/
-	System.out.println("name:"+((Admin) ActionContext.getContext().getSession().get("user")).getName());
+//	System.out.println("name:"+((Admin) ActionContext.getContext().getSession().get("user")).getName());
 	model.setM_admin((Admin) ActionContext.getContext().getSession().get("user"));
-	System.out.println("设置成功!");
+//	System.out.println("设置成功!");
 	/*	System.out.println("进入了函数");
 	System.out.println("m_name:"+m_name);*/
 	modelBizImpl.addModel(model);
-	System.out.println("modeid:"+model.getM_id());
+//	System.out.println("modeid:"+model.getM_id());
 	map = new HashMap<String,Object>();
 	map.put("message", "success");
 	map.put("modelid",model.getM_id());
