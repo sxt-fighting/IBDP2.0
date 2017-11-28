@@ -675,6 +675,7 @@
 				error:function(){
 					console.log("上传失败!");
 					alert("上传失败!");
+				//	window.location.reload();刷新代码
 				}
 			});
 		});

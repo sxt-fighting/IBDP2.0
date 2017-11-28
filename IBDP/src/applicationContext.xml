@@ -76,6 +76,7 @@
 	<bean id="dataFileBiz" class="com.sdu.biz.impl.DataFileBizImpl">
 		<property name="dataFileDao" ref="dataFileDao" />
 		<property name="adminDao" ref="adminDao"/>
+		<property name="projectDao" ref="projectDao" />
 	</bean>
 	
 	<!-- 定义loginRegister类 -->

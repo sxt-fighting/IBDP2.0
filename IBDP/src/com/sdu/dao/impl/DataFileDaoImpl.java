@@ -42,7 +42,6 @@ public class DataFileDaoImpl {
 		Transaction tx = session.beginTransaction();
 		//System.out.println("getByUserId=="+userid);
 		//hql没有分号结尾
-
 //		String hql = "from DataFile datafile where datafile.userid = '"+userid+"'";
 		List<Object> list = null;
 		try {
@@ -171,5 +170,20 @@ public class DataFileDaoImpl {
 			e.printStackTrace();
 		}
 		return list;
+	}
+	public boolean removeByIds(String ids) {
+		boolean result= false;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "delete from datafile where datafile.d_id in ("+ids+");";
+			session.createSQLQuery(sql).executeUpdate();
+			tx.commit();
+			result = true;
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

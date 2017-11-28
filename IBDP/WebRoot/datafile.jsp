@@ -110,7 +110,7 @@
                 <div style="border: 1px solid;border-color: rgba(175,175,175,0.16);width: 100%;text-align: center;margin:0 auto;padding: 10px 30px">
 											 <div id="toolbar" class="row"  >
 											  <div class="btn-group" >
-												<button data-toggle="dropdown" class="btn btn-primary btn-white dropdown-toggle" aria-expanded="false">
+												<button id="uploadButton" data-toggle="dropdown" class="btn btn-primary btn-white dropdown-toggle" aria-expanded="false">
 													<i class="fa  fa-cloud-upload"></i> 上传
 													<i class="ace-icon fa fa-angle-down icon-on-right"></i>
 												</button>
@@ -142,7 +142,7 @@
 											 <button id="new" class="btn btn-white btn-info"  >
 											            <i class="fa  fa-folder"></i> 新建文件夹
 											        </button>
-   											 <button id="remove" class="btn btn-white btn-danger"  >
+   											 <button id="remove" class="btn btn-white btn-danger" >
 											            <i class="glyphicon glyphicon-trash"></i> 删除
 											        </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 											        <button class="btn btn-minier btn-primary">全部文件</button>
@@ -333,12 +333,15 @@
              //页面加载
              function onLoad()
              {
+            	 $("#uploadButton").hide();
+                 $("#new").hide();
      	      	 $.ajax({
             		 type:"post",
             		 url:"DataFile_getTree.action",
             		 success:function(data,status){
             			 var treeStr = [{
-            				 "text":data.text,"nodes":JSON.parse(data.nodes),"height":1
+            				 "text":data.text,"nodes":JSON.parse(data.nodes),"height":1,
+            				 "state":{selected:true}
             			 }];
             			//var treeStr=data;
             			 $('#left-tree').treeview({
@@ -351,12 +354,21 @@
                                 if(node.level==1){
                                 	project_id = -1;
                                 	datafile_type="null";
+                                	$("#uploadButton").hide();
+                //                	$("#download").show();
+                                	$("#new").hide();
                                 }else if(node.level ==2){
                                 	project_id = node.project_id;
                                 	datafile_type = "null";
+                                	$("#uploadButton").show();
+                   //             	$("#download").show();
+                                	$("#new").show();
                                 }else if(node.level ==3){
                                 	project_id = node.project_id;
                                 	datafile_type = node.datafile_type;
+                                	$("#uploadButton").show();
+                  //              	$("#download").show();
+                                	$("#new").hide();
                                 }
                                 $table.bootstrapTable('refresh');
                              },
@@ -521,11 +533,18 @@
        
         $remove.click(function () {
             var ids = getIdSelections();
+            console.log(typeof(ids));
             alert("ids=="+ids);
             $table.bootstrapTable('remove', {
                 field: 'name',
                 values: ids
             });
+            $.post("DataFile_delDataFiles.action",{
+            	//ids以字符串的形式传给后台
+            	ids:JSON.stringify(ids)
+            },function(data,status){
+				  $table.bootstrapTable('refresh');
+			   });
             //$remove.prop('disabled', true);
         });
         
@@ -533,7 +552,7 @@
     }
     function getIdSelections() {
         return $.map($table.bootstrapTable('getSelections'), function (row) {
-            return row.name;
+            return row.id;
         });
     }
     
@@ -573,6 +592,10 @@
 		$.ajaxFileUpload({
 			url:'DataFile_saveDataFile.action',
 			type:'post',
+			data:{
+				project_id:project_id,
+				datafile_type:datafile_type
+			},
 			secureuri:false,
 			cache:false,
 			fileElementId:'upload',
@@ -581,14 +604,14 @@
             processData:false,
 			async:false,
 			success:function(data){
-				console.log("上传成功!");
+/* 				console.log("上传成功!");
 				console.log(data);
-				console.log("执行inittable之前");
+				console.log("执行inittable之前"); */
 				 $table.bootstrapTable('refresh');
-		    	console.log("支持inittable之后!");
+/* 		    	console.log("支持inittable之后!"); */
 			},
 			error:function(){
-				console.log("服务器响应失败!");
+//				console.log("服务器响应失败!");
 			}
 		});
 		$("#upload").change(function(){

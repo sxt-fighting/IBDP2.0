@@ -121,12 +121,14 @@
 </action>
 <!-- modelAction -->
 <action name="Model_*" class="com.sdu.action.ModelAction" method="{1}" >
+<interceptor-ref name="json"></interceptor-ref>
 	<result name="success" type="json">
-	<param name="root">map</param>
+		<param name="root">map</param>
 	 </result>
 </action>
 <!-- projectAction -->
 <action name="Project_*" class="com.sdu.action.ProjetAction" method="{1}">
+<interceptor-ref name="json"></interceptor-ref>
 	<result name="success">/basic.jsp</result>
 </action>
 <!-- dataFileAction -->

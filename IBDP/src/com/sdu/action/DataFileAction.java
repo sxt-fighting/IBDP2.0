@@ -46,6 +46,7 @@ public class DataFileAction extends ActionSupport{
 	private String data;
 	private int fileid;
 	private String hasheader;
+	private String ids;
 	//由ajax传的值
 	private int did;
 	private int project_id = -1;
@@ -57,6 +58,9 @@ public class DataFileAction extends ActionSupport{
 	
 	public File getUploadFile() {
 		return uploadFile;
+	}
+	public void setIds(String ids) {
+		this.ids = ids;
 	}
 	public void setProject_id(int project_id) {
 		this.project_id = project_id;
@@ -145,6 +149,8 @@ public class DataFileAction extends ActionSupport{
 	}
 	//------------------------------------------------------------------action
 	public String saveDataFile() throws IOException{
+		System.out.println("project_id:"+project_id);
+		System.out.println("datafile_type:"+datafile_type);
 		String unit = "KB";
 		dataFile=new DataFile();
 		dataFile.setD_name(uploadFileFileName);
@@ -175,10 +181,19 @@ public class DataFileAction extends ActionSupport{
 		dataFile.setD_localpath("D:/user/"+uploadFileFileName);
 		dataFile.setD_type("DataFile");
 		Date date=new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	
 		dataFile.setD_createTime(sdf.format(date));
-		int d_id = dataFileBiz.save(dataFile,((Admin)ActionContext.getContext().getSession().get("user")).getId()+""); 
+		int d_id = -1;
+		if(project_id==-1 &&  "null".equals(datafile_type)){
+			System.out.println("new_project页面");
+			d_id = dataFileBiz.save(dataFile,((Admin)ActionContext.getContext().getSession().get("user")).getId()+""); 
+		}else if(project_id !=-1 && "null".equals(datafile_type)){
+			System.out.println("给定的project");
+			d_id = dataFileBiz.saveByProjectId(dataFile,((Admin)ActionContext.getContext().getSession().get("user")).getId()+"",project_id);
+		}else if(project_id!=-1){
+			System.out.println("给定的project和datafile_type");
+			d_id = dataFileBiz.saveByProjectIdAndDataFileType(dataFile,((Admin)ActionContext.getContext().getSession().get("user")).getId()+"",project_id,datafile_type);
+		}
 		System.out.println("action中的d_id:"+d_id);
 		map = new HashMap<String,Object>();
 		map.put("message", "uploadSuccess!");
@@ -203,8 +218,8 @@ public class DataFileAction extends ActionSupport{
 	}*/
 	public String showAllDataFiles(){
 //		System.out.println("11111111111111111");
-		System.out.println("project_id:"+project_id);
-		System.out.println("datafile_type:"+datafile_type);
+	//	System.out.println("project_id:"+project_id);
+	//	System.out.println("datafile_type:"+datafile_type);
 		List<Object> list = new ArrayList<>();
 		if(project_id==-1 && "null".equals(datafile_type)){	
 			list = dataFileBiz.getAllByUseId(((Admin)ActionContext.getContext().getSession().get("user")).getId());
@@ -234,13 +249,21 @@ public class DataFileAction extends ActionSupport{
 		return "getSuccess";
 	}
 	public String delDataFile(){
-		System.out.println("did:"+did);
-		System.out.println("开始删除!");
+//		System.out.println("did:"+did);
+//		System.out.println("开始删除!");
 		if(dataFileBiz.remove(did)){
 			System.out.println("删除成功");
 		}else{
 			System.out.println("删除失败!");
 		}
+		map = new HashMap<String,Object>();
+		map.put("message", "deleteSuccess!");
+		return "delSuccess";
+	}
+	public String delDataFiles(){
+		/*System.out.println("1111111");
+		System.out.println("ids"+ids);*/
+		dataFileBiz.removeDataFiles(ids.substring(ids.indexOf("[")+1,ids.indexOf("]")));
 		map = new HashMap<String,Object>();
 		map.put("message", "deleteSuccess!");
 		return "delSuccess";
