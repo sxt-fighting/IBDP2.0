@@ -127,9 +127,17 @@
 	 </result>
 </action>
 <!-- projectAction -->
-<action name="Project_*" class="com.sdu.action.ProjetAction" method="{1}">
+<action name="Project_addProject" class="com.sdu.action.ProjetAction" method="addProject">
 <interceptor-ref name="json"></interceptor-ref>
 	<result name="success">/basic.jsp</result>
+</action>
+<action name="Project_*" class="com.sdu.action.ProjetAction" method="{1}">
+	<result name="showSuccess" type="json">
+		<param name="root">map</param>
+	</result>
+	<result name="delSuccess" type="json">
+		<param name="root">map</param>
+	</result>
 </action>
 <!-- dataFileAction -->
 <action name="DataFile_*" class="com.sdu.action.DataFileAction" method="{1}">

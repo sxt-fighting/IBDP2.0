@@ -66,8 +66,8 @@ public class DataFileBizImpl {
 	public List<Object> getAllByProjectId(int userId, int project_id, int offset, int pageSize) {
 		return dataFileDao.getDataFilesByProjectId(userId,project_id,offset,pageSize);
 	}
-	public List<Object> getAllByProjectIdAndDataFileType(int projectId,String datafile_type) {
-		return dataFileDao.getDataFilesByProjectIdAndDataFileType(projectId, datafile_type);
+	public List<Object> getAllByProjectIdAndDataFileType(int adminId,int project_id, String datafile_type, int offset, int pageSize) {
+		return dataFileDao.getDataFilesByProjectIdAndDataFileType(adminId,project_id, datafile_type,offset,pageSize);
 	}
 	public int saveByProjectId(DataFile dataFile, String admin_id, int project_id){ 
 		Project project = projectDao.getProjectById(project_id);
@@ -86,5 +86,14 @@ public class DataFileBizImpl {
 	}
 	public boolean removeDataFiles(String ids) {
 		return dataFileDao.removeByIds(ids);
+	}
+	public int getCountByUserId(int userId){
+		return dataFileDao.getCountByUserId(userId);
+	}
+	public int getCountByProjectId(int userId,int project_Id) {
+		return dataFileDao.getCountByProjectId(userId,project_Id);
+	}
+	public int getCountByProjectIdAndDatafileType(int userId,int project_id,String datafile_type){
+		return dataFileDao.getCountByProjectIdAndDataFileType(userId, project_id, datafile_type);
 	}
 }

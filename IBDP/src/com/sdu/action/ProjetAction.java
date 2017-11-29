@@ -3,6 +3,7 @@ package com.sdu.action;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -47,6 +48,12 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 	private String actionName;
 	private int fileId;
     Map<String, Object> session;
+    
+   //由前台传递过来的的
+    private int offset;
+    private int pageSize;
+    private int id;
+    private String ids;
 	//=================================================
 	@Override
 	public void setSession(Map<String, Object> arg0) {
@@ -106,7 +113,42 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 	}
 	
 	
+	public void setId(int id) {
+		this.id = id;
+	}
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
 	//--------------------------------------------------------------
+	public String showAllProjects(){
+		int adminId = ((Admin)ActionContext.getContext().getSession().get("user")).getId();
+		List<Object> list = projectBiz.getProjectsByAdminId(adminId, offset, pageSize);
+		int count = projectBiz.getProjectCountByAdminId(adminId);
+		JSONArray array = new JSONArray();
+		for(int i = 0;i<list.size();i++){
+			JSONObject obj = new JSONObject();
+			Object[] object = (Object[])list.get(i);
+			obj.put("id",object[0]);
+			obj.put("name", object[1]);
+			obj.put("detail",object[2]);
+			obj.put("createtime",object[3]);
+	//		System.out.println("admin:"+list.get(i).getP_admin().getName());
+			obj.put("creator",object[4]);
+			array.put(obj);
+		}
+		JSONObject json = new JSONObject();
+		json.put("total",count);
+		json.put("rows", array);
+		map = new HashMap<String,Object>();
+		map.put("dataJson",json.toString() );
+		return "showSuccess";
+	}
 	public String addProject(){
 		System.out.println("projectJSON:  "+projectJSONStr);
 		user=(Admin) ActionContext.getContext().getSession().get("user");
@@ -170,9 +212,22 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 	
 	}
 
-
-	
+	public String delProject(){
+		System.out.println("id"+id);
+		projectBiz.delProject(id);
+		map = new HashMap<String,Object>();
+		map.put("message", "success");
+		return "delSuccess";
+	}
+	public String delProjects(){
+		System.out.println("ids"+ids);
+		projectBiz.delProjects(ids.substring(ids.indexOf("[")+1,ids.indexOf("]")));
+		map = new HashMap<String,Object>();
+		map.put("message","success");
+		return "delSuccess";
+	}
 }
+
 /*原先的projectaction
 <action name="Project_*" class="com.sdu.action.ProjetAction" method="{1}">
 <result name="addSuccess" type="json">

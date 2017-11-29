@@ -139,9 +139,31 @@
 											            <i class="fa fa-cloud-download"></i> 下载
 											   			
 											        </button>   
-											 <button id="new" class="btn btn-white btn-info"  >
+											 <button id="new" class="btn btn-white btn-info" data-toggle="modal" data-target="#newDir">
 											            <i class="fa  fa-folder"></i> 新建文件夹
-											        </button>
+											 </button>
+											 <!-- 模态框 -->
+											 <div class="modal fade" id="newDir" tabindex="-1">
+											 	<div class="modal-dialog">
+													<div class="modal-content">
+														<div class="modal-header">
+																<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+																				&times;
+																</button>
+																<h4 class="modal-title" id="myModalLabel">
+																	输入新建文件夹的名字
+																</h4>
+														</div>
+													<div class="modal-body">
+														<input id="newDirName" type="text" style="width:200px"/>
+													</div>
+													<div class="modal-footer">
+														<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+														<button type="button" class="btn btn-primary" onclick="addNode()">添加</button>
+													</div>
+													</div><!-- /.modal-content -->
+											 	</div>
+											 </div>
    											 <button id="remove" class="btn btn-white btn-danger" >
 											            <i class="glyphicon glyphicon-trash"></i> 删除
 											        </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -261,6 +283,20 @@
 	       
 	        selections = [];
 	    var project_id,datafile_type;
+	    function addNode(){
+	    	var parentNode = $('#left-tree').treeview('getSelected');
+	    	console.log("111:"+$('#newDirName').val());
+	    	 var node = {
+                     text:$('#newDirName').val(),
+                     id:"",
+                     project_id:project_id,
+                     datafile_type:$('#newDirName').val()
+                 };
+	    	$('#left-tree').treeview('addNode', [node, parentNode]);
+	    	alert("添加成功!如果不为其上传文件，下次刷新文件夹就会消失!");
+	    	$('#newDir').modal('hide');
+	    	$('#newDirName').val("");
+	    }
         $(function(){
     /*     var treeStr=[
                 {
@@ -370,7 +406,11 @@
                   //              	$("#download").show();
                                 	$("#new").hide();
                                 }
-                                $table.bootstrapTable('refresh');
+                                //销毁是为了清除offset的数据
+                               $table.bootstrapTable('destroy');
+                                initTable(); 
+                              //  initTable();
+                              //有表的时候initTable是不会有什么效果的。
                              },
                              showCheckbox:false//是否显示多选
                              // collapseIcon:'ace-icon tree-plus'
@@ -450,7 +490,7 @@
               cache: false, // 设置为 false 禁用 AJAX 数据缓存， 默认为true
               striped: true,  //表格显示条纹，默认为false
               pagination: true, // 在表格底部显示分页组件，默认false
-              pageList: [10, 20], // 设置页面可以显示的数据条数
+ //             pageList: [10, 20], // 设置页面可以显示的数据条数
               pageSize: 10, // 页面数据条数
               pageNumber: 1, // 首页页码
               sidePagination: 'server', // 设置为服务器端分页
@@ -489,7 +529,7 @@
               width: 500,
               align: 'center', // 左右居中
               valign: 'middle' // 上下居中
-          }, {
+          }, /* {
               field: 'projectName', // 返回json数据中的name
               title: '项目名称', // 表格表头显示文字
               width: 200,
@@ -500,7 +540,7 @@
               title: '类型', // 表格表头显示文字
               align: 'center', // 左右居中
               valign: 'middle' // 上下居中
-          },{
+          } ,*/{
               field: 'size',
               title: '大小',
               width: 100,

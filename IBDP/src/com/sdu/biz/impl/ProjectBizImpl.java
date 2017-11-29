@@ -5,6 +5,7 @@ import java.util.List;
 import com.sdu.dao.impl.DataFileDaoImpl;
 import com.sdu.dao.impl.ModelDaoImpl;
 import com.sdu.dao.impl.ProjectDaoImpl;
+import com.sdu.entity.Admin;
 import com.sdu.entity.DataFile;
 import com.sdu.entity.Project;
 
@@ -29,7 +30,7 @@ public class ProjectBizImpl {
 		//System.out.println("设置model成功");
 		
 		projectDao.saveProject(project);
-		System.out.println("保存project成功!");
+//		System.out.println("保存project成功!");
 		
 		DataFile dataFile = dataFileDao.getDataFileById(d_id);
 		dataFile.setD_project(project);
@@ -42,8 +43,20 @@ public class ProjectBizImpl {
 	public Project getById(int projectid){
 		return projectDao.getProjectById(projectid);
 	}
+	public List<Object> getProjectsByAdminId(int adminId,int offset,int pageSize){
+		return projectDao.getProjectsByAdminId(adminId,offset,pageSize);
+	}
 	public List<Project> getProjectTree(int adminId){
 	//	System.out.println("进入ProjectTre");
 		return projectDao.getProjectByAdminId(adminId);
+	}
+	public int getProjectCountByAdminId(int adminId) {
+		return projectDao.getProjectCountByAdminId(adminId);
+	}
+	public boolean delProject(int id) {
+		return projectDao.delProject(id);
+	}
+	public boolean delProjects(String ids) {
+		return projectDao.delProjects(ids);
 	}
 }

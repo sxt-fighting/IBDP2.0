@@ -71,4 +71,73 @@ public class ProjectDaoImpl {
 	//	System.out.println("结束projectDao");
 		return list;
 	}
+
+
+	public List<Object> getProjectsByAdminId(int adminId, int offset,
+			int pageSize) {
+		List<Object> list = null;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select project.p_id,project.p_name,project.p_describe,project.p_createTime,admin.name from project,admin where project.admin_proid = admin.ID and project.admin_proid = '"+adminId+"' limit "+offset+","+pageSize+";";
+//			System.out.println("sql:"+sql);
+			list = session.createSQLQuery(sql).list();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+
+	public int getProjectCountByAdminId(int adminId) {
+		int count = 0;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select count(*) from project where project.admin_proid = '"+adminId+"';";
+			count = ((Number)session.createSQLQuery(sql).uniqueResult()).intValue();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return count;
+	}
+
+
+	public boolean delProject(int id) {
+		boolean result = false;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			Project project = (Project) session.get(Project.class, id);
+			session.delete(project);
+			tx.commit();
+			result = true;
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+
+	public boolean delProjects(String ids) {
+		String  id[] = ids.split(",");
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			for(int i = 0;i<id.length;i++){
+				Project project = (Project) session.get(Project.class,Integer.parseInt(id[i]));
+				session.delete(project);
+			}
+			tx.commit();
+		}catch(Exception e){
+			tx.commit();
+			e.printStackTrace();
+		}
+		return true;
+	}
 }

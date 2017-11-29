@@ -22,8 +22,9 @@
         <many-to-one name="p_admin" class="com.sdu.entity.Admin" fetch="select">
            <column name="admin_proid" not-null="true" />
         </many-to-one>
-        <set name="p_datefile" inverse="true">
-            <key> <!-- 外键 -->
+        <!-- cascade级联删除 -->
+        <set name="p_datefile" inverse="true" cascade="all">
+            <key> 
                 <column name="pro_dataid" not-null="true" />
             </key>
             <one-to-many class="com.sdu.entity.DataFile" />

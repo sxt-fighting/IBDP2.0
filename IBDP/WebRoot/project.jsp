@@ -93,7 +93,7 @@
 											 		<button id="new" class="btn btn-success" >
 											            <i class="glyphicon glyphicon-plus"></i> 新建项目
 											        </button>
-											        <button id="remove" class="btn btn-danger" >
+											        <button id="remove" class="btn btn-danger" onclick="delProjecs()">
 											            <i class="glyphicon glyphicon-trash"></i> 批量删除
 											        </button>
 										     </div>
@@ -190,7 +190,7 @@
 		<script src="assets/js/ace-elements.min.js"></script>
 		<script src="assets/js/ace.min.js"></script>
 		<script>
-		var data = [
+		/*  var data = [
             {
                 
                 "name": "水质分析项目",
@@ -270,16 +270,53 @@
                 "createtime":"2017-10-31 15:00:56",
                 "creator": "Administrator"
             }
-        ];
+        ];  */
     var $table = $('#project-table'),
         $remove = $('#remove'),
         $newProject = $('#new'),
         selections = [];
+       
+        
+   function delProjecs(){
+        var ids = getIdSelections();
+        alert("ids=="+ids);
+        $.post("Project_delProjects.action",{
+        	ids:JSON.stringify(ids)
+        },function(data,status){
+        	console.log("删除成功!");
+        	$table.bootstrapTable('refresh');
+        });
+       
+    }
+    function del(id){
+    	alert("id:"+id);
+    	$.post("Project_delProject.action",{
+    		id:id
+    	},function(data,status){
+    		console.log("删除成功!");
+    		$table.bootstrapTable('refresh');
+    	});
+    	
+    }
     function initTable() {
         $table.bootstrapTable({
-           
+           	url:"<%=request.getContextPath()%>/Project_showAllProjects.action",
+            pagination: true, // 在表格底部显示分页组件，默认false
+            //             pageList: [10, 20], // 设置页面可以显示的数据条数
+          	pageList: [10, 20], // 设置页面可以显示的数据条数
+            pageSize: 10, // 页面数据条数
+            pageNumber: 1, // 首页页码
+            sidePagination: 'server', // 设置为服务器端分页
    			height: 500,
-    
+   			queryParams: function (params) { // 请求服务器数据时发送的参数，可以在这里添加额外的查询参数，返回false则终止请求
+
+                return {
+                    pageSize: params.limit, // 每页要显示的数据条数
+                    offset: params.offset, // 每页显示数据的开始行号
+                  /*   sort: params.sort, // 要排序的字段 */
+                  /*   sortOrder: params.order, // 排序规则 */
+   					}
+   			},
             columns: [
                     {
               checkbox: true, // 显示一个勾选框
@@ -313,11 +350,17 @@
               width: 160, // 定义列的宽度，单位为像素px
               formatter: function (value, row, index) {
                    return '<button class="btn btn-xs btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="收藏" onclick="like(\'' + row.stdId + '\')"><i class="ace-icon fa fa-heart-o bigger-120"></i></button>'
-              				 +'<button class="btn btn-xs btn-danger btn-sm" onclick="del(\'' + row.stdId + '\')"><i class="ace-icon fa fa-trash-o bigger-120"></i></button>';
+              				 +'<button class="btn btn-xs btn-danger btn-sm" onclick="del(\'' + row.id + '\')"><i class="ace-icon fa fa-trash-o bigger-120"></i></button>';
               }
           }
             ],
-            data:data
+            responseHandler:function(res) {
+          	  console.log("到了前台");
+          	  console.log('dataJson'+JSON.stringify(res.dataJson));
+          	 
+                 return JSON.parse(res.dataJson) ; //数据
+                  
+            }
         });
        
         $remove.click(function () {
@@ -337,7 +380,7 @@
     }
     function getIdSelections() {
         return $.map($table.bootstrapTable('getSelections'), function (row) {
-            return row.name
+            return row.id
         });
     }
     
