@@ -37,23 +37,16 @@ public class ProjectDaoImpl {
 	
 		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
-	
 		//hql没有分号结尾
-		List<Project> list = null;
+		Project project = null;
 		try {
-			String hql = "from Project p where p.p_id = '"+projectid+"'";
-			System.out.println("hql:"+hql);
-			Query query = session.createQuery(hql);
-			System.out.println("hql:"+hql);
-			list = query.list();
+			project = (Project) session.get(Project.class,projectid);
 			tx.commit();
-			System.out.println("查询成功");
 		} catch (HibernateException e) {
 			tx.rollback();
 			e.printStackTrace();
-			return null;
 		}
-		return list.get(0);
+		return project;
 	}
 	public List<Project> getProjectByAdminId(int adminId){
 		//System.out.println("进入projectDao");
@@ -113,6 +106,7 @@ public class ProjectDaoImpl {
 		Transaction tx = session.beginTransaction();
 		try{
 			Project project = (Project) session.get(Project.class, id);
+/*			System.out.println("project.name:"+project.getP_name());*/
 			session.delete(project);
 			tx.commit();
 			result = true;
@@ -124,20 +118,41 @@ public class ProjectDaoImpl {
 	}
 
 
-	public boolean delProjects(String ids) {
-		String  id[] = ids.split(",");
+	public boolean delProjects(int[] ids) {
 		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
 		try{
-			for(int i = 0;i<id.length;i++){
-				Project project = (Project) session.get(Project.class,Integer.parseInt(id[i]));
-				session.delete(project);
+			for(int i = 0;i<ids.length;i++){
+				Project project = (Project) session.get(Project.class,ids[i]);
+//				System.out.println("...........");
+				if(project != null){
+//					System.out.println("i被删除"+ids[i]);
+					session.delete(project);
+				}
 			}
 			tx.commit();
 		}catch(Exception e){
-			tx.commit();
+			tx.rollback();
 			e.printStackTrace();
 		}
 		return true;
+	}
+	public List<Integer> getModelIdsByProjectIds(int[] ids){
+		List<Integer> Ids = null;
+		Session session  = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select project.p_modelid from project where project.p_id in(";
+			for(int i = 0;i<ids.length-1;i++){
+				sql = sql +ids[i]+",";
+			}
+			sql = sql+ids[ids.length-1]+");";
+			Ids = session.createSQLQuery(sql).list();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return Ids;
 	}
 }

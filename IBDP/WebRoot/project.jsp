@@ -285,7 +285,7 @@
         },function(data,status){
         	console.log("删除成功!");
         	$table.bootstrapTable('refresh');
-        });
+        }); 
        
     }
     function del(id){

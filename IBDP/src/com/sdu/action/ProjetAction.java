@@ -213,15 +213,20 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 	}
 
 	public String delProject(){
-		System.out.println("id"+id);
+//		System.out.println("id"+id);
 		projectBiz.delProject(id);
 		map = new HashMap<String,Object>();
 		map.put("message", "success");
 		return "delSuccess";
 	}
 	public String delProjects(){
-		System.out.println("ids"+ids);
-		projectBiz.delProjects(ids.substring(ids.indexOf("[")+1,ids.indexOf("]")));
+//		System.out.println("ids"+ids);
+		String temp[] = ids.substring(ids.indexOf("[")+1,ids.indexOf("]")).split(",");
+		int p_id[] = new int[temp.length];
+		for(int i = 0;i<temp.length;i++){
+			p_id[i] = Integer.parseInt(temp[i]);
+		}
+		projectBiz.delProjects(p_id);
 		map = new HashMap<String,Object>();
 		map.put("message","success");
 		return "delSuccess";

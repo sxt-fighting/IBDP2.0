@@ -7,6 +7,7 @@ import com.sdu.dao.impl.ModelDaoImpl;
 import com.sdu.dao.impl.ProjectDaoImpl;
 import com.sdu.entity.Admin;
 import com.sdu.entity.DataFile;
+import com.sdu.entity.Model;
 import com.sdu.entity.Project;
 
 public class ProjectBizImpl {
@@ -25,13 +26,14 @@ public class ProjectBizImpl {
 	}
 	public int saveProject(Project project,int m_id,int d_id){
 		//System.out.println("进biz层");
-		
-		 project.setP_model(modelDao.getModelById(m_id));
+		Model model = modelDao.getModelById(m_id);
+		model.setM_used(model.getM_used()+1);
+		modelDao.createModel(model);
+		project.setP_model(model);
+		// project.setP_model(modelDao.getModelById(m_id));
 		//System.out.println("设置model成功");
-		
 		projectDao.saveProject(project);
 //		System.out.println("保存project成功!");
-		
 		DataFile dataFile = dataFileDao.getDataFileById(d_id);
 		dataFile.setD_project(project);
 		//System.out.println("设置project成功");
@@ -54,9 +56,18 @@ public class ProjectBizImpl {
 		return projectDao.getProjectCountByAdminId(adminId);
 	}
 	public boolean delProject(int id) {
-		return projectDao.delProject(id);
+		Project project = projectDao.getProjectById(id);
+		System.out.println("modelID"+project.getP_model().getM_id());
+		if(!modelDao.removeNONameModelById(project.getP_model().getM_id())){
+			projectDao.delProject(id);
+		}
+		return true;
 	}
-	public boolean delProjects(String ids) {
-		return projectDao.delProjects(ids);
+	public boolean delProjects(int[] ids) {
+		List<Integer> list = projectDao.getModelIdsByProjectIds(ids);
+//		System.out.println("list:"+list);
+		modelDao.removeNoNameModelsByIds(list);
+		projectDao.delProjects(ids);
+		return true;
 	}
 }

@@ -57,5 +57,31 @@ public class ModelBizImpl {
 			    }  */
 		return modelDaoImpl.getModelsBySearchString(searchString,u_id);
 	}
+	//新加的
 	
+	//--------------查看详情按钮（模态框）	
+		public List<Object> view(int m_id){
+			return modelDaoImpl.viewModel(m_id);
+		}
+
+	//--------------喜欢按钮
+		public void like(int m_id){
+			 modelDaoImpl.likeModel(m_id);
+		}
+		
+//-------------通过用户权限显示全部模型——查找用户id
+	public List<Object> getAllModelsByUseId(int userid,int offset,int pageSize){
+		return modelDaoImpl.getAllModelsByUserId(userid,offset,pageSize);
+	}
+	//单行删除
+	public boolean delete(int m_id){
+		return modelDaoImpl.deleteById(m_id);
+	}
+	//多行删除
+	public boolean deletemodels(int[] mids){
+		return modelDaoImpl.deleteByIds(mids);
+	}
+	public int getCountModelsByUserId(int adminId) {
+		return	modelDaoImpl.getCountModelsByUserId(adminId);
+	}
 }
