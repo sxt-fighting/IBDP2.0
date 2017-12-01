@@ -63,6 +63,28 @@
     var username = '<%=userobj.getName()%>';
     var userid='<%=userobj.getId()%>';
 </script>
+<style type="text/css">
+/* .btn-circle {
+    
+    width: 22px;
+    height: 22px;
+    text-align: center;
+    padding: 0px 13px 13px 0px;
+    border-radius: 11px;
+} */
+.popover {
+  width: 600px;
+  height: 300px;
+  /* overflow: scroll;
+  overflow-x:hidden; */
+}
+.btn-a{
+  width:100%;
+  margin:1px
+}
+
+
+</style>
 </head>
   <body ng-app="newProject" class="no-skin">
 		 <%@include file="template.jsp" %>
@@ -231,22 +253,50 @@
 													<h4 class="panel-title">
 														<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$index}}">
 															<i class="ace-icon fa fa-angle-right bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-															&nbsp;算法{{$index+1}}：{{a.name}}
+															&nbsp;算法{{$index+1}}：{{a.name}}&nbsp;&nbsp;&nbsp;<button class="btn btn-default btn-minier   btn-danger" ng-click="removeAlgorithm($index)">移除</button>
 														</a>
+														  
 													</h4>
 												</div>
 
 												<div class="panel-collapse collapse" id="collapse{{$index}}">
-													<div class="panel-body" ng-repeat="p in a.param">
-														<div class="form-group">
-																	<label class="col-sm-3 control-label no-padding-right" for="Statistics_column">{{p.name}} </label>
+													<div class="panel-body">
+													<div style="text-align:right">
+													<a my-popover herf="#" data-html="true" data-toggle="tooltip"  guide="{{a.guide}}"><i class="ace-icon fa fa-question-circle blue bigger-150"></i></a>
+													</div>
+														<div  ng-repeat="p in a.param">
+														<div class="form-group" ng-if="p.type=='String'">
+																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;" >{{p.name}} </label>
 							
 																	<div class="col-sm-9">
 																		<input type="text" ng-model="p.value" ng-change="changeState()" class="col-xs-10 col-sm-5">
 																	</div>
 														</div>
-														
-													
+														<div class="form-group" ng-if="p.type=='select'">
+																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
+							
+																	<div class="col-sm-9">
+																		<select 
+																	    ng-options="v as v for v in p.options"
+																	    ng-model="p.value">
+																		</select>
+																	</div>
+														</div>
+														<div class="form-group" ng-if="p.type=='checkbox'">
+																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
+							
+																	<div class="col-sm-9" >
+																	 <div class="row"  style="margin: 10px 10px">
+													                	<div class="checkbox col-xs-3" ng-repeat="v in p.options">
+																			<label>
+																				<input type="checkbox" class="ace"  ng-checked="isSelected(v,p.value)" ng-click="updateSelection($event,v,p.value)">
+																				<span class="lbl">{{v}}</span>
+																			</label>
+																		</div>
+													                </div>
+																	</div>
+														</div>
+														</div>
 													</div>
 												</div>
 											</div>
@@ -348,16 +398,25 @@
 								            </div>
 								        </div>
 								    </div>
-								     <div class="modal fade" id="showAlgorithmList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+								     <div class="modal fade" style="width:100%" id="showAlgorithmList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 								         aria-hidden="true">
-								        <div class="modal-dialog" style="width: 50%">
+								        <div class="modal-dialog" style="width: 70%">
 								            <div class="modal-content">
 								                <div style="background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
 								                    <p style="padding: 5px;text-align:center">请选择要添加的算法</p>
 								                </div>
+								                <h3 class="header smaller lighter green">数据清理算法</h3>
 								                <div class="row"  style="margin: 10px 10px">
-								                	<div class="col-xs-3" style="text-align:center" ng-repeat="a in algorithmList ">
-								                	<button type="button" class="btn btn-sm btn-info" ng-click="addAlgorithm(a)" data-dismiss="modal">{{a.name}}</button>
+								                	<div class="col-xs-3" style="text-align:center" ng-repeat="a in algorithmList[0] ">
+								                	<button type="button " class="btn btn-sm btn-info btn-a" ng-click="addAlgorithm(a)" data-dismiss="modal">{{a.name}}</button>
+								                	
+								                	</div>
+								                   
+								                </div>
+								                <h3 class="header smaller lighter purple">数据分析算法</h3>
+								                <div class="row"  style="margin: 10px 10px">
+								                	<div class="col-xs-3" style="text-align:center" ng-repeat="a in algorithmList[1] ">
+								                	<button type="button " class="btn btn-sm btn-info btn-a" ng-click="addAlgorithm(a)" data-dismiss="modal">{{a.name}}</button>
 								                	
 								                	</div>
 								                   
@@ -492,6 +551,20 @@
 		</script>
 		<script type="text/javascript">
 			var project_modelapp=angular.module('newProject', ['ngRoute']);
+			project_modelapp.directive('myPopover', function () {
+		        return {
+		            restrict: 'AE',
+		            link: function (scope, ele, attrs) {
+		                $(ele).data('title','算法指导：');
+		                $(ele).data('content', "<div id ='popDiv'></div>");
+		                $(ele).popover({ html: true, trigger: 'hover focus ',placement:'left'});
+		                $(ele).on('shown.bs.popover',function() {
+		                    var popDiv = $('#popDiv');
+		                    popDiv.html(attrs.guide);
+		                });
+		            }
+		    };
+		    });
 			project_modelapp.controller('project_modelCtrl', ['$http','$scope','$location',function($http,$scope,$location) {
 			$scope.searchString='';
 			$scope.project={
@@ -563,6 +636,11 @@
 		        $scope.saveModelInfo=function(){
 		        	$scope.isChanged=false;
 		        };
+		        $scope.removeAlgorithm=function($index){
+		        	$scope.algorithmValList.splice($index,1);
+		        	$scope.changeState();
+		        	//console.log("移除算法index="+$index);
+		        };
 		        
 		        $scope.importModel=function () {
 		             if($scope.selectIndex!=-1){
@@ -585,6 +663,7 @@
 		        $scope.addAlgorithm=function(algorithm){
 		        	$scope.algorithmValList.push(angular.copy(algorithm));
 		        	$scope.changeState();
+		        	//$('[data-toggle="tooltip"]').tooltip();
 		        };
 		        
 		        $scope.delModel=function(modelID,$index) {
@@ -652,6 +731,28 @@
 	                       }); 
                 
 		        };
+		         var updateSelected = function(action,v,value){
+			         if(action == 'add' && value.indexOf(v) == -1){
+		         	 //console.log('添加'+v);
+		             value.push(v);
+			         }
+			         if(action == 'remove' && value.indexOf(v)!=-1){
+			         //console.log('移除'+v);
+		             var idx = value.indexOf(v);
+		             value.splice(idx,1);
+			         }
+			     };
+			 
+			     $scope.updateSelection = function($event,v,value){
+			         var checkbox = $event.target;
+			         var action = (checkbox.checked?'add':'remove');
+			         updateSelected(action,v,value);
+			         $scope.changeState();
+			     };
+			 
+			     $scope.isSelected = function(v,value){
+			         return value.indexOf()>=0;
+			     };
 
     }]);
 		</script>

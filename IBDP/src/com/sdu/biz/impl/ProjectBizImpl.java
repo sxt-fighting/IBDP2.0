@@ -36,7 +36,9 @@ public class ProjectBizImpl {
 //		System.out.println("保存project成功!");
 		DataFile dataFile = dataFileDao.getDataFileById(d_id);
 		dataFile.setD_project(project);
-		//System.out.println("设置project成功");
+		//添加hdfs路径
+		String hdfsPathString="hdfs://211.87.227.9:8020/user/acceptFile/"+project.getP_id()+ "/"+dataFile.getD_type()+"/"+dataFile.getD_name();
+		dataFile.setD_HDFSpath(hdfsPathString);
 		dataFileDao.saveDateFile(dataFile);
 		//System.out.println("向datfile中添加project成功");
 		
