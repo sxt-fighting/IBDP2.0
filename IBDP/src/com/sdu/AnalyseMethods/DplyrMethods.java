@@ -21,7 +21,7 @@ public class DplyrMethods extends BasicMethod{
 	//collect
 	public DataFile beiginAnalyse(int index, DataFile dataFile, Admin user, Project project, JSONObject projectJSON, JSONArray algorithmJSON)
 	{
-		System.out.println("bayes method");
+		System.out.println("Dplyr Packages");
 		//获取collect所需参数
 		String filepath=dataFile.getD_localpath();
 		String dataFileName=dataFile.getD_name();	
@@ -30,16 +30,15 @@ public class DplyrMethods extends BasicMethod{
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		String variable=null;
 		
-		
-		
-    	System.out.println("链接Rserve，开始分析任务");
     	DataFile resultFile=new DataFile();//要返回的文件
+    	RConnection c=null;
 		try {
-		RConnection c= new RConnection();
+		 c= new RConnection();
+		 System.out.println("Rserve链接成功，开始分析任务");
 		String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
-    	System.out.println(savePath);
-    	c.eval("setwd(\""+savePath+"\")");
-    	c.eval("library(openxlsx)"); 
+		System.out.println("setwd(\""+savePath+"\")");
+		  c.eval("setwd(\""+savePath+"\")");
+		  c.eval("library(openxlsx)"); 
     	String aa = dataFileName.substring(dataFileName.lastIndexOf("."));
     	
     	if(aa.equals(".xlsx"))
@@ -63,11 +62,11 @@ public class DplyrMethods extends BasicMethod{
  	//c.eval("sc<-spark_connect(master = \"local\" )"); 
  	System.out.println("spark连接成功");
  	//开始考虑具体的数据清理算法
- 	if(method_name.equals("collect"))
+ 	if(method_name.equals("select"))
  	{
  		variable=params.getJSONObject(0).getString("value");
  		variable=variable.replaceAll("，", ",");
- 	 	c.eval("datafile<-collect(datafile,"+variable+")");
+ 	 	c.eval("datafile<-select(datafile,c("+variable+"))");
  	}
 	if(method_name.equals("filter"))
  	{
@@ -80,8 +79,10 @@ public class DplyrMethods extends BasicMethod{
  		variable=params.getJSONObject(0).getString("value");
  		variable=variable.replaceAll("，", ",");
  		String returnVariable =params.getJSONObject(1).getString("value");
- 		
- 	 	c.eval("datafile<-collect(datafile,"+variable+")");
+ 		if(returnVariable.equals(variable))
+ 	 	   c.eval("datafile<-distinct(datafile,"+variable+")");
+ 		else if(returnVariable.equals("all"))
+ 			c.eval("datafile<-distinct(datafile,"+variable+", .keep_all = TRUE)");
  	}
 	if(method_name.equals("sample_n"))
  	{
@@ -92,28 +93,33 @@ public class DplyrMethods extends BasicMethod{
 	if(method_name.equals("na"))
  	{
  		variable=params.getJSONObject(0).getString("value");
- 		 String naMethod=params.getJSONObject(1).getString("value");
+ 		// String naMethod=params.getJSONObject(1).getString("value");
  		 if(variable.equals("all"))
  		 {
  			c.eval("datafile<-na.omit(datafile)");
  		 }
  		 else
- 	 	c.eval("datafile<-datafile[!is.na(datafile$"+variable+"),]");
+ 	 	c.eval("datafile<-datafile[!is.na(datafile[,"+variable+"],]");
  	}
 		
  	
- 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_bayes";
+ 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_"+method_name;
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
  	if(index==algorithmJSON.length()-1)
 	{
+ 		if(aa.equals("txt"))
+ 		{
  		resultFileName=resultFileName+".txt";
  	    c.eval("sink(\""+resultFileName+"\")");
-		c.eval("print(as.data.frame(datfile))");
+		c.eval("print(as.data.frame(datafile))");
 		c.eval("sink()");
+ 		}else {
+			c.eval("write.csv(datafile,\""+resultFileName+".csv)\"");
+		}
 		//生成结果文件并进行保存修改数据库
-		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName);
+		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"ResultFile");
 		 
 	    resultFile.setD_type("ResultFile");
 		DataFileHibernate.saveDataFile(resultFile);
@@ -126,16 +132,19 @@ public class DplyrMethods extends BasicMethod{
  	{
  		resultFileName=resultFileName+".Rdata";
  		c.eval("save(datafile,file=\""+resultFileName+"\" )");
- 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName+".png");
+ 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"IntermediateFile");
 		resultFile.setD_type("IntermediateFile");
  	}
  	//c.eval("save(bayes_predict,"+resultFileName+")");
-		c.close();
-		System.out.println("Rserve连接关闭");
-		
+	
+ //	c.shutdown();
 	} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+	}finally{
+		c.close();
+		
+		System.out.println("Rserve连接关闭");
 	}
 		return resultFile;
 	}

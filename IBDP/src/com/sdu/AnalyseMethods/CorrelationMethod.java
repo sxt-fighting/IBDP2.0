@@ -37,8 +37,9 @@ public class CorrelationMethod extends BasicMethod{
 		DataFile resultFile=null;
 		 
 		 //开始执行分析相关性
+		RConnection c=null;
 		 try {
-			RConnection c = new RConnection();  
+			 c = new RConnection();  
 			  REXP x = c.eval("R.version.string");
 			  System.out.println(x.asString());  
 			  String cor_method="pearson";
@@ -81,7 +82,7 @@ public class CorrelationMethod extends BasicMethod{
 			  c.eval("print(GGally::ggpairs(datafile[,c("+chosecolumn+")]))");     
 			  c.eval("dev.off()");
 			  //保存图像
-			  resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName+".png", savePath+"/"+resultFileName+".png");
+			  resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName+".png", savePath+"/"+resultFileName+".png","ResultFile");
 			  resultFile.setD_type("ResultFile");
 			  DataFileHibernate.saveDataFile(resultFile);
 			  HDFSTools.LoadSingleFileToHDFS(resultFile);
@@ -91,9 +92,8 @@ public class CorrelationMethod extends BasicMethod{
 			 	    c.eval("sink(\""+resultFileName+"\")");
 					c.eval("print(res)");
 					c.eval("sink()");
-					resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName);
+					resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"ResultFile");
 						 
-				    resultFile.setD_type("ResultFile");
 					DataFileHibernate.saveDataFile(resultFile);
 					HDFSTools.LoadSingleFileToHDFS(resultFile);
 						
@@ -105,17 +105,18 @@ public class CorrelationMethod extends BasicMethod{
 			 	{
 			 		resultFileName=resultFileName+".Rdata";
 			 		c.eval("save(res,\""+resultFileName+"\" )");
-			 		 resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName+".png");
+			 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"IntermediateFile");
 					 
-					resultFile.setD_type("IntermediateFile");
 			 	}
 			 	
-					c.close();
-					System.out.println("Rserve连接关闭");
+				
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}finally{
+			c.close();
+			System.out.println("Rserve连接关闭");
+		}
 		return resultFile;
 	}
 	

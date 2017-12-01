@@ -12,7 +12,7 @@ import com.sdu.entity.Project;
 
 public class FormResultFileAndAdvice {
     
-	public static DataFile formFile(Admin user, Project project,String filename,String localPath)
+	public static DataFile formFile(Admin user, Project project,String filename,String localPath,String type)
 	{
 		DataFile resultFile=new DataFile();
 		resultFile.setD_admin(user);
@@ -23,7 +23,10 @@ public class FormResultFileAndAdvice {
 		resultFile.setD_name(filename);
 		resultFile.setD_suffix("txt");
 		resultFile.setD_hasheader("FALSE");
+		resultFile.setD_type(type);
 		resultFile.setD_localpath(localPath);
+		String HDFSFilePath="hdfs://211.87.227.9:8020/user/acceptFile/"+project.getP_id()+ "/"+type+"/"+filename;
+		resultFile.setD_HDFSpath(HDFSFilePath);
 		File f= new File(localPath);  
 		if (f.exists() && f.isFile())  
 		        resultFile.setD_size(f.length()/1024.0+"KB");

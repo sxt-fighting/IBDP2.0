@@ -18,7 +18,7 @@ import com.sdu.entity.Advice;
 import com.sdu.entity.DataFile;
 import com.sdu.entity.Project;
 
-public class bayesAction extends BasicMethod{
+public class BayesMethod extends BasicMethod{
 
 	public DataFile beiginAnalyse(int index, DataFile dataFile, Admin user, Project project, JSONObject projectJSON, JSONArray algorithmJSON)
 	{
@@ -34,8 +34,9 @@ public class bayesAction extends BasicMethod{
 			
 	    	System.out.println("链接Rserve，开始分析任务");
 	    	DataFile resultFile=new DataFile();//要返回的文件
+	    	RConnection c=null;
 			try {
-			RConnection c= new RConnection();
+			c= new RConnection();
 			
 	    	System.out.println("Rserve连接成功");
 	    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+formula);
@@ -91,7 +92,7 @@ public class bayesAction extends BasicMethod{
 				c.eval("print(as.data.frame(bayes_predict))");
 				c.eval("sink()");
 				//生成结果文件并进行保存修改数据库
-				resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName);
+				resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"ResultFile");
 				 
 			    resultFile.setD_type("ResultFile");
 				DataFileHibernate.saveDataFile(resultFile);
@@ -104,17 +105,19 @@ public class bayesAction extends BasicMethod{
 		 	{
 		 		resultFileName=resultFileName+".Rdata";
 	     		c.eval("save(bayes_predict,\""+resultFileName+"\" )");
-	     	    resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName+".png");
+	     	    resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"IntermediateFile");
 				resultFile.setD_type("IntermediateFile");
 		 	}
 		 	//c.eval("save(bayes_predict,"+resultFileName+")");
-				c.close();
-				System.out.println("Rserve连接关闭");
 				
 			
 		} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+		}finally{
+			c.close();
+			System.out.println("Rserve连接关闭");
+			
 		}
 			return resultFile;
 	}

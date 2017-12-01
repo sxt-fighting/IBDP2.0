@@ -1,26 +1,20 @@
 package com.sdu.AnalyseMethods;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.rosuda.REngine.Rserve.RConnection;
 
-import com.sdu.ToolsUse.AdviceHibernate;
 import com.sdu.ToolsUse.DataFileHibernate;
 import com.sdu.ToolsUse.HDFSTools;
 import com.sdu.entity.Admin;
-import com.sdu.entity.Advice;
 import com.sdu.entity.DataFile;
 import com.sdu.entity.Project;
+import com.sun.xml.bind.v2.runtime.output.Pcdata;
 
-public class RegressionMethod extends BasicMethod{
-
+public class PCAMethod extends BasicMethod{
 	public DataFile beiginAnalyse(int index, DataFile dataFile, Admin user, Project project, JSONObject projectJSON, JSONArray algorithmJSON)
 	{
-		System.out.println("linear regression");
+		System.out.println("主成分分析");
 			
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		 String based=algorithm_obj.getString("based");
@@ -41,7 +35,7 @@ public class RegressionMethod extends BasicMethod{
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String formula=params.getJSONObject(0).getString("value");
+		String PCAcolumn=params.getJSONObject(0).getString("value");
 		
 		
     	System.out.println("链接Rserve，开始分析任务");
@@ -51,7 +45,7 @@ public class RegressionMethod extends BasicMethod{
 		c= new RConnection();
 		
     	System.out.println("Rserve连接成功");
-    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+formula);
+    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+PCAcolumn);
     	//String  savePath="/home/jc/IBDP2/"+user.getId()+"/DataFiles";
     	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
     	System.out.println(savePath);
@@ -86,63 +80,70 @@ public class RegressionMethod extends BasicMethod{
  	//master = "yarn-client", version="1.6.0", spark_home = '/opt/cloudera/parcels/CDH/lib/spark/'
 
  	
- 	c.eval("fit <- lm("+formula+",datafile)");
-	
- 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_bayes";
+ 	c.eval("datafile<-prcomp(datafile[,c("+PCAcolumn+")],scale=TRUE)");
+
+ 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_PCA";
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
  	 	if(index==algorithmJSON.length()-1)
 		{
-	 		resultFileName=resultFileName+".txt";
-	 	    c.eval("sink(\""+resultFileName+"\")");
-			c.eval("print(summary(linear_model))");
+	 	    c.eval("sink(\""+resultFileName+".txt\")");
+			c.eval("print(summary(datafile))");
 			c.eval("sink()");
+			c.eval("png(file=\""+resultFileName+".png\", bg=\"transparent\")");
+			c.eval("print(plot(datafile,type=\"lines\"))");     
+			c.eval("dev.off()");
 			//生成结果文件并进行保存修改数据库
-			resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"ResultFile");
-			 
+			resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName+".txt","ResultFile");
+			
 			DataFileHibernate.saveDataFile(resultFile);
 			HDFSTools.LoadSingleFileToHDFS(resultFile);
-				
+			
+			resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName+".png","ResultFile");
+			
+			DataFileHibernate.saveDataFile(resultFile);
+			HDFSTools.LoadSingleFileToHDFS(resultFile);
 			//通知分析完成
 			FormResultFileAndAdvice.FormAdvice(user, project);
 		}
 	 	else
 	 	{
 	 		resultFileName=resultFileName+".Rdata";
-	 		c.eval("save(linear_model,\""+resultFileName+"\" )");
+	 		c.eval("save(datafile,\""+resultFileName+"\" )");
 	 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"IntermediateFile");
-		
+			resultFile.setD_type("IntermediateFile");
 	 	}
 	 	//c.eval("save(bayes_predict,"+resultFileName+")");
+		
+		
 	} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 	}finally{
 		c.close();
 		System.out.println("Rserve连接关闭");
+		
 	}
 		return resultFile;
 	}
 	public DataFile BasedOnSpark(int index, DataFile dataFile, Admin user, Project project, JSONObject projectJSON, JSONArray algorithmJSON)
 	{
-		
 		String filepath=dataFile.getD_localpath();
 		String dataFileName=dataFile.getD_name();	
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String formula=params.getJSONObject(0).getString("value");
-		
+		String PCAcolumn=params.getJSONObject(0).getString("value");		
 		
     	System.out.println("链接Rserve，开始分析任务");
     	DataFile resultFile=new DataFile();//要返回的文件
     	RConnection c=null;
-    	try {
+		try {
 		c= new RConnection();
 		
     	System.out.println("Rserve连接成功");
-    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+formula);
+    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+PCAcolumn);
     	//String  savePath="/home/jc/IBDP2/"+user.getId()+"/DataFiles";
     	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
     	System.out.println(savePath);
@@ -179,9 +180,9 @@ public class RegressionMethod extends BasicMethod{
  	c.eval("sc<-spark_connect(master = \"local\" )"); 
  	System.out.println("spark连接成功");
  	c.eval("data_tbl <- copy_to(sc, datafile, \"datafile\", overwrite = TRUE)");
- 	c.eval("linear_model <- data_tbl %>% ml_linear_regression("+formula+")");
+ 	c.eval("datafile <- data_tbl %>% select("+PCAcolumn+") %>% ml_pca()");
 	
- 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_bayes";
+ 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_PCA";
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
@@ -189,7 +190,7 @@ public class RegressionMethod extends BasicMethod{
 	{
  		resultFileName=resultFileName+".txt";
  	    c.eval("sink(\""+resultFileName+"\")");
-		c.eval("print(summary(linear_model))");
+		c.eval("print(datafile)");
 		c.eval("sink()");
 		//生成结果文件并进行保存修改数据库
 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"ResultFile");
@@ -203,12 +204,11 @@ public class RegressionMethod extends BasicMethod{
  	else
  	{
  		resultFileName=resultFileName+".Rdata";
- 		c.eval("save(linear_model,\""+resultFileName+"\" )");
+ 		c.eval("save(datafile,\""+resultFileName+"\" )");
  		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"IntermediateFile");
 		resultFile.setD_type("IntermediateFile");
  	}
  	//c.eval("save(bayes_predict,"+resultFileName+")");
-		
 		
 	} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -216,7 +216,6 @@ public class RegressionMethod extends BasicMethod{
 	}finally{
 		c.close();
 		System.out.println("Rserve连接关闭");
-		
 	}
 		return resultFile;
 	}

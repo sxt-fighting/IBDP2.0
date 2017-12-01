@@ -146,7 +146,7 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 						//通过modelid 得到algorithmString， 然后把它解析成JSON ARRAY，
 						//取出第一个algorithm的actionname， 将它转发给对应antion去执行分析任务，转发时传递3个参数，第一个datafilepath，第二个algorithmString，第三个 index（初始为0，每执行一个action，就增一）
 						
-						System.out.println("modelid"+obj.getInt("modelid"));
+						//System.out.println("modelid"+obj.getInt("modelid"));
 						Model model=modelBizImpl.getModelById(obj.getInt("modelid"));
 						System.out.println("model+"+model.getAlgorithmString());
 						String algorithms = model.getAlgorithmString();

@@ -5,13 +5,13 @@ var algorithmJSONList=[
     				method:'na',
     				introduction:'数据缺失值处理',
     				param:[
-    					{name:'依据变量',field:'NaVariable',type:'String'}    					
+    					{name:'依据列',field:'NaVariable',type:'String'}    					
     				]
     			},
     			{
-    				name:'变量选择（collect）',
+    				name:'变量选择（select）',
     				actionName:'DplyrMethods',
-    				method:'collect',
+    				method:'select',
     				introduction:'变量选择是数据处理的一种方法',
     				param:[
     					
@@ -52,18 +52,10 @@ var algorithmJSONList=[
     					{name:'是否有放回抽样',field:'repalce',type:'String'}
     				]
     			},
-    			{
-    				name:'BP算法',
-    				actionName:'BPAction',
-    				introduction:'R语言中的关于神经网络的一种算法',
-    				param:[
-    					
-    					{name:'公式',field:'formula',type:'String'}
-    				]
-    			},
+    			
     			{
     				name:'贝叶斯算法',
-    				actionName:'bayesAction',
+    				actionName:'BayesMethod',
     				introduction:'R语言中的关于贝叶斯的一种算法',
     				param:[
     					{name:'公式',field:'formula',type:'String'}
@@ -71,6 +63,7 @@ var algorithmJSONList=[
     			},
     			{
     				name:'相关性计算',
+    				based:'R',
     				actionName:'CorrelationMethod',
     				introduction:'用于计算相关性的算法',
     				param:[
@@ -81,6 +74,7 @@ var algorithmJSONList=[
     			},
     			{
     				name:'决策树(基于R)',
+    				based:'R',
     				actionName:'DecisionTreeMethod',
     				introduction:'用于计算相关性的算法',
     				param:[
@@ -93,14 +87,13 @@ var algorithmJSONList=[
     				actionName:'DecisionTreeMethod',
     				introduction:'用于计算相关性的算法',
     				param:[
-       					{name:'公式',field:'formula',type:'String'},
-       					{name:'类别',field:'type',type:'String'},
-       					{name:'最大深度',field:'maxdepth',type:'String'}
+       					{name:'公式',field:'formula',type:'String'}
        				]
     			},
     			{
     				name:'主成分分析(基于R)',
-    				actionName:'PCA',
+    				based:'R',
+    				actionName:'PCAMethod',
     				introduction:'主成分分析就是从事务错综复杂的关系中找出部分主成分进行定量分析，从而实现降维和简化的作用',
     				param:[
        					{name:'所选列',field:'column',type:'String'}       		
@@ -108,7 +101,7 @@ var algorithmJSONList=[
     			},
     			{
     				name:'主成分分析(基于Spark_MLlib)',
-    				actionName:'PCA',
+    				actionName:'PCAMethod',
     				based:'Spark',
     				introduction:'主成分分析就是从事务错综复杂的关系中找出部分主成分进行定量分析，从而实现降维和简化的作用',
     				param:[
@@ -147,9 +140,11 @@ var algorithmJSONList=[
     			},
     			{
     				name:'Kmeans(基于R)',
+    				based:'R',
     				actionName:'KmeansMethod',
     				introduction:'Kmeans算法接受参数 k ；然后将事先输入的n个数据对象划分为 k个聚类以便使得所获得的聚类满足：同一聚类中的对象相似度较高；而不同聚类中的对象相似度较小',
     				param:[
+    				    {name:'依据列',field:'column',type:'String'},   	  
        					{name:'聚类个数',field:'centers',type:'String'}   		
        				]
     			},
@@ -159,11 +154,13 @@ var algorithmJSONList=[
     				actionName:'KmeansMethod',
     				introduction:'Kmeans算法接受参数 k ；然后将事先输入的n个数据对象划分为 k个聚类以便使得所获得的聚类满足：同一聚类中的对象相似度较高；而不同聚类中的对象相似度较小',
     				param:[
+    				    {name:'依据列',field:'column',type:'String'},   	
        					{name:'聚类个数',field:'centers',type:'String'}   		
        				]
     			},
     			{
     				name:'Hcluster',
+    				based:'R',
     				actionName:'HclusterMethod',
     				introduction:'层次聚类',
     				param:[
@@ -174,6 +171,7 @@ var algorithmJSONList=[
     			},
     			{
     				name:'线性回归(基于R)',
+    				based:'R',
     				actionName:'RegressionMethod',
     				introduction:'线性回归(Linear Regression)是利用称为线性回归方程的最小平方函数对一个或多个自变量和因变量之间关系进行建模的一种回归分析',
     				param:[
@@ -191,6 +189,7 @@ var algorithmJSONList=[
     			},
     			{
     				name:'Logistic回归(基于R)',
+    				based:'R',
     				actionName:'LogisticMethod',
     				introduction:'logistic回归是一种广义线性回归（generalized linear model）',
     				param:[
