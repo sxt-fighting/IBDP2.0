@@ -1,5 +1,6 @@
 var algorithmJSONList=[
-       			{
+[//数据清理算法
+	{
     				name:'数据缺失值处理',
     				actionName:'DplyrMethods',
     				method:'na',
@@ -51,7 +52,21 @@ var algorithmJSONList=[
     					
     					{name:'是否有放回抽样',field:'repalce',type:'String'}
     				]
-    			},
+    			}
+],
+[//数据分析算法
+				{
+						name:'统计量分析',
+						actionName:'statistics',
+						introduction:'统计量分析',
+						guide:'1.这里可以写一些写作指导内容 !<br/>2.zhehidierhang',
+						param:[
+							{name:'统计量',field:'s',type:'checkbox',options:['均值','方差','标准差','中值'],value:[]},
+							{name:'相关系数',field:'xishu',type:'select',options:['pearson','kendall','spearman'],value:''},
+							{name:'依据变量',field:'NaVariable',type:'String'}    		
+							
+						]
+				},
     			
     			{
     				name:'贝叶斯算法',
@@ -68,7 +83,7 @@ var algorithmJSONList=[
     				introduction:'用于计算相关性的算法',
     				param:[
     					
-    					{name:'相关性算法',field:'chosework',type:'String'},
+    					{name:'相关性算法',field:'chosework',type:'select',options:['kendall','spearman','pearson'],value:''},
     					{name:'所要计算的列',field:'chosecolumn',type:'String'}
     				]
     			},
@@ -205,4 +220,4 @@ var algorithmJSONList=[
        					{name:'公式',field:'formula',type:'String'}
        				]
     			}
-    			];
+    			]];
