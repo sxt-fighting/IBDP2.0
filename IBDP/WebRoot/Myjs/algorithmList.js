@@ -1,57 +1,72 @@
 var algorithmJSONList=[
-       			{
-    				name:'数据缺失值处理',
-    				actionName:'DplyrMethods',
-    				method:'na',
-    				introduction:'数据缺失值处理',
-    				param:[
-    					{name:'依据变量',field:'NaVariable',type:'String'}    					
-    				]
-    			},
-    			{
-    				name:'变量选择（collect）',
-    				actionName:'DplyrMethods',
-    				method:'collect',
-    				introduction:'变量选择是数据处理的一种方法',
-    				param:[
-    					
-    					{name:'选择变量',field:'CollectVariable',type:'String'}
-    				]
-    			},
-    			{
-    				name:'变量筛选（filter）',
-    				actionName:'DplyrMethods',
-    				method:'filter',
-    				introduction:'变量筛选（filter）可以按给定的逻辑条件筛选出符合要求的子数据集',
-    				param:[
-    					
-    					{name:'筛选条件',field:'FilterVariable',type:'String'}
-    				]
-    			},
-    			{
-    				name:'数据去重（distinct）',
-    				actionName:'DplyrMethods',
-    				method:'distinct',
-    				introduction:'数据去重可以根据某些变量或变量的运算结果进行去重',
-    				param:[
-    					
-    					{name:'去重变量',field:'DistinctVariable',type:'String'},
-    					
-    					{name:'去重后返回变量',field:'ReturnVariable',type:'String'}
-    				]
-    			},
-    			{
-    				name:'数据取样（sample）',
-    				actionName:'DplyrMethods',
-    				method:'sample_n',
-    				introduction:'随机抽取指定数目的样本',
-    				param:[
-    					
-    					{name:'抽取样本数',field:'SampleNumber',type:'String'},
-    					
-    					{name:'是否有放回抽样',field:'repalce',type:'String'}
-    				]
-    			},
+[//数据清理算法
+			 {
+					name:'数据缺失值处理',
+					actionName:'DplyrMethods',
+					method:'na',
+					introduction:'数据缺失值处理',
+					param:[
+						{name:'依据变量',field:'NaVariable',type:'String'}    					
+					]
+				},
+				{
+					name:'变量选择（collect）',
+					actionName:'DplyrMethods',
+					method:'collect',
+					introduction:'变量选择是数据处理的一种方法',
+					param:[
+						
+						{name:'选择变量',field:'CollectVariable',type:'String'}
+					]
+				},
+				{
+					name:'变量筛选（filter）',
+					actionName:'DplyrMethods',
+					method:'filter',
+					introduction:'变量筛选（filter）可以按给定的逻辑条件筛选出符合要求的子数据集',
+					param:[
+						
+						{name:'筛选条件',field:'FilterVariable',type:'String'}
+					]
+				},
+				{
+					name:'数据去重（distinct）',
+					actionName:'DplyrMethods',
+					method:'distinct',
+					introduction:'数据去重可以根据某些变量或变量的运算结果进行去重',
+					param:[
+						
+						{name:'去重变量',field:'DistinctVariable',type:'String'},
+						
+						{name:'去重后返回变量',field:'ReturnVariable',type:'String'}
+					]
+				},
+				{
+					name:'数据取样（sample）',
+					actionName:'DplyrMethods',
+					method:'sample_n',
+					introduction:'随机抽取指定数目的样本',
+					param:[
+						
+						{name:'抽取样本数',field:'SampleNumber',type:'String'},
+						
+						{name:'是否有放回抽样',field:'repalce',type:'String'}
+					]
+				}
+],
+[//分析算法
+				{
+					name:'统计量分析',
+					actionName:'statistics',
+					introduction:'统计量分析',
+					guide:'这里可以写一些写作指导内容 !',
+					param:[
+						{name:'统计量',field:'s',type:'checkbox',options:['均值','方差','标准差','中值'],value:[]},
+						{name:'相关系数',field:'xishu',type:'select',options:['pearson','kendall','spearman'],value:''},
+						{name:'依据变量',field:'NaVariable',type:'String'}    		
+						
+					]
+				},
     			{
     				name:'BP算法',
     				actionName:'BPAction',
@@ -206,4 +221,7 @@ var algorithmJSONList=[
        					{name:'公式',field:'formula',type:'String'}
        				]
     			}
-    			];
+    			]
+
+                       
+];
