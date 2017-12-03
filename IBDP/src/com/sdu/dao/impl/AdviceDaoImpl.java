@@ -21,9 +21,10 @@ public class AdviceDaoImpl{
 		Transaction tx = session.beginTransaction();
 		List<Advice> list = null;
 		try{
-			String hql = "from Advice ad where ad.advice_admin.id='"+userId+"'";
-			Query query = session.createQuery(hql);
-			list = query.list();
+//			String hql = "from Advice ad where ad.advice_admin.id='"+userId+"'";
+//			Query query = session.createQuery(hql);
+			String sql ="select * from advice where advice.admin_advid = '"+userId+"' and a_isread = '0' order by a_id desc;";
+			list = session.createSQLQuery(sql).addEntity(Advice.class).list();
 			tx.commit();
 		}catch(Exception e){
 			System.out.println("hql语句出错");
@@ -36,7 +37,7 @@ public class AdviceDaoImpl{
 		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
 		try{
-			String hql = "update Advice advice set advice.a_isread = 'True' ";
+			String hql = "update Advice advice set advice.a_isread = '1' where advice.a_id='"+a_id+"'";
 			session.createQuery(hql).executeUpdate();
 			tx.commit();
 		}catch(Exception e){

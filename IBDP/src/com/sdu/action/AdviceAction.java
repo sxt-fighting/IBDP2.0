@@ -17,6 +17,7 @@ public class AdviceAction extends ActionSupport{
 	private AdviceBizImpl adviceBiz;
 	private List<Advice> list;
 	private Map<String,Object> map;
+	private int a_id;
 	//--------------------------------
 	public List<Advice> getList() {
 		return list;
@@ -28,6 +29,9 @@ public class AdviceAction extends ActionSupport{
 
 	public void setAdviceBiz(AdviceBizImpl adviceBiz) {
 		this.adviceBiz = adviceBiz;
+	}
+	public void setA_id(int a_id) {
+		this.a_id = a_id;
 	}
 
 	//----------------------------------
@@ -43,6 +47,12 @@ public class AdviceAction extends ActionSupport{
 		}else{
 			map.put("count", 0);
 		}
+		return SUCCESS;
+	}
+	public String markRead(){
+		map = new HashMap<String,Object>();
+		map.put("message","success");
+		adviceBiz.markRead(a_id);
 		return SUCCESS;
 	}
 }

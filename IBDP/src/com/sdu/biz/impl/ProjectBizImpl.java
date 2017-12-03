@@ -59,7 +59,7 @@ public class ProjectBizImpl {
 	}
 	public boolean delProject(int id) {
 		Project project = projectDao.getProjectById(id);
-		System.out.println("modelID"+project.getP_model().getM_id());
+//		System.out.println("modelID"+project.getP_model().getM_id());
 		if(!modelDao.removeNONameModelById(project.getP_model().getM_id())){
 			projectDao.delProject(id);
 		}
