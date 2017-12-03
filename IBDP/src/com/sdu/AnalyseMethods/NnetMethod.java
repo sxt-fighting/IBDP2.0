@@ -1,26 +1,20 @@
 package com.sdu.AnalyseMethods;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.rosuda.REngine.Rserve.RConnection;
 
-import com.sdu.ToolsUse.AdviceHibernate;
 import com.sdu.ToolsUse.DataFileHibernate;
 import com.sdu.ToolsUse.HDFSTools;
 import com.sdu.entity.Admin;
-import com.sdu.entity.Advice;
 import com.sdu.entity.DataFile;
 import com.sdu.entity.Project;
 
-public class RegressionMethod extends BasicMethod{
+public class NnetMethod extends BasicMethod{
 
 	public DataFile beiginAnalyse(int index, DataFile dataFile, Admin user, Project project, JSONObject projectJSON, JSONArray algorithmJSON)
 	{
-		System.out.println("linear regression");
+		System.out.println("神经网络");
 			
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		 String based=algorithm_obj.getString("based");
@@ -42,7 +36,8 @@ public class RegressionMethod extends BasicMethod{
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
 		String formula=params.getJSONObject(0).getString("value");
-		
+		String size=params.getJSONObject(1).getString("value");
+		String maxit=params.getJSONObject(2).getString("value");
 		
     	System.out.println("链接Rserve，开始分析任务");
     	DataFile resultFile=new DataFile();//要返回的文件
@@ -56,7 +51,7 @@ public class RegressionMethod extends BasicMethod{
     	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
     	System.out.println(savePath);
     	c.eval("setwd(\""+savePath+"\")");
-    	c.eval("library(openxlsx)"); 
+    	c.eval("library(openxlsx)"); c.eval("library(nnet)");
     	String aa = dataFileName.substring(dataFileName.lastIndexOf("."));
     	
     	if(aa.equals(".xlsx"))
@@ -85,10 +80,10 @@ public class RegressionMethod extends BasicMethod{
  	//c.eval("Sys.setenv(YARN_CONF_DIR='/etc/hadoop/2.4.3.0-227/0')");
  	//master = "yarn-client", version="1.6.0", spark_home = '/opt/cloudera/parcels/CDH/lib/spark/'
 
- 	
- 	c.eval("fit <- lm("+formula+",datafile)");
+ 	c.eval("model <- nnet("+formula+", data=datafile,size="+size+",decay=5e-4,maxit="+maxit+")");
+	c.eval("pred<-predict(model,datafile,type=\"class\")");
 	
- 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_LR";
+ 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_nnet";
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
@@ -96,7 +91,9 @@ public class RegressionMethod extends BasicMethod{
 		{
 	 		resultFileName=resultFileName+".txt";
 	 	    c.eval("sink(\""+resultFileName+"\")");
-			c.eval("print(summary(linear_model))");
+	 	    String []items=formula.split("~|[+]");
+			c.eval("print(pred)");
+			c.eval("print(table(datafile$"+items[0]+", pred))");
 			c.eval("sink()");
 			//生成结果文件并进行保存修改数据库
 			resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"ResultFile");
@@ -110,7 +107,7 @@ public class RegressionMethod extends BasicMethod{
 	 	else
 	 	{
 	 		resultFileName=resultFileName+".Rdata";
-	 		c.eval("save(linear_model,\""+resultFileName+"\" )");
+	 		c.eval("save(model,\""+resultFileName+"\" )");
 	 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"IntermediateFile");
 		
 	 	}
@@ -133,7 +130,8 @@ public class RegressionMethod extends BasicMethod{
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
 		String formula=params.getJSONObject(0).getString("value");
-		
+		String size=params.getJSONObject(1).getString("value");
+		String maxit=params.getJSONObject(2).getString("value");
 		
     	System.out.println("链接Rserve，开始分析任务");
     	DataFile resultFile=new DataFile();//要返回的文件
@@ -178,19 +176,21 @@ public class RegressionMethod extends BasicMethod{
 
  	c.eval("sc<-spark_connect(master = \"local\" )"); 
  	System.out.println("spark连接成功");
- 	c.eval("data_tbl <- copy_to(sc, datafile, \"datafile\", overwrite = TRUE)");
- 	c.eval("linear_model <- data_tbl %>% ml_linear_regression("+formula+")");
+ 	if(size.indexOf("，")!=-1)
+		size.replaceAll("，", ",");
 	
- 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_LR";
+	c.eval("model<-ml_decision_tree(data_tbl, "+formula+", iter.max= "+maxit+", layers=c("+size+")");
+	c.eval("dt_predict<-sdf_predict(model,data_tbl)");
+	
+ 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_MLP";
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
  	if(index==algorithmJSON.length()-1)
 	{
  		resultFileName=resultFileName+".txt";
- 	    c.eval("sink(\""+resultFileName+"\")");
-		c.eval("print(summary(linear_model))");
-		c.eval("sink()");
+ 		c.eval("write.table(dt_predict,\""+resultFileName+"\")");
+		
 		//生成结果文件并进行保存修改数据库
 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"ResultFile");
 		 

@@ -122,8 +122,9 @@ var algorithmJSONList=[
        				]
     			},
     			{
-    				name:'BP神经网络',
+    				name:'神经网络',
     				actionName:'BPMethod',
+    				based:'R',
     				introduction:'BP神经网络是一种按误差逆传播算法训练的多层前馈网络',
     				param:[
        					{name:'公式',field:'formula',type:'String'},
@@ -215,6 +216,15 @@ var algorithmJSONList=[
     				based:'Spark',
     				actionName:'LogisticMethod',
     				introduction:'logistic回归是一种广义线性回归（generalized linear model）',
+    				param:[
+       					{name:'公式',field:'formula',type:'String'}
+       				]
+    			},
+    			{
+    				name:'随机森林(基于Spark_MLlib)',
+    				based:'Spark',
+    				actionName:'RandomForestMethod',
+    				introduction:'随机森林可用于分类或回归',
     				param:[
        					{name:'公式',field:'formula',type:'String'}
        				]
