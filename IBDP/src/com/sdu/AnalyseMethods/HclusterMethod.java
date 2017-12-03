@@ -36,7 +36,7 @@ public class HclusterMethod extends BasicMethod{
     	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
     	System.out.println(savePath);
     	c.eval("setwd(\""+savePath+"\")");
-    	c.eval("library(openxlsx)"); 
+    	c.eval("library(openxlsx)");c.eval("library(useful)");  
     	String aa = dataFileName.substring(dataFileName.lastIndexOf("."));
     	
     	if(aa.equals(".xlsx"))
@@ -75,29 +75,31 @@ public class HclusterMethod extends BasicMethod{
 	
 	
 
- 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_DT";
+ 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_Hcluster";
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
  	 	if(index==algorithmJSON.length()-1)
 		{
  	 		c.eval("png(\""+resultFileName+".png\" , bg=\"transparent\")");
- 	 		if(cut.equals("TRUE"))
- 	 		{
- 	 			c.eval("print(rect.hclust(result,k="+cutnumber+",border=\"red\"))");
- 	 		}else
  	 		c.eval("print(plot(result,labels=FALSE,main=\""+metric+"\"))");
+ 	 		if(cut.equals("是"))
+ 	 		{
+ 	 			c.eval("print(rect.hclust(result,k="+cutnumber+",border=\"red\"))"); 	 		
+ 	 			c.eval("sink(\""+resultFileName+".txt\")");
+ 		 		c.eval("print( cutree(result,k="+cutnumber+"))");
+ 				c.eval("sink()");
+ 	 		}
+ 	 			
 			c.eval("dev.off()");
-	 		c.eval("sink(\""+resultFileName+".txt\")");
-	 		c.eval("print(result)");
-			c.eval("sink()");
+	 		
 			//生成结果文件并进行保存修改数据库
 			//保存图片
-			resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName+".png","ResultFile");
+			resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName+".png", savePath+"/"+resultFileName+".png","ResultFile");
 			DataFileHibernate.saveDataFile(resultFile);
 			HDFSTools.LoadSingleFileToHDFS(resultFile);
 			//保存txt
-			resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName+".txt","ResultFile");
+			resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName+".txt", savePath+"/"+resultFileName+".txt","ResultFile");
 			DataFileHibernate.saveDataFile(resultFile);
 			HDFSTools.LoadSingleFileToHDFS(resultFile);
 	

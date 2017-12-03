@@ -182,5 +182,13 @@
 <result name="basic">basic.jsp</result>
 <result name="PCA">/ajax/PCA.jsp</result>
 </action>
+
+<!--数据展示-->
+<action name="readFileToShow" class="com.sdu.action.ReadFileToShowAction">
+	<result name="tab">/visualData/showFileData.jsp</result>
+	<result name="txt">/visualData/showTxtData.jsp</result>
+	<result name="picture">/visualData/showPictureData.jsp</result>
+	
+</action>
 </package>
 </struts>       

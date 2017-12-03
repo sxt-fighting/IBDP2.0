@@ -50,20 +50,19 @@ var algorithmJSONList=[
     					
     					{name:'抽取样本数',field:'SampleNumber',type:'String'},
     					
-    					{name:'是否有放回抽样',field:'repalce',type:'String'}
+    					{name:'是否有放回抽样',field:'repalce',type:'select',options:['是','否'],value:''}
     				]
     			}
 ],
 [//数据分析算法
 				{
 						name:'统计量分析',
-						actionName:'statistics',
+						actionName:'statisticsMethod',
 						introduction:'统计量分析',
-						guide:'1.这里可以写一些写作指导内容 !<br/>2.zhehidierhang',
+						guide:'1.这里可以写一些写作指导内容 !',
 						param:[
-							{name:'统计量',field:'s',type:'checkbox',options:['均值','方差','标准差','中值'],value:[]},
-							{name:'相关系数',field:'xishu',type:'select',options:['pearson','kendall','spearman'],value:''},
-							{name:'依据变量',field:'NaVariable',type:'String'}    		
+						   	{name:'分析列',field:'column',type:'String'},
+							{name:'统计量',field:'s',type:'checkbox',options:['均值','中位数','众数','极差','标准差','第一四分位数','第三四分位数','变异系数'],value:[]}  		
 							
 						]
 				},
@@ -82,8 +81,7 @@ var algorithmJSONList=[
     				actionName:'CorrelationMethod',
     				introduction:'用于计算相关性的算法',
     				param:[
-    					
-    					{name:'相关性算法',field:'chosework',type:'select',options:['kendall','spearman','pearson'],value:''},
+    				    {name:'相关性算法',field:'chosework',type:'select',options:['kendall','spearman','pearson'],value:''},
     					{name:'所要计算的列',field:'chosecolumn',type:'String'}
     				]
     			},
@@ -174,13 +172,14 @@ var algorithmJSONList=[
        				]
     			},
     			{
-    				name:'Hcluster',
+    				name:'层次聚类',
     				based:'R',
     				actionName:'HclusterMethod',
     				introduction:'层次聚类',
+    				guide:'层次聚类有4中不同的联结方法：single、complete、average、centroid，average联结通常被认为是最合适的！',
     				param:[
-       					{name:'联结方法',field:'metric',type:'String'},
-       					{name:'是否分割分层聚类',field:'cut',type:'String'},
+       					{name:'联结方法',field:'metric',type:'select',options:['single','complete','average','centroid'],value:''},
+       					{name:'是否分割分层聚类',field:'cut',type:'select',options:['是','否'],value:''},
        					{name:'分割分层聚类数',field:'cutnumber',type:'String'}
        				]
     			},

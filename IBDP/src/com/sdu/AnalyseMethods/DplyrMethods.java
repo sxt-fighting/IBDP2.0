@@ -88,6 +88,10 @@ public class DplyrMethods extends BasicMethod{
  	{
  		variable=params.getJSONObject(0).getString("value");
  	    String replace=params.getJSONObject(1).getString("value");
+ 	    if(replace.equals("是"))
+ 	    	replace="TRUE";
+ 	    else
+ 	    	replace="FALSE";
  	 	c.eval("datafile<-sample_n(datafile,"+variable+",replace="+replace.toUpperCase()+")");
  	}
 	if(method_name.equals("na"))
@@ -109,15 +113,12 @@ public class DplyrMethods extends BasicMethod{
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
  	if(index==algorithmJSON.length()-1)
 	{
- 		if(aa.equals("txt"))
- 		{
+ 		
  		resultFileName=resultFileName+".txt";
  	    c.eval("sink(\""+resultFileName+"\")");
 		c.eval("print(as.data.frame(datafile))");
 		c.eval("sink()");
- 		}else {
-			c.eval("write.csv(datafile,\""+resultFileName+".csv)\"");
-		}
+ 		
 		//生成结果文件并进行保存修改数据库
 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"ResultFile");
 		 

@@ -57,6 +57,15 @@
      window.location.href="login.jsp"; 
 	 }
 </script>
+<style type="text/css">
+	.modal-chat {
+        width: 58.333%;
+        height:78.333%;
+        overflow:scroll;
+        overflow-x:auto;
+        overflow-y:auto 
+    }
+</style>
 	
 </head>
   <body ng-app="" class="no-skin">
@@ -182,7 +191,25 @@
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
 						</div><!-- /.row -->
-						
+						<div class="modal fade " id="viewFileModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+								         aria-hidden="true">
+								         
+								          <div class="modal-dialog" style=" height:700px;width: 65%;">
+								            <div style="text-align:center;background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
+													<label style="padding: 5px;float:center;font-size:18px">文件内容预览 </label>
+													<button class="btn btn-sm pull-right" style="width:50px;padding: 9.5px;" data-dismiss="modal"><i class="ace-icon glyphicon glyphicon-remove"></i></button>
+													</div>
+								            <div id="modalcon"  class="modal-content" style="height: 700px;overflow:scroll;overflow-x:auto;overflow-y:auto ">
+								              
+								            </div>
+								         <!--  <div class="modal-footer">
+												<button type="button" class="btn btn-sm btn-info" ng-click="saveModelInfo()" data-dismiss="modal">确定</button>
+												<button type="button" class="btn  btn-sm btn-default" ng-click="cancel_newModel()" data-dismiss="modal">关闭</button>
+											</div> --> 
+								        </div>
+								         
+								        
+								    </div>
 
 						
 					</div><!-- /.page-content -->
@@ -443,6 +470,21 @@
                 "createtime":"2017-10-31 15:00:56"
             }
         ]; */
+        
+     //查看数据
+     function viewdata(did){
+        	console.log("查看数据");
+        	  
+        	$("#viewFileModal").modal({
+				remote:"<%=request.getContextPath()%>/readFileToShow.action?did="+did 
+			});
+        	
+	    //	var url = "${pageContext.request.contextPath}/datashow/readFileToShow.action";
+			//var params = {
+			//	'rowid':rowId
+			//};
+			//$.post(url, params, callback);
+	}
     function initTable() {
         $table.bootstrapTable({
         	  url: "<%=request.getContextPath()%>/DataFile_showAllDataFiles.action", // 获取表格数据的url
@@ -519,8 +561,9 @@
               width: 260, // 定义列的宽度，单位为像素px
               formatter: function (value, row, index) {
             	  console.log(row.name);
-            	  console.log(row.did);
-                   return '<button class="btn btn-xs btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="预览" onclick="like(\'' + row.id + '\')"><i class="ace-icon fa fa-search-plus bigger-120"></i></button>'
+            	  console.log(row.id);
+            	  console.log(row.localpath);
+                   return '<button class="btn btn-xs btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="预览" onclick="viewdata(\'' + row.id + '\')"><i class="ace-icon fa fa-search-plus bigger-120"></i></button>'
                    			+'<button class="btn btn-xs btn-success btn-sm" onclick="download(\'' + row.id + '\')"><i class="ace-icon fa fa-download bigger-120"></i></button>'
               				 +'<button class="btn btn-xs btn-danger btn-sm" onclick="del(\'' + row.id + '\')"><i class="ace-icon fa fa-trash-o bigger-120"></i></button>';
               }
@@ -528,8 +571,9 @@
             ],
             /* data:data */
         });
-   
-         
+  		
+  		
+		
        
         $remove.click(function () {
             var ids = getIdSelections();
@@ -558,6 +602,10 @@
     
    
     $(function () {
+    	$("#viewFileModal").on('hidden.bs.modal', function () {
+        	 $(this).removeData("bs.modal");
+			  // 执行一些动作...
+			});
     	/* var data=[];
     	$.ajax({
     	    url:'getList.Action',
@@ -578,6 +626,7 @@
     	    }
     	}); */
        initTable();
+       
     });
     //下载
     function downClick(){
@@ -622,6 +671,8 @@
 		});
 		
     }
+    
+ 
 </script>
 
 	</body>
