@@ -4,4 +4,11 @@
   <add-on id="web.struts2.dojo"/>
   <add-on id="hibernate.extra"/>
   <add-on id="spring.persistence"/>
+  <container path="com.genuitec.runtime.library/com.genuitec.spring_3.1">
+    <jar-attrs id="data/3.1/dist/org.springframework.web-3.1.1.RELEASE.jar">
+      <attribute name="javadoc_location" value="http://static.springsource.org/spring/docs/3.1.x/javadoc-api/"/>
+      <attribute name="source-path-root"/>
+      <attribute name="source-path" value="D:\data\resource\spring-framework-3.2.x.zip"/>
+    </jar-attrs>
+  </container>
 </project>

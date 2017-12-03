@@ -1,6 +1,7 @@
 package com.sdu.entity;
 
 import java.io.Serializable;
+import java.util.Set;
 
 public abstract class AbstractModel implements Serializable {
 
@@ -14,7 +15,7 @@ public abstract class AbstractModel implements Serializable {
 	private Integer m_collect;//被收藏数
 	private Admin m_admin;//
 	private String algorithmString;//将模型用到的算法以JSON转化的字符串保存起来
-	private Project m_project;
+	private Set<Project> m_project;
 	
 	public AbstractModel() {
 		
@@ -37,7 +38,7 @@ public abstract class AbstractModel implements Serializable {
 	public AbstractModel(Integer m_id, String m_name, String m_state,
 			String m_describe, String m_createTime, String m_type,
 			Integer m_used, Integer m_collect, Admin m_admin,
-			String algorithmString, Project m_project) {
+			String algorithmString, Set<Project> m_project) {
 		this.m_id = m_id;
 		this.m_name = m_name;
 		this.m_state = m_state;
@@ -147,13 +148,13 @@ public abstract class AbstractModel implements Serializable {
 
 
 
-	public Project getM_project() {
+	public Set<Project> getM_project() {
 		return m_project;
 	}
 
 
 
-	public void setM_project(Project m_project) {
+	public void setM_project(Set<Project> m_project) {
 		this.m_project = m_project;
 	}
 	

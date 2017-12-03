@@ -13,8 +13,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sdu.biz.impl.DataFileBizImpl;
@@ -158,12 +161,16 @@ public class DataFileAction extends ActionSupport{
 		dataFile=new DataFile();
 		dataFile.setD_name(uploadFileFileName);
 		String suffix = uploadFileFileName.substring(uploadFileFileName.lastIndexOf(".")+1);
+		//生成随机数文件名
+		UUID uid = UUID.randomUUID();
+		String fileName = (uid.getLeastSignificantBits()+"."+suffix).replace("-", "");
+		
 		dataFile.setD_suffix(suffix);	
 		//将其换成mb
 		double size = uploadFile.length()/1024.0;	
 		//保存文件操作
 		InputStream is = new FileInputStream(uploadFile);
-		OutputStream os = new FileOutputStream(new File("D:/user/"+uploadFileFileName));
+		OutputStream os = new FileOutputStream(new File("D:/user/"+fileName));
 		byte flush[]= new byte[1024];
 		int len = 0;
 		while(0<=(len = is.read(flush))){
@@ -181,7 +188,7 @@ public class DataFileAction extends ActionSupport{
 		String temp=size+"";
 		temp = temp.substring(0,temp.indexOf(".")+2);
 		dataFile.setD_size(temp+unit);
-		dataFile.setD_localpath("D:/user/"+uploadFileFileName);
+		dataFile.setD_localpath("D:/user/"+fileName);
 		dataFile.setD_type("DataFile");
 		Date date=new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	
@@ -224,13 +231,17 @@ public class DataFileAction extends ActionSupport{
 	//	System.out.println("project_id:"+project_id);
 	//	System.out.println("datafile_type:"+datafile_type);
 		int userId = ((Admin)ActionContext.getContext().getSession().get("user")).getId();
+		int count = 0;
 		List<Object> list = new ArrayList<>();
-		if(project_id==-1 && "null".equals(datafile_type)){	
+		if(project_id==-1 && "null".equals(datafile_type)){
+			count = dataFileBiz.getCountByUserId(userId);
 			list = dataFileBiz.getAllByUseId(userId,offset,pageSize);
 		}else if(project_id!=-1 && "null".equals(datafile_type)){
+			count = dataFileBiz.getCountByProjectId(userId,project_id);
 			list = dataFileBiz.getAllByProjectId(userId,project_id,offset,pageSize); 
 		}else if(project_id!=-1){
-			//list = dataFileBiz.getAllByProjectIdAndDataFileType(userId,project_id,datafile_type,offset,pageSize);
+			count = dataFileBiz.getCountByProjectIdAndDatafileType(userId, project_id, datafile_type);
+			list = dataFileBiz.getAllByProjectIdAndDataFileType(userId,project_id,datafile_type,offset,pageSize);
 		}
 		JSONArray array = new JSONArray();
 		for(int i = 0;i<list.size();i++){
@@ -249,7 +260,7 @@ public class DataFileAction extends ActionSupport{
 		}
 		/*datafileJson =*/ 
 		JSONObject json = new JSONObject();
-		json.put("total",list.size());
+		json.put("total",count);
 		json.put("rows", array);
 		map = new HashMap<String,Object>();
 		map.put("DataJson",json.toString());

@@ -37,6 +37,20 @@ public class DataFileDaoImpl {
 		}
 		return list;
 	}*/
+	public int getCountByUserId(int userId){
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		int count = 0;
+		try{
+			String sql ="select count(*) from datafile where datafile.admin_dataid = '"+userId+"';";
+			count = ((Number) session.createSQLQuery(sql).uniqueResult()).intValue();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return count;
+	}
 	public List<Object> getByUserId(int userid,int offset,int pageSize){
 		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
@@ -111,21 +125,16 @@ public class DataFileDaoImpl {
 		Transaction tx = session.beginTransaction();
 		//System.out.println("2");
 		//hql没有分号结尾
-		List<DataFile> list = null;
+		DataFile dataFile = null;
 		try {
-			String hql = "from DataFile datafile where datafile.d_id = '"+did+"'";
-			//System.out.println("hql:"+hql);
-			Query query = session.createQuery(hql);
-			
-			list = query.list();
+			dataFile = (DataFile) session.get(DataFile.class, did);
 			tx.commit();
 		//	System.out.println("查询成功");
 		} catch (HibernateException e) {
 			tx.rollback();
 			e.printStackTrace();
-			return null;
 		}
-		return list.get(0);
+		return dataFile;
 	}
 	public List<Object> getDataFileByAdminId(int adminId){
 		List<Object> list = null;
@@ -146,7 +155,7 @@ public class DataFileDaoImpl {
 		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
 		try{
-			String sql = "select d.d_id,d.d_name,p.p_name,d.d_type,d.d_size,d.d_createTime  from datafile as d,project as p where d.pro_dataid = p.p_id and d.pro_dataid = '"+project_id+"' and d.admin_dataid = '"+adminId+"';";
+			String sql = "select d.d_id,d.d_name,p.p_name,d.d_type,d.d_size,d.d_createTime  from datafile as d,project as p where d.pro_dataid = p.p_id and d.pro_dataid = '"+project_id+"' and d.admin_dataid = '"+adminId+"' limit "+offset+","+pageSize+";";
 	//		System.out.println("sql:"+sql);
 			list = session.createSQLQuery(sql).list();
 			tx.commit();
@@ -156,12 +165,12 @@ public class DataFileDaoImpl {
 		}
 		return list;
 	}
-	public List<Object> getDataFilesByProjectIdAndDataFileType(int projectId,String datafile_type) {
+	public List<Object> getDataFilesByProjectIdAndDataFileType(int adminId,int project_id, String datafile_type, int offset, int pageSize) {
 		List<Object> list = null;
 		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
 		try{
-			String sql = "select d.d_id,d.d_name,p.p_name,d.d_type,d.d_size,d.d_createTime  from datafile as d,project as p where p.p_id = d.pro_dataid and d.pro_dataid = '"+projectId+"' and d.d_type='"+datafile_type+"';";
+			String sql = "select d.d_id,d.d_name,p.p_name,d.d_type,d.d_size,d.d_createTime  from datafile as d,project as p where p.p_id = d.pro_dataid and d.pro_dataid = '"+project_id+"' and d.admin_dataid='" +adminId+"' and d.d_type='"+datafile_type+"' limit "+offset+","+pageSize+";";
 	//		System.out.println("sql:"+sql);
 			list = session.createSQLQuery(sql).list();
 			tx.commit();
@@ -186,4 +195,34 @@ public class DataFileDaoImpl {
 		}
 		return result;
 	}
+	public int getCountByProjectId(int adminId, int project_Id) {
+		int count = 0;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select count(*) from datafile where datafile.admin_dataid = '"+adminId+"' and datafile.pro_dataid ='"+project_Id+"';";
+			Query query = session.createSQLQuery(sql);
+			count = ((Number)query.uniqueResult()).intValue();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return count;
+	}
+	public int getCountByProjectIdAndDataFileType(int adminId, int project_Id,String datafile_type){
+		int count = 0;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select count(*) from datafile where datafile.admin_dataid = '"+adminId+"' and datafile.pro_dataid ='"+project_Id+"' and datafile.d_type='"+datafile_type+"';";
+	//		System.out.println(sql);
+			count = ((Number) session.createSQLQuery(sql).uniqueResult()).intValue();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return count;
+	} 
 }

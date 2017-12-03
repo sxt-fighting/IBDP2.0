@@ -174,7 +174,7 @@
 				var i;
 				for( i = 0;i<data.count&& i<5;i++){
 					if( $("#"+message[i].a_id).length<=0){
-						$("#dropdown_menu").append("<li id='"+message[i].a_id+"'><a href='datafile.jsp'><div class='clearfix'><span class='pull-left'><i class='btn btn-xs no-hover btn-pink fa fa-comment'>"+message[i].a_content+"</i></span></div></a><li>");
+						$("#dropdown_menu").append("<li id='"+message[i].a_id+"'><a href='datafile.jsp'><div class='clearfix'><span class='pull-left'><i class='btn btn-xs no-hover btn-pink fa fa-comment'></i>"+message[i].a_content+"</span></div></a><li>");
 					}
 				}
 				if(i ==5 &&$("#showAllMessage").length<=0){

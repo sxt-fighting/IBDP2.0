@@ -37,6 +37,11 @@
           <many-to-one name="m_admin" class="com.sdu.entity.Admin" fetch="select">
             <column name="admin_moid" not-null="true" />
           </many-to-one>
-          <one-to-one name="m_project" class="com.sdu.entity.Project" cascade="save-update"></one-to-one>
+         <set name="m_project" inverse="true" cascade="all">
+            <key> 
+                <column name="p_modelid" not-null="true" />
+            </key>
+            <one-to-many class="com.sdu.entity.Project" />
+        </set>
       </class>
 </hibernate-mapping>

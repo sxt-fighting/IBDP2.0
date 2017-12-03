@@ -74,7 +74,7 @@
 
 						<ul class="submenu">
 							<li class="hover">
-								<a href="form-elements.html">
+								<a href="model.jsp">
 									<i class="menu-icon fa fa-caret-right"></i>
 									模型库
 								</a>

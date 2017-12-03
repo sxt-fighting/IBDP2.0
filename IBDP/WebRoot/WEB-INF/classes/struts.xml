@@ -120,16 +120,53 @@
 <result name="success">/login.jsp</result>
 </action>
 <!-- modelAction -->
-<action name="Model_*" class="com.sdu.action.ModelAction" method="{1}" >
-<interceptor-ref name="json"></interceptor-ref>
+<action name="Model_addModel" class="com.sdu.action.ModelAction" method="addModel">
+	<interceptor-ref name="json"></interceptor-ref>
 	<result name="success" type="json">
 		<param name="root">map</param>
-	 </result>
+	</result>
+</action>
+<action name="Model_getModels" class="com.sdu.action.ModelAction" method="getModels">
+	<interceptor-ref name="json"></interceptor-ref>
+	<result name="success" type="json">
+		<param name="root">map</param>
+	</result>
+</action>
+<action name="Model_*" class="com.sdu.action.ModelAction" method="{1}" >
+	<!-- 全页面显示 -->
+	
+	<result name="model_allshow" type="json">
+		<param name="root">map</param>
+	</result>
+	<!-- 模型详情 -->
+	<result name="model_view" type="json">
+		<param name="root">map</param>
+	</result>
+	<!-- 喜欢 -->
+	<result name="model_like" type="json">
+		<param name="root">map</param>
+	</result>
+	<!-- 单行删除 -->
+	<result name="model_delete" type="json">
+		<param name="root">map</param>
+	</result>
+	<!-- 批量删除 -->
+	<result name="model_deletes" type="json">
+		<param name="root">map</param>
+	</result>
 </action>
 <!-- projectAction -->
-<action name="Project_*" class="com.sdu.action.ProjetAction" method="{1}">
+<action name="Project_addProject" class="com.sdu.action.ProjetAction" method="addProject">
 <interceptor-ref name="json"></interceptor-ref>
 	<result name="success">/basic.jsp</result>
+</action>
+<action name="Project_*" class="com.sdu.action.ProjetAction" method="{1}">
+	<result name="showSuccess" type="json">
+		<param name="root">map</param>
+	</result>
+	<result name="delSuccess" type="json">
+		<param name="root">map</param>
+	</result>
 </action>
 <!-- dataFileAction -->
 <action name="DataFile_*" class="com.sdu.action.DataFileAction" method="{1}">
