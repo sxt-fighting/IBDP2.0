@@ -104,6 +104,16 @@ var algorithmJSONList=[
        				]
     			},
     			{
+    				name:'决策树(C4.5)',
+    				based:'R',
+    				actionName:'DecisionTreeMethod',
+    				Method:'c45',
+    				introduction:'用于计算相关性的算法',
+    				param:[
+       					{name:'公式',field:'formula',type:'String'} 
+       				]
+    			},
+    			{
     				name:'主成分分析(基于R)',
     				based:'R',
     				actionName:'PCAMethod',
@@ -123,18 +133,19 @@ var algorithmJSONList=[
     			},
     			{
     				name:'神经网络',
-    				actionName:'BPMethod',
+    				actionName:'NnetMethod',
     				based:'R',
     				introduction:'BP神经网络是一种按误差逆传播算法训练的多层前馈网络',
     				param:[
+    				    {name:'用途',field:'type',type:'select',options:['分类','回归'],value:''},
        					{name:'公式',field:'formula',type:'String'},
        					{name:'隐藏层神经元数量',field:'size',type:'String'},
        					{name:'最大迭代次数',field:'maxit',type:'String'}    		
        				]
     			},
     			{
-    				name:'多层感知机（基于Spark_MLlib）',
-    				actionName:'BPMethod',
+    				name:'多层感知机（基于Spark_MLlib）×',
+    				actionName:'NnetMethod',
     				based:'Spark',
     				introduction:'BP神经网络是一种按误差逆传播算法训练的多层前馈网络',
     				param:[
@@ -227,6 +238,17 @@ var algorithmJSONList=[
     				introduction:'随机森林可用于分类或回归',
     				param:[
        					{name:'公式',field:'formula',type:'String'}
+       				]
+    			},
+    			{
+    				name:'关联规则挖掘',
+    				based:'R',
+    				actionName:'AprioriMethod',
+    				introduction:'Apriori算法',
+    				param:[
+       					{name:'分隔符',field:'sep',type:'String'},
+       					{name:'支持度',field:'support',type:'String'},
+       					{name:'可信度',field:'confidence',type:'String'}
        				]
     			}
     			]];

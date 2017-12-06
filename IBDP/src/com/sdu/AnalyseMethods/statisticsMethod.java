@@ -17,7 +17,7 @@ public class statisticsMethod extends BasicMethod{
 		System.out.println("统计分析");
 		//获取collect所需参数
 		String filepath=dataFile.getD_localpath();
-		String dataFileName=dataFile.getD_name();	
+		String dataFileName=dataFile.getD_name();
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		

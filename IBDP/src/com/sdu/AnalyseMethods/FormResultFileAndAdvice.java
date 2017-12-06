@@ -21,7 +21,8 @@ public class FormResultFileAndAdvice {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		resultFile.setD_createTime(sdf.format(date));
 		resultFile.setD_name(filename);
-		resultFile.setD_suffix("txt");
+		String aa = filename.substring(filename.lastIndexOf(".")+1);
+		resultFile.setD_suffix(aa);
 		resultFile.setD_hasheader("FALSE");
 		resultFile.setD_type(type);
 		resultFile.setD_localpath(localPath);

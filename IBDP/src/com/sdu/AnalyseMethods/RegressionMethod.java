@@ -37,7 +37,7 @@ public class RegressionMethod extends BasicMethod{
 	{
 		
 		String filepath=dataFile.getD_localpath();
-		String dataFileName=dataFile.getD_name();	
+		String dataFileName=dataFile.getD_name();
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
@@ -128,7 +128,7 @@ public class RegressionMethod extends BasicMethod{
 	{
 		
 		String filepath=dataFile.getD_localpath();
-		String dataFileName=dataFile.getD_name();	
+		String dataFileName=dataFile.getD_name();
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
