@@ -269,10 +269,16 @@
               			align: 'center', // 左右居中
               			valign: 'middle' // 上下居中
           			}, {
-              			field: 'm_type',
-              			title: '模型类型',
+              			field: 'm_state',
+              			title: '模型状态',
               			align: 'center',
-              			valign: 'middle'
+              			valign: 'middle',
+              			formatter: function (value, row, index){
+              				if(row.m_state==1){
+              					return "共有模型";
+              				}else if(row.m_state==0){
+              					return "私有模型";
+              				}}
           			}, {
               			field: 'm_createTime',
               			title: '创建时间',

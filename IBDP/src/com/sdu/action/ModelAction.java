@@ -149,8 +149,8 @@ public class ModelAction extends ActionSupport{
 	
 //--------------通过用户权限显示全部模型
 		public String showAllModelsByUserId(){
-			System.out.println("到了showAll方法");
-			System.out.println("offset:"+offset+",pageSize:"+pageSize);
+		//	System.out.println("到了showAll方法");
+		//	System.out.println("offset:"+offset+",pageSize:"+pageSize);
 			List<Object> list = new ArrayList<>();
 			int adminId = ((Admin)ActionContext.getContext().getSession().get("user")).getId();
 			list = modelBizImpl.getAllModelsByUseId(adminId,offset,pageSize);

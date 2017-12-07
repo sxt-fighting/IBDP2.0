@@ -225,7 +225,11 @@
 	<result name="tab">/visualData/showFileData.jsp</result>
 	<result name="txt">/visualData/showTxtData.jsp</result>
 	<result name="picture">/visualData/showPictureData.jsp</result>
-	
+</action>
+<action name="readFileToShow_*" class="com.sdu.action.ReadFileToShowAction" method="{1}">
+	<result name="dynamicViewSuccess" type="json">
+		<param name="root">map</param>
+	</result>
 </action>
 </package>
 </struts>       

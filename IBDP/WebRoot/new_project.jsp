@@ -57,11 +57,11 @@
     //	 alert(user);
      window.location.href="login.jsp"; 
 	 }
-	 <%Admin userobj=(Admin)session.getAttribute("user");
+<%-- 	 <%Admin userobj=(Admin)session.getAttribute("user");
 		%>
 				
     var username = '<%=userobj.getName()%>';
-    var userid='<%=userobj.getId()%>';
+    var userid='<%=userobj.getId()%>'; --%>
 </script>
 <style type="text/css">
 /* .btn-circle {
@@ -267,10 +267,17 @@
 														<div  ng-repeat="p in a.param">
 														<div class="form-group" ng-if="p.type=='String'">
 																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;" >{{p.name}} </label>
-							
-																	<div class="col-sm-9">
+																	<div class=" col-sm-9">
+																		<div >
 																		<input type="text" ng-model="p.value" ng-change="changeState()" class="col-xs-10 col-sm-5">
 																	</div>
+																	<div >
+																		<button class="btn btn-success btn-sm" ng-click="viewDateFile()"  class="col-xs-10 col-sm-5">预览</button>
+																	</div>
+																	</div>
+																	
+							
+																	
 														</div>
 														<div class="form-group" ng-if="p.type=='select'">
 																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
@@ -424,6 +431,7 @@
 								            </div>
 								        </div>
 								    </div>
+								    
 								    <div class="modal fade" id="newModelInfo" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 								         aria-hidden="true">
 								         
@@ -464,10 +472,25 @@
 								         
 								        
 								    </div>
+								    	 <!-- view模态框 -->
+									<div class="modal fade " id="viewFileModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+								         aria-hidden="true">
+								         
+								          <div class="modal-dialog" style=" height:700px;width: 65%;">
+								            <div style="text-align:center;background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
+											<label style="padding: 5px;float:center;font-size:18px">文件内容预览 </label>
+											<button class="btn btn-sm pull-right" style="width:50px;padding: 9.5px;" data-dismiss="modal"><i class="ace-icon glyphicon glyphicon-remove"></i></button>
+											</div>
+								            <div id="modalContent"  class="modal-content" style="height: 700px;overflow:scroll;overflow-x:auto;overflow-y:auto ">
+								            	<table class="table"><tbody id="table_body"></tbody></table>
+								            </div>
+								        </div>  
+								    </div>
+									
 									</div><!-- /.widget-body -->
 								</div>
 								
-
+						
 
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
@@ -505,6 +528,8 @@
 			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
 			</a>
+		
+			
 		</div><!-- /.main-container -->
 		<!-- basic scripts -->
 
@@ -540,7 +565,9 @@
 		<script src="assets/js/ace-elements.min.js"></script>
 		<script src="assets/js/ace.min.js"></script>
 		<script type="text/javascript">
-			
+		 var pos;
+    	 var lines;
+    	 var isNext;
 				//jquery accordion
 				$( "#accordion" ).accordion({
 					collapsible: true ,
@@ -548,6 +575,7 @@
 					animate: 250,
 					header: ".accordion-header"
 				});
+				
 		</script>
 		<script type="text/javascript">
 			var project_modelapp=angular.module('newProject', ['ngRoute']);
@@ -570,7 +598,7 @@
 			$scope.project={
 			name:'',
 			describe:'',
-			userid:userid,
+//			userid:userid,
 			datafileid:'',
 			modelid:''
 			};
@@ -697,15 +725,18 @@
                            .success(function (data) {
                              console.log("创建Project成功"+data);	
                              bootbox.dialog({
-     						message: "您的分析任务已被提交，请稍后到我的项目中查看详情！", 
+     						message: "您的分析任务已被提交，点击跳转到项目列表页面!", 
      						buttons: {
      							"success" : {
      								"label" : "OKay",
-     								"className" : "btn-sm btn-primary"
+     								"className" : "btn-sm btn-primary",
+     								"callback":function(){
+     									window.location.href = "<%=request.getContextPath()%>/project.jsp";
+     								}
      							}
      						}
      					}); 
-                             
+            
                              
 	                       })
                            .error(function (data) {
@@ -753,16 +784,52 @@
 			     $scope.isSelected = function(v,value){
 			         return value.indexOf()>=0;
 			     };
-
+			     $scope.viewDateFile=function(){
+			    	// $('#viewModal').empty();
+			    	// var s=functionaaaa();//设计成缓存100行数据
+			    	 //$('#viewModal-body').append(s);
+			    	
+			    	 $('#table_body').empty();
+			    	 pos = 0;
+			    	 isNext = "true";
+			    	 lines = 25;
+			    	 //  $('#modalContent').empty();
+			    	 viewData();
+			    	 $('#modalContent').scrollTop(0);
+			    	 $('#viewFileModal').modal();
+			     };   
     }]);
 		</script>
 		<script type="text/javascript">
+		function viewData(){
+		//	var viewData =null;
+			$.post("readFileToShow_dynamicView.action",{
+				dataFileId:$('div[ng-controller="project_modelCtrl"]').scope().project.datafileid,
+				pos:pos,
+				lines:lines
+			},function(data){
+				var dataArray = JSON.parse(data.jsonData);
+				//console.log(dataArray);
+				pos = data.pos;
+				isNext = data.isNext;
+				var viewData = "";
+				for(var i = 0;i<dataArray.length;i++){
+					viewData = viewData+"<tr>";
+					for(var j = 0;j<dataArray[i].length;j++){
+						viewData = viewData+"<td>"+dataArray[i][j]+"</td>";
+					}
+					viewData = viewData+"</tr>";
+				}
+				$('#table_body').append(viewData);
+			});
+		//	return viewData;
+		}
 		$("#upload").change(function(){
-			console.log("userid"+userid);
+	//		console.log("userid"+userid);
 			$.ajaxFileUpload({
 				url:"<%=request.getContextPath()%>/DataFile_saveDataFile.action",
 				type:'post',
-				data:{userid:userid},
+				/* data:{userid:userid}, */
 				dataType:'json',
 				fileElementId:'upload',
 				success:function(data){
@@ -781,6 +848,14 @@
 			});
 		});
 			jQuery(function($) {
+				$('#modalContent').scroll(function(){
+		    		 console.log($('#modalContent').scrollTop()+'|'+$('#modalContent')[0].scrollHeight);
+		    		 if($('#modalContent').scrollTop()+1000>($('#modalContent')[0].scrollHeight)&&isNext !="false"){
+		    			 //console.log("加载一次");
+		    			 viewData();  
+		    			 //totalHeight=$('#modalContent')[0].scrollHeight;
+		    		 }
+		    	 });
 			
 				//var $validation = false;//禁用表单验证
 				var controllerScope = $('div[ng-controller="project_modelCtrl"]').scope();
@@ -802,25 +877,20 @@
 					if(info.step == 2 ) {
 					//console.log("222222前");
 					//在这点击下一步后，更新文件“是否包含表头”的信息。
-					$.post("<%=request.getContextPath()%>/DataFile_updateDataFile.action",
-							{
-								fileid: $('div[ng-controller="project_modelCtrl"]').scope().project.datafileid,
-								hasheader:$("#gender").val(),
-							},
-							function(data,status){
-							    //alert("Data: " + data + "\nStatus: " + status);
-							  });
-			/* 		$.ajax({
-									url:'DataFile_save
-									DataFile.action',
-												success:function(data){
-										    	console.log("支持inittable之后!");
-											},
-											error:function(){
-											 e.preventDefault();
-												console.log("服务器响应失败!");
-											}
-						}); */
+						if(controllerScope.project.datafileid==""){
+							alert("文件未上传完毕！");
+							e.preventDefault();
+						} else{
+							$.post("<%=request.getContextPath()%>/DataFile_updateDataFile.action",
+									{
+										fileid: $('div[ng-controller="project_modelCtrl"]').scope().project.datafileid,
+										hasheader:$("#gender").val(),
+									},
+									function(data,status){
+									    //alert("Data: " + data + "\nStatus: " + status);
+									  });
+						}
+			
 					}
 					if(info.step == 3 ) {
 					//console.log("33333前");

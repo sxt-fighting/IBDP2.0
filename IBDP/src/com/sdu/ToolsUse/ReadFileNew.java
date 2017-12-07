@@ -1,8 +1,11 @@
 package com.sdu.ToolsUse;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.experimental.theories.DataPoint;
 
 import com.csvreader.CsvReader;
 import com.sdu.entity.DataNew;
@@ -84,7 +88,7 @@ public class ReadFileNew {
 					colnum = coltem;
 				}
 			}
-		System.out.println(colnum);
+//		System.out.println(colnum);
 		return colnum;
 	}
 	
@@ -378,5 +382,76 @@ public static int xlslen(String fileName) throws Exception{
 			cellVal = "";
 		}
 		return cellVal.trim();
+	}
+	public static long readTextByPos(List<DataNew> list,String FileName,long pos,int lines) throws IOException{
+		RandomAccessFile raf = null;
+		long position = -1;
+		try {
+			raf = new RandomAccessFile(new File(FileName),"r");
+			if(pos>=0 && pos<raf.length()){
+				raf.seek(pos);
+				for(int i = 0;i<lines;i++){
+					String line = raf.readLine();
+					if(line==null){
+						break;
+					}
+					String lineData = new String(line.getBytes("8859_1"),"gbk");
+					String[] data = lineData.split(",");
+					DataNew temp = new DataNew();
+					List<String> sl = new ArrayList<String>();
+					for(int j = 0;j<data.length;j++){
+						sl.add(data[j]);
+					}
+					temp.setData(sl);
+					list.add(temp);
+				}
+				position = raf.getFilePointer();
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return position;
+	}
+	public static int readExcelByPos(List<DataNew> list,String filePath,int pos,int lines){
+		int position = -1;
+		HSSFWorkbook hssf = null;
+		try {
+			hssf = new HSSFWorkbook(new FileInputStream(filePath));
+			HSSFSheet hssfSheet = hssf.getSheetAt(0);
+			if(pos>=0&&pos<hssfSheet.getLastRowNum()){
+				HSSFRow hssfRow = null;
+				String currCellValue = "";
+				int sizeTemp = 0;
+				for(int rowNum = pos;rowNum<=hssfSheet.getLastRowNum();rowNum++){
+					sizeTemp = sizeTemp + 1 ;
+					hssfRow = hssfSheet.getRow(rowNum);
+					if (hssfRow == null) {
+						continue;
+					}
+					DataNew vo = new DataNew();
+					vo.setLineNo(rowNum+1);
+					//获取列数
+					int columnNum=hssfRow.getPhysicalNumberOfCells();
+					List<String> dataList = new ArrayList<String>();
+					for(int i=0;i<columnNum;i++){
+						currCellValue = printCellValue(hssfRow.getCell(i));
+						dataList.add(currCellValue);
+						//System.out.println(currCellValue);
+					}
+					vo.setData(dataList);
+					list.add(vo);
+					pos = pos+lines;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return position;
 	}
 }
