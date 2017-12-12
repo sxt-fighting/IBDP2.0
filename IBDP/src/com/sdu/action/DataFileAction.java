@@ -322,14 +322,18 @@ public class DataFileAction extends ActionSupport{
 			JSONArray dataFileArray = new JSONArray();
 			//添加projectNode中的信息
 			for(int j = 0;j<dataFileTree.size();j++){
+				//System.out.println("project_id:"+projectTree.get(i).getP_id());
+				
 				Object[] object = (Object[]) dataFileTree.get(j);
+				//System.out.println("object[0]"+object[0]);
 //				System.out.println("object[0] = "+object[0]);
-				if(projectTree.get(i).getP_id() ==object[0]){
+				if((projectTree.get(i).getP_id()) ==object[0]){
 					JSONObject dataFileObject = new JSONObject();
 //					System.out.println("object[1] = "+object[1]);
 					dataFileObject.put("text", object[1]);
 					dataFileObject.put("height", 3);
 					dataFileObject.put("project_id",projectTree.get(i).getP_id());
+					//System.out.println("object[1]:"+object[1]);
 					dataFileObject.put("datafile_type",object[1]);
 					dataFileArray.put(dataFileObject);
 				}

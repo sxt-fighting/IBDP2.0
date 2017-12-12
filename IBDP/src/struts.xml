@@ -225,7 +225,7 @@
 	<result name="tab">/visualData/showFileData.jsp</result>
 	<result name="txt">/visualData/showTxtData.jsp</result>
 	<result name="picture">/visualData/showPictureData.jsp</result>
-	
+	<result name="pdffile">/visualData/showPdfFile.jsp</result>
 </action>
 </package>
 </struts>       

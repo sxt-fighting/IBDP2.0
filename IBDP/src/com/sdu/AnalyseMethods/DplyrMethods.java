@@ -105,12 +105,42 @@ public class DplyrMethods extends BasicMethod{
  		 else
  	 	c.eval("datafile<-datafile[!is.na(datafile[,"+variable+"],]");
  	}
+	if(method_name.equals("sample"))
+ 	{
+ 		variable=params.getJSONObject(0).getString("value");
+ 	    String replace=params.getJSONObject(1).getString("value");
+ 	    String prob=params.getJSONObject(2).getString("value");
+ 	    if(replace.equals("TRUE"))
+ 	    	replace="TRUE";
+ 	    else
+ 	    	replace="FALSE";
+ 	    System.out.println("ind<-sample("+variable+",nrow(datafile),replace="+replace.toUpperCase()+",prob=c("+prob+"))");
+ 	 	c.eval("ind<-sample("+variable+",nrow(datafile),replace=TRUE,prob=c("+prob+"))");
+ 	    c.eval("traindata<-datafile[ind==1,]");
+ 	    c.eval("testdata<-datafile[ind==2,]");
+ 	    c.eval("save(traindata,file=\"traindata.Rdata\" )");
+		c.eval("save(testdata,file=\"testdata.Rdata\" )");
+ 		
+		resultFile=FormResultFileAndAdvice.formFile(user, project, "testdata.Rdata", savePath+"/testdata.Rdata","ResultFile");
 		
+		DataFileHibernate.saveDataFile(resultFile);
+		HDFSTools.LoadSingleFileToHDFS(resultFile);
+		
+		resultFile=FormResultFileAndAdvice.formFile(user, project, "traindata.Rdata", savePath+"/traindata.Rdata","ResultFile");
+		
+		DataFileHibernate.saveDataFile(resultFile);
+		HDFSTools.LoadSingleFileToHDFS(resultFile);
+		//通知分析完成
+		FormResultFileAndAdvice.FormAdvice(user, project); 
+ 	    c.close();
+ 	    return resultFile ;
+ 	}	
  	
  	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_"+method_name;
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
+ 	
  	if(index==algorithmJSON.length()-1)
 	{
  		if(aa.equalsIgnoreCase("csv")||aa.equalsIgnoreCase("xls")||aa.equalsIgnoreCase("xlsx"))
@@ -133,6 +163,11 @@ public class DplyrMethods extends BasicMethod{
 			
 		//通知分析完成
 		FormResultFileAndAdvice.FormAdvice(user, project);
+		if(method_name.equals("sample"))
+		{
+			
+		}
+		
 	}
  	else
  	{

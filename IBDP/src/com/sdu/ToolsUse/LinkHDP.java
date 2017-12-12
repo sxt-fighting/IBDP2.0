@@ -19,9 +19,9 @@ public class LinkHDP {
 			e.printStackTrace();
 		}
 */
-    String abc="12312，3123";
-    abc=abc.replaceAll("，", ",");
-    System.out.println(abc);
+		String dataFileName="D:/user/5959140716904628543.csv";
+		dataFileName=dataFileName.substring(dataFileName.lastIndexOf("/")+1);
+		System.out.println(dataFileName);
 	}
 
 }

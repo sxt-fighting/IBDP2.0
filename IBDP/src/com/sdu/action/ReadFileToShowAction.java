@@ -76,6 +76,10 @@ public class ReadFileToShowAction {
 				
 			request.setAttribute("filename", filename);
 			forward="picture";
+		}else if ("pdf".equals(filetype.toLowerCase())) {
+			
+			request.setAttribute("filename", filename);
+			forward="pdffile";
 		}
 		
 		return forward;

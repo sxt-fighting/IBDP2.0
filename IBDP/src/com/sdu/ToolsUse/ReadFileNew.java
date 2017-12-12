@@ -1,5 +1,6 @@
 package com.sdu.ToolsUse;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -197,9 +198,9 @@ public class ReadFileNew {
 	public static List<DataNew> readxlsx(String path) throws IOException {
 		List<DataNew> list = new ArrayList<DataNew>();
 		list.clear();
-		InputStream is = new FileInputStream(path);
-		XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
-		XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(0);
+		File excelFile = new File(path);  
+        XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(excelFile));  
+        XSSFSheet xssfSheet = wb.getSheetAt(0);
 		// 循环行Row     
         for(int rowNum = 0; rowNum <= xssfSheet.getLastRowNum(); rowNum++ ){    
           XSSFRow xssfRow = xssfSheet.getRow( rowNum); 

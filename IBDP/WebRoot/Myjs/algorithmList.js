@@ -42,7 +42,7 @@ var algorithmJSONList=[
     				]
     			},
     			{
-    				name:'数据取样（sample）',
+    				name:'数据取样（sample_n）',
     				actionName:'DplyrMethods',
     				method:'sample_n',
     				introduction:'随机抽取指定数目的样本',
@@ -51,6 +51,20 @@ var algorithmJSONList=[
     					{name:'抽取样本数',field:'SampleNumber',type:'String'},
     					
     					{name:'是否有放回抽样',field:'repalce',type:'select',options:['是','否'],value:''}
+    				]
+    			},
+    			{
+    				name:'划分训练集和测试集（sample）',
+    				actionName:'DplyrMethods',
+    				method:'sample',
+    				introduction:'可以将数据划分成训练集和测试集',
+    				guide:'用户可以输入分组的数目，以及权重来划分数据集',
+    				param:[
+    					
+    					{name:'分组数',field:'SampleNumber',type:'String'},
+    					
+    					{name:'是否有放回抽样',field:'replace',type:'select',options:['TRUE','FALSE'],value:''},
+    					{name:'权重',filed:'prob',type:'String'}
     				]
     			}
 ],
@@ -110,7 +124,53 @@ var algorithmJSONList=[
     				Method:'c45',
     				introduction:'用于计算相关性的算法',
     				param:[
-       					{name:'公式',field:'formula',type:'String'} 
+	{name:'预测变量',field:'predictionVariable',type:'String'},
+	{name:'因子变量',field:'factorVariable',type:'String'} 
+       				]
+    			},
+    			{
+    				name:'决策树(C5.0)',
+    				based:'R',
+    				actionName:'DecisionTreeMethod',
+    				Method:'C50',
+    				introduction:'用于计算相关性的算法',
+    				param:[
+       					{name:'预测变量',field:'predictionVariable',type:'String'},
+       					{name:'因子变量',field:'factorVariable',type:'String'} 
+       				]
+    			},
+    			{
+    				name:'决策树(CART)',
+    				based:'R',
+    				actionName:'DecisionTreeMethod',
+    				Method:'CART',
+    				introduction:'用于计算相关性的算法',
+    				param:[
+    				       {name:'预测变量',field:'predictionVariable',type:'String'},
+    				       {name:'因子变量',field:'factorVariable',type:'String'} 
+       				]
+    			},
+    			{
+    				name:'KNN',
+    				based:'R',
+    				actionName:'KNNMethod',
+    				Method:'KNN',
+    				introduction:'用于计算相关性的算法',
+    				param:[
+       					{name:'预测变量',field:'predictionVariable',type:'String'},
+       					{name:'因子变量',field:'factorVariable',type:'String'} ,
+       					{name:'近邻个数',field:'size',type:'String'}
+       				]
+    			},
+    			{
+    				name:'SVM',
+    				based:'R',
+    				actionName:'SVMMethod',
+    				Method:'SVM',
+    				introduction:'用于计算相关性的算法',
+    				param:[
+    				       {name:'预测变量',field:'predictionVariable',type:'String'},
+    				       {name:'因子变量',field:'factorVariable',type:'String'}   					
        				]
     			},
     			{
