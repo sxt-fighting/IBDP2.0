@@ -28,7 +28,9 @@ public class RandomForestMethod extends BasicMethod{
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String formula=params.getJSONObject(0).getString("value");
+		String y=params.getJSONObject(0).getString("value");
+		String x=params.getJSONObject(1).getString("value");
+		
 		
 		
     	System.out.println("链接Rserve，开始分析任务");
@@ -38,7 +40,7 @@ public class RandomForestMethod extends BasicMethod{
 		c= new RConnection();
 		
     	System.out.println("Rserve连接成功");
-    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+formula);
+    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+y+"~"+x);
     	//String  savePath="/home/jc/IBDP2/"+user.getId()+"/DataFiles";
     	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
     	System.out.println(savePath);
@@ -75,9 +77,8 @@ public class RandomForestMethod extends BasicMethod{
  	c.eval("sc<-spark_connect(master = \"local\" )"); 
  	System.out.println("spark连接成功");
  	c.eval("data_tbl <- copy_to(sc, datafile, \"datafile\", overwrite = TRUE)");
- 	c.eval("RF_model <- data_tbl %>% ml_random_forest("+formula+")");
-	String predict_column=formula.substring(0,formula.lastIndexOf("~"));
-	c.eval("rf_predict <-  sdf_predict(RF_model, data_tbl) %>%ft_string_indexer(\""+predict_column+"\", \"index\") %>%collect");
+ 	c.eval("RF_model <- data_tbl %>% ml_random_forest("+y+"~"+x+")");
+	c.eval("rf_predict <-  sdf_predict(RF_model, data_tbl) %>%ft_string_indexer(\""+y+"\", \"index\") %>%collect");
 	
  	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_RF";
  	System.out.println("开始写入结果文件:"+resultFileName);

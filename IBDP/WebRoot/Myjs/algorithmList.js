@@ -60,11 +60,7 @@ var algorithmJSONList=[
     				introduction:'可以将数据划分成训练集和测试集',
     				guide:'用户可以输入分组的数目，以及权重来划分数据集',
     				param:[
-    					
-    					{name:'分组数',field:'SampleNumber',type:'String'},
-    					
-    					{name:'是否有放回抽样',field:'replace',type:'select',options:['TRUE','FALSE'],value:''},
-    					{name:'权重',filed:'prob',type:'String'}
+    				    {name:'权重',filed:'prob',type:'String'}
     				]
     			}
 ],
@@ -86,7 +82,8 @@ var algorithmJSONList=[
     				actionName:'BayesMethod',
     				introduction:'R语言中的关于贝叶斯的一种算法',
     				param:[
-    					{name:'公式',field:'formula',type:'String'}
+    				       {name:'预测变量',field:'predictionVariable',type:'String'},
+    				       {name:'因子变量',field:'factorVariable',type:'String'},
     				]
     			},
     			{
@@ -105,7 +102,8 @@ var algorithmJSONList=[
     				actionName:'DecisionTreeMethod',
     				introduction:'用于计算相关性的算法',
     				param:[
-       					{name:'公式',field:'formula',type:'String'}
+{name:'预测变量',field:'predictionVariable',type:'String'},
+{name:'因子变量',field:'factorVariable',type:'String'} 
        				]
     			},
     			{
@@ -114,7 +112,8 @@ var algorithmJSONList=[
     				actionName:'DecisionTreeMethod',
     				introduction:'用于计算相关性的算法',
     				param:[
-       					{name:'公式',field:'formula',type:'String'}
+{name:'预测变量',field:'predictionVariable',type:'String'},
+{name:'因子变量',field:'factorVariable',type:'String'} 
        				]
     			},
     			{
@@ -198,7 +197,8 @@ var algorithmJSONList=[
     				introduction:'BP神经网络是一种按误差逆传播算法训练的多层前馈网络',
     				param:[
     				    {name:'用途',field:'type',type:'select',options:['分类','回归'],value:''},
-       					{name:'公式',field:'formula',type:'String'},
+    				    {name:'预测变量',field:'predictionVariable',type:'String'},
+ 				       {name:'因子变量',field:'factorVariable',type:'String'},   
        					{name:'隐藏层神经元数量',field:'size',type:'String'},
        					{name:'最大迭代次数',field:'maxit',type:'String'}    		
        				]
@@ -209,7 +209,8 @@ var algorithmJSONList=[
     				based:'Spark',
     				introduction:'BP神经网络是一种按误差逆传播算法训练的多层前馈网络',
     				param:[
-       					{name:'公式',field:'formula',type:'String'},
+       				{name:'预测变量',field:'predictionVariable',type:'String'},
+ 				       {name:'因子变量',field:'factorVariable',type:'String'},
        					{name:'层',field:'size',type:'String'},
        					{name:'最大迭代次数',field:'maxit',type:'String'}    		
        				]
@@ -220,7 +221,8 @@ var algorithmJSONList=[
     				actionName:'RandomForestMethod',
     				introduction:'随机森林是一个包含多个决策树的分类器',
     				param:[
-       					{name:'公式',field:'formula',type:'String'}   		
+    				       {name:'预测变量',field:'predictionVariable',type:'String'},
+    				       {name:'因子变量',field:'factorVariable',type:'String'},  		
        				]
     			},
     			{
@@ -261,7 +263,8 @@ var algorithmJSONList=[
     				actionName:'RegressionMethod',
     				introduction:'线性回归(Linear Regression)是利用称为线性回归方程的最小平方函数对一个或多个自变量和因变量之间关系进行建模的一种回归分析',
     				param:[
-       					{name:'公式',field:'formula',type:'String'}
+    				       {name:'预测变量',field:'predictionVariable',type:'String'},
+    				       {name:'因子变量',field:'factorVariable',type:'String'},
        				]
     			},
     			{
@@ -270,7 +273,8 @@ var algorithmJSONList=[
     				actionName:'RegressionMethod',
     				introduction:'线性回归(Linear Regression)是利用称为线性回归方程的最小平方函数对一个或多个自变量和因变量之间关系进行建模的一种回归分析',
     				param:[
-       					{name:'公式',field:'formula',type:'String'}
+    				       {name:'预测变量',field:'predictionVariable',type:'String'},
+    				       {name:'因子变量',field:'factorVariable',type:'String'},
        				]
     			},
     			{
@@ -279,7 +283,8 @@ var algorithmJSONList=[
     				actionName:'LogisticMethod',
     				introduction:'logistic回归是一种广义线性回归（generalized linear model）',
     				param:[
-       					{name:'公式',field:'formula',type:'String'}
+    				       {name:'预测变量',field:'predictionVariable',type:'String'},
+    				       {name:'因子变量',field:'factorVariable',type:'String'},
        				]
     			},
     			{
@@ -288,7 +293,8 @@ var algorithmJSONList=[
     				actionName:'LogisticMethod',
     				introduction:'logistic回归是一种广义线性回归（generalized linear model）',
     				param:[
-       					{name:'公式',field:'formula',type:'String'}
+    				       {name:'预测变量',field:'predictionVariable',type:'String'},
+    				       {name:'因子变量',field:'factorVariable',type:'String'},
        				]
     			},
     			{
@@ -297,7 +303,8 @@ var algorithmJSONList=[
     				actionName:'RandomForestMethod',
     				introduction:'随机森林可用于分类或回归',
     				param:[
-       					{name:'公式',field:'formula',type:'String'}
+    				       {name:'预测变量',field:'predictionVariable',type:'String'},
+    				       {name:'因子变量',field:'factorVariable',type:'String'},
        				]
     			},
     			{

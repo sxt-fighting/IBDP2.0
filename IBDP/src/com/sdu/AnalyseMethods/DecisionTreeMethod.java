@@ -48,7 +48,8 @@ public class DecisionTreeMethod extends BasicMethod{
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String formula=params.getJSONObject(0).getString("value");
+		String y=params.getJSONObject(0).getString("value");
+		String x=params.getJSONObject(1).getString("value");
 		
 		
     	System.out.println("链接Rserve，开始分析任务");
@@ -58,7 +59,7 @@ public class DecisionTreeMethod extends BasicMethod{
 		c= new RConnection();
 		
     	System.out.println("Rserve连接成功");
-    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+formula);
+    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+y+"~"+x);
     	//String  savePath="/home/jc/IBDP2/"+user.getId()+"/DataFiles";
     	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
     	System.out.println(savePath);
@@ -97,7 +98,7 @@ public class DecisionTreeMethod extends BasicMethod{
  	c.eval("sc<-spark_connect(master = \"local\" )"); 
  	System.out.println("spark连接成功");
  	c.eval("data_tbl <- copy_to(sc, datafile, \"datafile\", overwrite = TRUE)");
- 	c.eval("fit <- rpart("+formula+", data=data_tbl)");
+ 	c.eval("fit <- rpart("+y+"~"+x+", data=data_tbl)");
 	
  	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_DT";
  	System.out.println("开始写入结果文件:"+resultFileName);
@@ -265,8 +266,8 @@ public class DecisionTreeMethod extends BasicMethod{
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String formula=params.getJSONObject(0).getString("value");
-		
+		String y=params.getJSONObject(0).getString("value");
+		String x=params.getJSONObject(1).getString("value");
 		
     	System.out.println("链接Rserve，开始分析任务");
     	DataFile resultFile=new DataFile();//要返回的文件
@@ -275,7 +276,7 @@ public class DecisionTreeMethod extends BasicMethod{
 		c= new RConnection();
 		
     	System.out.println("Rserve连接成功");
-    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+formula);
+    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+y+"~"+x);
     	//String  savePath="/home/jc/IBDP2/"+user.getId()+"/DataFiles";
     	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
     	System.out.println(savePath);
@@ -312,7 +313,7 @@ public class DecisionTreeMethod extends BasicMethod{
  	c.eval("sc<-spark_connect(master = \"local\" )"); 
  	System.out.println("spark连接成功");
  	c.eval("data_tbl <- copy_to(sc, datafile, \"datafile\", overwrite = TRUE)");
- 	c.eval("model<-ml_decision_tree(data_tbl, "+formula+")");
+ 	c.eval("model<-ml_decision_tree(data_tbl, "+y+"~"+x+")");
 	c.eval("dt_predict<-sdf_predict(model,data_tbl)");
  	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_C45";
  	System.out.println("开始写入结果文件:"+resultFileName);

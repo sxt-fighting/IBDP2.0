@@ -108,14 +108,9 @@ public class DplyrMethods extends BasicMethod{
 	if(method_name.equals("sample"))
  	{
  		variable=params.getJSONObject(0).getString("value");
- 	    String replace=params.getJSONObject(1).getString("value");
- 	    String prob=params.getJSONObject(2).getString("value");
- 	    if(replace.equals("TRUE"))
- 	    	replace="TRUE";
- 	    else
- 	    	replace="FALSE";
- 	    System.out.println("ind<-sample("+variable+",nrow(datafile),replace="+replace.toUpperCase()+",prob=c("+prob+"))");
- 	 	c.eval("ind<-sample("+variable+",nrow(datafile),replace=TRUE,prob=c("+prob+"))");
+ 	    
+ 	    System.out.println("ind<-sample(2,nrow(datafile),replace=TRUE,prob=c("+variable+"))");
+ 	 	c.eval("ind<-sample(2,nrow(datafile),replace=TRUE,prob=c("+variable+"))");
  	    c.eval("traindata<-datafile[ind==1,]");
  	    c.eval("testdata<-datafile[ind==2,]");
  	    c.eval("save(traindata,file=\"traindata.Rdata\" )");
