@@ -85,7 +85,7 @@
 											 <div class="col-xs-6 col-sm-4 col-md-3">
 			  <div class="thumbnail search-thumbnail">
 				<span class="search-promotion label label-success arrowed-in arrowed-in-right">S</span>
-					<img class="media-object" src="img/1.jpg" style="width:257px;height:200px;" />
+					<a href="waterquality.jsp"><img class="media-object" src="img/1.jpg" style="width:257px;height:200px;" /></a>
 						<div class="caption">
 						 <div class="clearfix">
 						  <span class="pull-right label label-grey info-label">山大</span>
@@ -98,7 +98,7 @@
 							</div>
 						</div>
 						<h3 class="search-title">
-						 <a href="#" class="blue">水质分析</a>
+						 <a href="waterquality.jsp" class="blue">水质分析</a>
 						</h3>
 						<p>水质分析</p>
 					 </div>
