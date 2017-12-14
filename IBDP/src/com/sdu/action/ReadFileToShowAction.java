@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 import com.sdu.ToolsUse.MysqlConnect;
 import com.sdu.ToolsUse.ReadFileNew;
+import com.sdu.biz.impl.DataFileBizImpl;
 import com.sdu.dao.impl.DataFileDaoImpl;
 import com.sdu.entity.DataFile;
 import com.sdu.entity.DataNew;
@@ -28,16 +29,17 @@ import com.sdu.entity.DataNew;
 
 public class ReadFileToShowAction {
 	private int dataFileId;
-	private DataFileDaoImpl dataFileDao;
 	private Map<String,Object> map;
+	private DataFileBizImpl dataFileBiz;
 	private int pos;
 	private int lines;
 	//--------------------------
+	
 	public void setDataFileId(int dataFileId) {
 		this.dataFileId = dataFileId;
 	}
-	public void setDataFileDao(DataFileDaoImpl dataFileDao) {
-		this.dataFileDao = dataFileDao;
+	public void setDataFileBiz(DataFileBizImpl dataFileBiz) {
+		this.dataFileBiz = dataFileBiz;
 	}
 	public Map<String, Object> getMap() {
 		return map;
@@ -111,7 +113,8 @@ public class ReadFileToShowAction {
 	}
 	public String dynamicView() throws Exception{
 //		System.out.println("dataFileId:"+dataFileId);
-		DataFile dataFile= dataFileDao.getDataFileById(dataFileId);
+		DataFile dataFile= dataFileBiz.getById(dataFileId);
+		System.out.println("dataFileBiz:"+dataFileBiz);
 		String filePath = dataFile.getD_localpath();
 		String suffix = dataFile.getD_suffix();
 		List<DataNew> datalist = null;

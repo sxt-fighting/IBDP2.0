@@ -194,8 +194,29 @@
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
 																		<input type="file" multiple="" accept="*/*" id="upload" name="uploadFile">
+																		<button  class="btn btn-primary btn-sm" onclick="selectFile()">选择已上传文件</button>
+																		
+																		<!--选择文件的模态框-->
+																		<div class="modal fade" id="selectFileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    																		<div class="modal-dialog">
+        																		<div class="modal-content">
+           																	 	<div class="modal-header" >
+                																	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                																	<h5 class="modal-title">选择文件列表</h5>
+            																	</div>
+            																	<div class="modal-body">
+            																		<div id="modal_content">
+            																			
+            																		</div>
+            																	</div>
+        																		</div><!-- /.modal-content -->
+    																		</div><!-- /.modal -->
+																		</div>
+																		<!-- 模态框结束 -->	
+																	
 																	</div>
 																</div>
+																
 															</div>
 															<div class="space-2"></div>
 															<div class="form-group">
@@ -265,7 +286,8 @@
 													<a my-popover herf="#" data-html="true" data-toggle="tooltip"  guide="{{a.guide}}"><i class="ace-icon fa fa-question-circle blue bigger-150"></i></a>
 													</div>
 														<div  ng-repeat="p in a.param">
-														<div class="form-group" ng-if="p.type=='String'">
+														<div ng-if="p.dependon==undefined||p.dependon==''||p.dependon==null">
+															<div class="form-group" ng-if="p.type=='String'">
 																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;" >{{p.name}} </label>
 																	<div class=" col-sm-9">
 																		<div >
@@ -275,13 +297,9 @@
 																		<button class="btn btn-success btn-sm" ng-click="viewDateFile()"  class="col-xs-10 col-sm-5">预览</button>
 																	</div>
 																	</div>
-																	
-							
-																	
 														</div>
 														<div class="form-group" ng-if="p.type=='select'">
 																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
-							
 																	<div class="col-sm-9">
 																		<select 
 																	    ng-options="v as v for v in p.options"
@@ -291,7 +309,6 @@
 														</div>
 														<div class="form-group" ng-if="p.type=='checkbox'">
 																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
-							
 																	<div class="col-sm-9" >
 																	 <div class="row"  style="margin: 10px 10px">
 													                	<div class="checkbox col-xs-3" ng-repeat="v in p.options">
@@ -304,36 +321,50 @@
 																	</div>
 														</div>
 														</div>
+														<div ng-if="p.dependon!=undefined&&p.dependon!=''&&p.dependon!=null" >
+															<div class="form-group" ng-if="p.type=='String'&&a.param[p.dependon-1].value=='是'">
+																		<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;" >{{p.name}} </label>
+																		<div class=" col-sm-9">
+																		<div >
+																			<input type="text" ng-model="p.value" ng-change="changeState()" class="col-xs-10 col-sm-5">
+																		</div>
+																		<div >
+																			<button class="btn btn-success btn-sm" ng-click="viewDateFile()"  class="col-xs-10 col-sm-5">预览</button>
+																		</div>
+																		</div>
+															</div>
+															<div class="form-group" ng-if="p.type=='select'&&a.param[p.dependon-1].value=='是'">
+																		<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
+								
+																		<div class="col-sm-9">
+																			<select 
+																		    ng-options="v as v for v in p.options"
+																		    ng-model="p.value">
+																			</select>
+																		</div>
+															</div>
+															<div class="form-group" ng-if="p.type=='checkbox'&&a.param[p.dependon-1].value=='是'">
+																		<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
+																		<div class="col-sm-9" >
+																		 <div class="row"  style="margin: 10px 10px">
+														                	<div class="checkbox col-xs-3" ng-repeat="v in p.options">
+																				<label>
+																					<input type="checkbox" class="ace"  ng-checked="isSelected(v,p.value)" ng-click="updateSelection($event,v,p.value)">
+																					<span class="lbl">{{v}}</span>
+																				</label>
+																			</div>
+														                </div>
+																		</div>
+															</div>
+														</div>
+														
+														
+														</div>
 													</div>
 												</div>
 											</div>
 										</div>
 														</div> 
-														
-														<%-- <div class="form-group">
-																<label class="control-label col-xs-12 col-sm-3 no-padding-right" >算法</label>
-
-																<div class="col-xs-12 col-sm-9">
-																	<div class="clearfix">
-																		<select class="input-medium" ng-model="algorithmNum" name="platform">
-																			<option value="">------------------</option>
-																			<option value="0">人工神经网络</option>
-																			<option value="1">统计量分析</option>
-																			<option value="2">概率分布</option>
-																			<option value="3">K-means聚类</option>
-																			<option value="4">K-中心点聚类(PAM算法)</option>
-																			<option value="5">关联规则挖掘</option>
-																		</select>
-																	</div>
-																</div>
-														</div>
-														<div class="form-group">
-														<label class="control-label col-xs-12 col-sm-3 no-padding-right" >参数</label>
-														<div class="col-xs-12 col-sm-9">
-														 
-														</div>
-														
-														</div> --%>
 														
 													</div>
 													</form>
@@ -478,8 +509,10 @@
 								         
 								          <div class="modal-dialog" style=" height:700px;width: 65%;">
 								            <div style="text-align:center;background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
-											<label style="padding: 5px;float:center;font-size:18px">文件内容预览 </label>
-											<button class="btn btn-sm pull-right" style="width:50px;padding: 9.5px;" data-dismiss="modal"><i class="ace-icon glyphicon glyphicon-remove"></i></button>
+												<label style="padding: 5px;float:center;font-size:18px">文件内容预览 </label>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												<button class="btn btn-primary btn-sm" onclick="">确定</button>
+												<button class="btn btn-sm pull-right" style="width:50px;padding: 9.5px;" data-dismiss="modal"><i class="ace-icon glyphicon glyphicon-remove"></i></button>
 											</div>
 								            <div id="modalContent"  class="modal-content" style="height: 700px;overflow:scroll;overflow-x:auto;overflow-y:auto ">
 								            	<table class="table"><tbody id="table_body"></tbody></table>
@@ -808,11 +841,20 @@
 				pos:pos,
 				lines:lines
 			},function(data){
-				var dataArray = JSON.parse(data.jsonData);
+				var dataArray = JSON.parse(data.jsonData); 
 				//console.log(dataArray);
-				pos = data.pos;
+				
 				isNext = data.isNext;
 				var viewData = "";
+				if(pos==0){
+					var checkBoxsStr="<tr>";
+					for(var j = 0;j<dataArray[0].length;j++){
+						//viewData = viewData+"<td>"+dataArray[i][j]+"</td>";
+						checkBoxsStr=checkBoxsStr+"<td style='text-align:center;'><input type='checkbox' value='"+dataArray[0][j]+"' onclick='' ></input></td>";
+					}
+					 checkBoxsStr= checkBoxsStr+"</tr>";
+					$('#table_body').append(checkBoxsStr);
+				} 
 				for(var i = 0;i<dataArray.length;i++){
 					viewData = viewData+"<tr>";
 					for(var j = 0;j<dataArray[i].length;j++){
@@ -820,6 +862,7 @@
 					}
 					viewData = viewData+"</tr>";
 				}
+				pos = data.pos;
 				$('#table_body').append(viewData);
 			});
 		//	return viewData;
@@ -999,7 +1042,67 @@
 			
 				
 			});
-			
+			function selectFile(){
+				$.post("Project_getProjectTree.action",function(data){
+					var projectArray = JSON.parse(data.projectData);
+					var projectString ="<ul id='directory-listing' class='nav nav-pills nav-stacked'>";
+					for(var i = 0;i<projectArray.length;i++){
+						projectString = projectString+"<li>"
+						+"<a href='javascript:void(0)' onclick='getDataFileType("+projectArray[i].projectId+")'><div class='row'>"
+						+"<span class='file-name col-md-7 col-sm-6 col-xs-9'>"
+						+"<i class='fa fa-folder fa-fw'></i>"+projectArray[i].projectName+"<span></div></li>";
+					}
+					projectString =projectString+"</ul>";
+					$('#directory-listing').remove();
+					$('#return').remove();
+					$('#modal_content').append(projectString);
+					$('#selectFileModal').modal();
+				});
+			}
+			function getDataFileType(pid){
+				  $.post("DataFile_getDataFileTypeTree.action",{
+					  projectId:pid,
+				  },function(data){
+					  var dataFileTypeArray = JSON.parse(data.dataFileTypeData);
+					  var dataFileTypeString = "<button id='return' class='btn btn-primary btn-sm' onclick='selectFile()''>返回上级目录</button><ul id='directory-listing' class='nav nav-pills nav-stacked'>";
+					  for(var i = 0;i<dataFileTypeArray.length;i++){
+						  var temp = dataFileTypeArray[i].dataFileType+"";
+						  dataFileTypeString = dataFileTypeString+"<li>"
+							+"<a href='javascript:void(0)' onclick="+'getDataFile('+pid+',\"'+temp+'\")'+"><div class='row'>"
+							+"<span class='file-name col-md-7 col-sm-6 col-xs-9'>"
+							+"<i class='fa fa-folder fa-fw'></i>"+dataFileTypeArray[i].dataFileType+"<span></div></li>";
+						}
+					  dataFileTypeString=dataFileTypeString+"</ul>";
+					  $('#return').remove();
+					  $('#directory-listing').remove();
+					  $('#modal_content').append(dataFileTypeString);
+				  });
+			}
+			var getDataFile=function(pid,dataFileType){
+				$.post("DataFile_getDataFileTree.action",{
+					project_id:pid,
+					datafile_type:dataFileType
+				},function(data){
+					//console.log(JSON.parse(data.dataFileData));
+					var dataFileArray = JSON.parse(data.dataFileData);
+					 var dataFileString = "<button id='return'  class='btn btn-primary btn-sm' onclick='getDataFileType("+pid+")'>返回上级目录</button><ul id='directory-listing' class='nav nav-pills nav-stacked'>";
+					for(var i = 0;i<dataFileArray.length;i++){
+						dataFileString = dataFileString+"<li>"
+						+"<a href='javascript:void(0)' onclick='selectedFile("+dataFileArray[0].did+")'><div class='row'>"
+						+"<span class='file-name col-md-7 col-sm-6 col-xs-9'>"
+						+"<i class='fa fa-file fa-fw'></i>"+dataFileArray[0].name+"<span></div></li>";
+					}
+					dataFileString = dataFileString + "</ul>";
+					 $('#directory-listing').remove();
+					 $('#return').remove();
+					 $('#modal_content').append(dataFileString);
+				});
+			};
+			var selectedFile = function(id){
+				$('div[ng-controller="project_modelCtrl"]').scope().project.datafileid = id;
+				console.log("id已赋值为:"+id);
+				$('#selectFileModal').modal("hide");
+			};
 </script>
 
 	</body>

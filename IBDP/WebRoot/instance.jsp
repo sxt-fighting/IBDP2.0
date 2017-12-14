@@ -73,7 +73,7 @@
 				<div class="main-content-inner">
 					
 
-					<div class="page-content">
+					<div class="page-content" style="width: 90%;margin:0 auto;">
 					<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
@@ -82,10 +82,10 @@
 								<div class="hr hr-18 hr-double dotted"></div><!--水平分割线-->
 
 									
-											 <div class="col-xs-6 col-sm-4 col-md-3">
-			  <div class="thumbnail search-thumbnail">
-				<span class="search-promotion label label-success arrowed-in arrowed-in-right">S</span>
-					<img class="media-object" src="img/1.jpg" style="width:257px;height:200px;" />
+			 <div class="col-xs-6 col-sm-4 col-md-3">
+			  <div class="thumbnail search-thumbnail" onclick="viewInstance('http://211.87.227.91:18080/waterCC/index.jsp')">
+				<%-- <span class="search-promotion label label-success arrowed-in arrowed-in-right">S</span> --%>
+					<img class="media-object" src="img/1.jpg" style="width:233px;height:200px;" />
 						<div class="caption">
 						 <div class="clearfix">
 						  <span class="pull-right label label-grey info-label">山大</span>
@@ -98,17 +98,17 @@
 							</div>
 						</div>
 						<h3 class="search-title">
-						 <a href="#" class="blue">水质分析</a>
+						 <a href="#" class="blue">水务大数据</a>
 						</h3>
-						<p>水质分析</p>
+						<p>水质数据分析--初探与实现</p>
 					 </div>
 			   </div>
 			 </div>
 			 
 			 <div class="col-xs-6 col-sm-4 col-md-3">
-			  <div class="thumbnail search-thumbnail">
-				<span class="search-promotion label label-success arrowed-in arrowed-in-right">S</span>
-					<img class="media-object" src="img/2.jpg" style="width:257px;height:200px;" />
+			  <div class="thumbnail search-thumbnail" onclick="viewInstance('http://211.87.227.91:18080/HeatData/heatdata/history.action')">
+				<%-- <span class="search-promotion label label-success arrowed-in arrowed-in-right">S</span> --%>
+					<img class="media-object" src="img/2.jpg" style="width:233px;height:200px;" />
 						<div class="caption">
 						 <div class="clearfix">
 						  <span class="pull-right label label-grey info-label">山大</span>
@@ -121,14 +121,59 @@
 							</div>
 						</div>
 						<h3 class="search-title">
-						 <a href="#" class="blue">济南热力供应项目</a>
+						 <a href="#" class="blue">济南市热力大数据分析平台</a>
 						</h3>
-						<p>分析济南近几年供暖情况</p>
+						<p>济南市热力大数据分析平台</p>
 					 </div>
 			   </div>
 			 </div>
+			  <div class="col-xs-6 col-sm-4 col-md-3">
+			  <div class="thumbnail search-thumbnail" onclick="viewInstance('http://211.87.227.91:18080/Longda/longda/forecast.action')">
+				<%-- <span class="search-promotion label label-success arrowed-in arrowed-in-right">S</span> --%>
+					<img class="media-object" src="img/3.jpg" style="width:233px;height:200px;" />
+						<div class="caption">
+						 <div class="clearfix">
+						  <span class="pull-right label label-grey info-label">龙大</span>
+							<div class="pull-left bigger-110">
+								<i class="ace-icon fa fa-star orange2"></i>
+								<i class="ace-icon fa fa-star orange2"></i>
+								<i class="ace-icon fa fa-star orange2"></i>
+								<i class="ace-icon fa fa-star-half-o orange2"></i>
+								<i class="ace-icon fa fa-star light-grey"></i>
+							</div>
+						</div>
+						<h3 class="search-title">
+						 <a href="#" class="blue">龙大数据分析平台</a>
+						</h3>
+						<p>龙大数据分析平台</p>
+					 </div>
+			   </div>
+			 </div>
+			  <div class="col-xs-6 col-sm-4 col-md-3">
+			  <div class="thumbnail search-thumbnail" onclick="viewInstance('http://211.87.227.91:18080/HDFS/')">
+				<%-- <span class="search-promotion label label-success arrowed-in arrowed-in-right">S</span> --%>
+					<img class="media-object" src="img/4.jpg" style="width:233px;height:200px;" />
+						<div class="caption">
+						 <div class="clearfix">
+						  <span class="pull-right label label-grey info-label">山大</span>
+							<div class="pull-left bigger-110">
+								<i class="ace-icon fa fa-star orange2"></i>
+								<i class="ace-icon fa fa-star orange2"></i>
+								<i class="ace-icon fa fa-star orange2"></i>
+								<i class="ace-icon fa fa-star-half-o orange2"></i>
+								<i class="ace-icon fa fa-star light-grey"></i>
+							</div>
+						</div>
+						<h3 class="search-title">
+						 <a href="#" class="blue">工业视频</a>
+						</h3>
+						<p>工业视频</p>
+					 </div>
+			   </div>
+			 </div>
+			 
 			
-			 <div class="col-xs-6 col-sm-4 col-md-3">
+			<%--  <div class="col-xs-6 col-sm-4 col-md-3">
 			  <div class="thumbnail search-thumbnail">
 				<span class="search-promotion label label-success arrowed-in arrowed-in-right">S</span>
 					<img class="media-object" src="img/3.jpg" style="width:257px;height:200px;" />
@@ -149,30 +194,9 @@
 						<p>训练模型</p>
 					 </div>
 			   </div>
-			 </div>
+			 </div> --%>
 			
-			<div class="col-xs-6 col-sm-4 col-md-3">
-			  <div class="thumbnail search-thumbnail">
-				<span class="search-promotion label label-success arrowed-in arrowed-in-right">S</span>
-					<img class="media-object" src="img/4.jpg" style="width:257px;height:200px;" />
-						<div class="caption">
-						 <div class="clearfix">
-						  <span class="pull-right label label-grey info-label">山大</span>
-							<div class="pull-left bigger-110">
-								<i class="ace-icon fa fa-star orange2"></i>
-								<i class="ace-icon fa fa-star orange2"></i>
-								<i class="ace-icon fa fa-star orange2"></i>
-								<i class="ace-icon fa fa-star-half-o orange2"></i>
-								<i class="ace-icon fa fa-star light-grey"></i>
-							</div>
-						</div>
-						<h3 class="search-title">
-						 <a href="#" class="blue">项目B</a>
-						</h3>
-						<p>测试模型</p>
-					 </div>
-			   </div>
-			 </div>
+			
 								
 
 
@@ -250,6 +274,10 @@
 		<script src="assets/js/ace-elements.min.js"></script>
 		<script src="assets/js/ace.min.js"></script>
 		<script>
+		var viewInstance=function(url){
+			//console.log('url==='+url);
+			window.open(url);
+		};
 		
 </script>
 

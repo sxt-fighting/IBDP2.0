@@ -13,6 +13,7 @@ import org.hibernate.criterion.Example;
 import com.sdu.entity.Admin;
 import com.sdu.entity.DataFile;
 import com.sdu.entity.Model;
+import com.sdu.entity.Project;
 
 public class ModelDaoImpl {
 	SessionFactory sessionFactory;
@@ -215,5 +216,35 @@ public class ModelDaoImpl {
 				e.printStackTrace();
 			}
 			return count;
+		}
+
+		public Project getProjectByDataFileId(int dataFileId) {
+			 Project project = null;
+			 Session session = sessionFactory.getCurrentSession();
+			 Transaction tx = session.beginTransaction();
+			 try{
+				 String sql = "select p.* from project as p,datafile as d where p.p_id = d.pro_dataid and d.d_id = '"+dataFileId+"';";
+				 project  = (Project) session.createSQLQuery(sql).addEntity(Project.class).list().get(0);
+				 tx.commit();
+			 }catch(Exception e){
+				 tx.rollback();
+				 e.printStackTrace();
+			 }
+			 return project;
+		}
+
+		public Model getModelByProjectId(int pid) {
+			Model model = null;
+			Session session = sessionFactory.getCurrentSession();
+			Transaction tx = session.beginTransaction();
+			try{
+				String sql = "select m.* from model as m,project as p where p.p_modelid = m.m_id and p.p_id = '"+pid+"';" ;
+				model = (Model) session.createSQLQuery(sql).addEntity(Model.class).list().get(0);;
+				tx.commit();
+			}catch(Exception e){
+				tx.rollback();
+				e.printStackTrace();
+			}
+			return model;
 		}
 }

@@ -14,16 +14,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+import com.sdu.ToolsUse.ElementsTasks;
+import com.sdu.ToolsUse.HDFSTools;
 import com.sdu.biz.impl.DataFileBizImpl;
+import com.sdu.biz.impl.ModelBizImpl;
 import com.sdu.biz.impl.ProjectBizImpl;
 import com.sdu.entity.Admin;
 import com.sdu.entity.DataFile;
+import com.sdu.entity.Model;
 import com.sdu.entity.Project;
 
 public class DataFileAction extends ActionSupport{
@@ -35,6 +45,7 @@ public class DataFileAction extends ActionSupport{
 	private DataFile dataFile;
 	private DataFileBizImpl dataFileBiz;
 	private ProjectBizImpl projectBiz;
+	private ModelBizImpl modelBizImpl;
 	//自己new
 	private List<DataFile> list;
 	private	Map<String,Object> map;
@@ -51,6 +62,7 @@ public class DataFileAction extends ActionSupport{
 	private int did;
 	private int project_id = -1;
 	private String datafile_type = "null";
+	private int projectId;
 	//struts封装的Inputstream
 	private InputStream downFile;
 	private String downfilename;
@@ -59,6 +71,15 @@ public class DataFileAction extends ActionSupport{
 	public File getUploadFile() {
 		return uploadFile;
 	}
+	
+	public void setProjectId(int projectId) {
+		this.projectId = projectId;
+	}
+
+	public void setModelBizImpl(ModelBizImpl modelBizImpl) {
+		this.modelBizImpl = modelBizImpl;
+	}
+
 	public void setOffset(int offset) {
 		this.offset = offset;
 	}
@@ -312,7 +333,7 @@ public class DataFileAction extends ActionSupport{
 	public String getTree(){
 		map = new HashMap<String,Object>();
 		List<Project> projectTree = projectBiz.getProjectTree(((Admin)ActionContext.getContext().getSession().get("user")).getId());
-		List<Object> dataFileTree = dataFileBiz.getDateFileTree(((Admin)ActionContext.getContext().getSession().get("user")).getId());
+		List<Object> dataFileTree =  dataFileBiz.getDateFileTree(((Admin)ActionContext.getContext().getSession().get("user")).getId());
 		JSONArray projectArray = new JSONArray();
 		for(int i = 0;i<projectTree.size();i++){
 			JSONObject projectObject= new JSONObject();
@@ -324,7 +345,7 @@ public class DataFileAction extends ActionSupport{
 			for(int j = 0;j<dataFileTree.size();j++){
 				Object[] object = (Object[]) dataFileTree.get(j);
 //				System.out.println("object[0] = "+object[0]);
-				if(projectTree.get(i).getP_id() ==object[0]){
+				if(projectTree.get(i).getP_id().equals(object[0])){
 					JSONObject dataFileObject = new JSONObject();
 //					System.out.println("object[1] = "+object[1]);
 					dataFileObject.put("text", object[1]);
@@ -343,5 +364,111 @@ public class DataFileAction extends ActionSupport{
 		map.put("nodes", projectArray.toString());
 		//System.out.println("map==="+map);
 		return "getTreeSuccess";
+	}
+	public String executeTask(){
+		System.out.println("后台接收的数据是:did"+did);
+	//	System.out.println("project_id:"+project_id);
+		map = new HashMap<String,Object>();
+		map.put("message","执行成功!");
+		final DataFile sourceFile=dataFileBiz.getById(did);
+//		int pid = sourceFile.getD_project().getP_id();
+		final Project project = projectBiz.getProjectByDataFileId(did);
+		System.out.println("project.name:"+project.getP_name());
+		System.out.println("project.id"+project.getP_id());
+		final Model model = modelBizImpl.getModelByProjectId(project.getP_id());
+		final Admin user = (Admin) ActionContext.getContext().getSession().get("user");
+		final JSONObject projectJSON = new JSONObject();
+		projectJSON.put("name",project.getP_name());
+		projectJSON.put("describe",project.getP_describe());
+		projectJSON.put("datafileid",did);
+		projectJSON.put("modelid",model.getM_id());
+		//
+		//多线程运行
+       	ThreadPoolExecutor poolExecutor=new ThreadPoolExecutor(3, 4, 1, TimeUnit.MINUTES, new LinkedBlockingDeque());
+       	poolExecutor.submit(new Runnable() {
+			//上传文件到HDFS中
+			@Override
+			public void run() {
+				
+				try {
+					//上传数据文件到hdfs上
+					 
+//					System.out.println(sourceFile.getD_localpath());
+					HDFSTools.LoadSingleFileToHDFS(sourceFile);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}); 
+				Future future=poolExecutor.submit(new Callable<String>() {
+					public String call() throws Exception
+					{
+						//通过modelid 得到algorithmString， 然后把它解析成JSON ARRAY，
+						//取出第一个algorithm的actionname， 将它转发给对应antion去执行分析任务，转发时传递3个参数，第一个datafilepath，第二个algorithmString，第三个 index（初始为0，每执行一个action，就增一）
+						
+						//System.out.println("modelid"+obj.getInt("modelid"));
+//						Model model=modelBizImpl.getModelById();
+//						System.out.println("model+"+model.getAlgorithmString());
+						String algorithms = model.getAlgorithmString();
+						//System.out.println();
+						JSONArray algorithmJSON = new JSONArray(algorithms);
+//						JSONObject projectJSON =new JSONObject(projectJSONStr);
+	//					Project project=projectBiz.getById(pid);
+	//					System.out.println("111111111");
+	//					System.out.println("projectJSON:"+projectJSON);
+	//					System.out.println("algorithmJSON:"+algorithmJSON);
+		//				System.out.println("user:"+user);
+			//			System.out.println("project.name"+project.getP_name());
+						ElementsTasks elementsTasks=new ElementsTasks(projectJSON, algorithmJSON, user,project);
+						elementsTasks.turnAlgorithm();
+						return "next";
+					}
+				});
+				try {
+					System.out.println(future.get()+"   "+future.isDone());
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		//
+   		return "executeSuccess";
+	}
+	public String getDataFileTypeTree(){
+//		System.out.println("projectId:"+projectId);
+		List<Object> list = dataFileBiz.getDataFileTypeByProjectId(projectId);
+		JSONArray array = new JSONArray();
+	//	System.out.println("list.size()"+list.size());
+		for(int i = 0;i<list.size();i++){
+			JSONObject jobj = new JSONObject();
+//			System.out.println(list.get(i));
+			jobj.put("dataFileType",list.get(i));
+			array.put(jobj);
+		}
+		map = new HashMap<String,Object>();
+		map.put("dataFileTypeData", array.toString());
+		return "getSuccess";
+	}
+	public String getDataFileTree(){
+		map = new HashMap<String,Object>();
+		int adminId = ((Admin)ActionContext.getContext().getSession().get("user")).getId();
+		List<Object> list = dataFileBiz.getAllByProjectIdAndDataFileType(adminId, project_id, datafile_type);
+		JSONArray array = new JSONArray();
+//		System.out.println("list.size()"+list.size());
+		for(int i = 0;i<list.size();i++){
+			Object[] obj = (Object[]) list.get(i);
+			JSONObject jobj = new JSONObject();
+			jobj.put("did",obj[0]);
+			jobj.put("name",obj[1]);
+			jobj.put("size",obj[2]);
+			jobj.put("createTime",obj[3]);
+			array.put(jobj);
+		}
+		map = new HashMap<String,Object>();
+		map.put("dataFileData", array.toString());
+		return "getSuccess";
 	}
 }

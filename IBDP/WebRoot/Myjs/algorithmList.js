@@ -180,7 +180,7 @@ var algorithmJSONList=[
     				param:[
        					{name:'联结方法',field:'metric',type:'select',options:['single','complete','average','centroid'],value:''},
        					{name:'是否分割分层聚类',field:'cut',type:'select',options:['是','否'],value:''},
-       					{name:'分割分层聚类数',field:'cutnumber',type:'String'}
+       					{name:'分割分层聚类数',field:'cutnumber',type:'String',dependon:'2'}//该参数的是否显示依赖于第‘2’个参数的选择。注意！！！ 依赖于的参数（这里指‘是否分割分层聚类’）,其选项必须设置为[‘是’，‘否’]，否则会报错
        				]
     			},
     			{

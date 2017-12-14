@@ -167,6 +167,9 @@
 	<result name="delSuccess" type="json">
 		<param name="root">map</param>
 	</result>
+	<result name="getSuccess" type="json">
+		<param name="root">map</param>
+	</result>
 </action>
 <!-- dataFileAction -->
 <action name="DataFile_*" class="com.sdu.action.DataFileAction" method="{1}">
@@ -190,6 +193,9 @@
 		<param name="bufferSize">2048</param>
 	</result>
 	<result name="getTreeSuccess" type="json">
+		<param name="root">map</param>
+	</result>
+	<result name="executeSuccess" type="json">
 		<param name="root">map</param>
 	</result>
 </action>

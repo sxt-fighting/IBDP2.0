@@ -84,4 +84,7 @@ public class ModelBizImpl {
 	public int getCountModelsByUserId(int adminId) {
 		return	modelDaoImpl.getCountModelsByUserId(adminId);
 	}
+	public Model getModelByProjectId(int pid){
+		return modelDaoImpl.getModelByProjectId(pid);
+	}
 }
