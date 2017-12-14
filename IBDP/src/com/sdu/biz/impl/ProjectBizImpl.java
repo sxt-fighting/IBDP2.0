@@ -72,4 +72,7 @@ public class ProjectBizImpl {
 		projectDao.delProjects(ids);
 		return true;
 	}
+	public Project getProjectByDataFileId(int dataFileId){
+		return modelDao.getProjectByDataFileId(dataFileId);
+	}
 }

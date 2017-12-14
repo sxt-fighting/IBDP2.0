@@ -105,20 +105,85 @@
 
 						<b class="arrow"></b>
 					</li>
+				
 
 					<li class="hover">
-						<a href="calendar.html">
+						<a  href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-desktop"></i>
 
 							<span class="menu-text">
 								环境监测
-								<!-- <span class="badge badge-transparent tooltip-error" title="2 Important Events">
-									<i class="ace-icon fa fa-exclamation-triangle red bigger-130"></i>
-								</span> -->
 							</span>
+							<b class="arrow fa fa-angle-down"></b>
 						</a>
 
 						<b class="arrow"></b>
+						<ul class="submenu">
+							<li class="hover">
+								<a href="javascript:void(0);" onclick="ambari()">
+									<i class="menu-icon fa fa-caret-right"></i>
+									Ambari监测
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+
+							<li class="hover">
+								
+								<a href="http://211.87.227.9:50070/explorer.html#/" target="_blank" >
+									<i class="menu-icon fa fa-caret-right"></i>
+									HDFP文件浏览
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+							
+							
+							<li class="hover">
+								
+								<a href="http://211.87.227.99:19888/" target="_blank" >
+									<i class="menu-icon fa fa-caret-right"></i>
+									MapReduce运行状态
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+							
+							
+							<li class="hover">
+								
+								<a href="http://211.87.227.99:8088/cluster" target="_blank" >
+									<i class="menu-icon fa fa-caret-right"></i>
+									Yarn运行状态
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+							
+							
+							<li class="hover">
+								
+								<a href="http://211.87.227.9:18080/" target="_blank" >
+									<i class="menu-icon fa fa-caret-right"></i>
+									spark运行状态
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+							
+							
+							<li class="hover">
+								
+								<a href="http://211.87.227.91:18080/HDP/hdp/toYarnManage.action" target="_blank" >
+									<i class="menu-icon fa fa-caret-right"></i>
+									Yarn运行管理
+								</a>
+
+								<b class="arrow"></b>
+							</li>
+							
+						</ul>
+						
 					</li>
 
 					<li class="hover">
@@ -131,3 +196,21 @@
 					</li>
 				</ul><!-- /.nav-list -->
 			</div>
+			<script type="text/javascript">
+			ambari=function(){
+			
+			/* $.ajax({
+			    type: "GET",
+			    url: "http://211.87.227.53:8080/api/v1/users/admin?fields=*,privileges/PrivilegeInfo/cluster_name,privileges/PrivilegeInfo/permission_name",
+			    success: function(data) {
+			        console.log('success');
+			    },
+			    beforeSend: function(xhr) {
+			        xhr.setRequestHeader("aaa", "Basic YWRtaW46YWRtaW4=");
+			    }
+			
+			}); */
+			//console.log("打开新窗口Ambari");
+			window.open("http://211.87.227.53:8080/#/main/dashboard/metrics");
+			}
+			</script>

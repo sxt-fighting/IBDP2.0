@@ -13,6 +13,7 @@ import org.hibernate.criterion.Example;
 import com.sdu.entity.Admin;
 import com.sdu.entity.DataFile;
 import com.sdu.entity.Model;
+import com.sdu.entity.Project;
 
 public class ModelDaoImpl {
 	SessionFactory sessionFactory;
@@ -68,7 +69,7 @@ public class ModelDaoImpl {
 					"where m.admin_moid=a.ID  and( m.m_name like '%"+searchString+"%' or a.name  like '%"+searchString+"%')";
 			Query query = session.createSQLQuery(sql).addEntity("m", Model.class).addEntity("a", Admin.class);
 			list = query.list();
-			System.out.println("list size="+list.size());
+		//	System.out.println("list size="+list.size());
 			tx.commit();
 		} catch (HibernateException e) {
 			tx.rollback();
@@ -81,7 +82,7 @@ public class ModelDaoImpl {
 		Session session = sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
 		try{
-			System.out.println("id:"+id);
+//			System.out.println("id:"+id);
 			Model model = (Model) session.get(Model.class, id);
 //			System.out.println("model.getName()"+model.getM_name());
 //			if(model!=null){
@@ -159,7 +160,7 @@ public class ModelDaoImpl {
 			List<Object> list = null;
 			try {
 				String sql = "select model.m_id,model.m_name,model.m_type,model.m_createTime,admin.name,model.m_collect,model.m_used,model.m_state from  model,admin where (model.admin_moid = '"+userid+"' or m_state='1') and model.m_name <> '' and admin.ID = model.admin_moid limit "+offset+","+pageSize+";";
-				System.out.println("sql:"+sql);
+//				System.out.println("sql:"+sql);
 				Query query = session.createSQLQuery(sql);
 				list = query.list();
 				tx.commit();
@@ -215,5 +216,35 @@ public class ModelDaoImpl {
 				e.printStackTrace();
 			}
 			return count;
+		}
+
+		public Project getProjectByDataFileId(int dataFileId) {
+			 Project project = null;
+			 Session session = sessionFactory.getCurrentSession();
+			 Transaction tx = session.beginTransaction();
+			 try{
+				 String sql = "select p.* from project as p,datafile as d where p.p_id = d.pro_dataid and d.d_id = '"+dataFileId+"';";
+				 project  = (Project) session.createSQLQuery(sql).addEntity(Project.class).list().get(0);
+				 tx.commit();
+			 }catch(Exception e){
+				 tx.rollback();
+				 e.printStackTrace();
+			 }
+			 return project;
+		}
+
+		public Model getModelByProjectId(int pid) {
+			Model model = null;
+			Session session = sessionFactory.getCurrentSession();
+			Transaction tx = session.beginTransaction();
+			try{
+				String sql = "select m.* from model as m,project as p where p.p_modelid = m.m_id and p.p_id = '"+pid+"';" ;
+				model = (Model) session.createSQLQuery(sql).addEntity(Model.class).list().get(0);;
+				tx.commit();
+			}catch(Exception e){
+				tx.rollback();
+				e.printStackTrace();
+			}
+			return model;
 		}
 }

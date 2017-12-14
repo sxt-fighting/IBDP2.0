@@ -96,4 +96,12 @@ public class DataFileBizImpl {
 	public int getCountByProjectIdAndDatafileType(int userId,int project_id,String datafile_type){
 		return dataFileDao.getCountByProjectIdAndDataFileType(userId, project_id, datafile_type);
 	}
+	public List<Object> getDataFileTypeByProjectId(int projectId){
+		return dataFileDao.getDataFileTypeByProjectId(projectId);
+	}
+	public List<Object> getAllByProjectIdAndDataFileType(int adminId, int project_id,
+			String datafile_type) {
+		return dataFileDao.getDataFilesByProjectIdAndDataFileType(adminId, project_id, datafile_type);
+		
+	}
 }

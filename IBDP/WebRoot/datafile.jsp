@@ -471,6 +471,7 @@
      	   $.post("DataFile_delDataFile.action",
      			   {
      			     did:did,
+     			    
      			   },
      			   function(data,status){
      				  $table.bootstrapTable('refresh');
@@ -525,6 +526,16 @@
 			//};
 			//$.post(url, params, callback);
 	}
+        //开始任务
+        function executeTask(did){
+        	$.post("<%=request.getContextPath()%>/DataFile_executeTask.action",
+        	{
+        		did:did,
+  //      		project_id:project_id,
+        	},function(data){
+        		alert("开始执行!");
+        	});
+        }
     function initTable() {
         $table.bootstrapTable({
         	  url: "<%=request.getContextPath()%>/DataFile_showAllDataFiles.action", // 获取表格数据的url
@@ -604,8 +615,9 @@
             	  console.log(row.id);
             	  console.log(row.localpath);
                    return '<button class="btn btn-xs btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="预览" onclick="viewdata(\'' + row.id + '\')"><i class="ace-icon fa fa-search-plus bigger-120"></i></button>'
-                   			+'<button class="btn btn-xs btn-success btn-sm" onclick="download(\'' + row.id + '\')"><i class="ace-icon fa fa-download bigger-120"></i></button>'
-              				 +'<button class="btn btn-xs btn-danger btn-sm" onclick="del(\'' + row.id + '\')"><i class="ace-icon fa fa-trash-o bigger-120"></i></button>';
+                   			+'<button class="btn btn-xs btn-success btn-sm" title="下载" onclick="download(\'' + row.id + '\')"><i class="ace-icon fa fa-download bigger-120"></i></button>'
+              				 +'<button class="btn btn-xs btn-warning btn-sm" title="开始任务" onclick="executeTask(\'' + row.id + '\')"><i class="ace-icon fa fa-caret-square-o-right bigger-120"></i></button>'
+              				+'<button class="btn btn-xs btn-danger btn-sm" title="删除" onclick="del(\'' + row.id + '\')"><i class="ace-icon fa fa-trash-o bigger-120"></i></button>';
               }
           }
             ],

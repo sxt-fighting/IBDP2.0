@@ -57,11 +57,11 @@
     //	 alert(user);
      window.location.href="login.jsp"; 
 	 }
-	 <%Admin userobj=(Admin)session.getAttribute("user");
+<%-- 	 <%Admin userobj=(Admin)session.getAttribute("user");
 		%>
 				
     var username = '<%=userobj.getName()%>';
-    var userid='<%=userobj.getId()%>';
+    var userid='<%=userobj.getId()%>'; --%>
 </script>
 <style type="text/css">
 /* .btn-circle {
@@ -194,8 +194,29 @@
 																<div class="col-xs-12 col-sm-9">
 																	<div class="clearfix">
 																		<input type="file" multiple="" accept="*/*" id="upload" name="uploadFile">
+																		<button  class="btn btn-primary btn-sm" onclick="selectFile()">选择已上传文件</button>
+																		
+																		<!--选择文件的模态框-->
+																		<div class="modal fade" id="selectFileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    																		<div class="modal-dialog">
+        																		<div class="modal-content">
+           																	 	<div class="modal-header" >
+                																	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                																	<h5 class="modal-title">选择文件列表</h5>
+            																	</div>
+            																	<div class="modal-body">
+            																		<div id="modal_content">
+            																			
+            																		</div>
+            																	</div>
+        																		</div><!-- /.modal-content -->
+    																		</div><!-- /.modal -->
+																		</div>
+																		<!-- 模态框结束 -->	
+																	
 																	</div>
 																</div>
+																
 															</div>
 															<div class="space-2"></div>
 															<div class="form-group">
@@ -265,16 +286,20 @@
 													<a my-popover herf="#" data-html="true" data-toggle="tooltip"  guide="{{a.guide}}"><i class="ace-icon fa fa-question-circle blue bigger-150"></i></a>
 													</div>
 														<div  ng-repeat="p in a.param">
-														<div class="form-group" ng-if="p.type=='String'">
+														<div ng-if="p.dependon==undefined||p.dependon==''||p.dependon==null">
+															<div class="form-group" ng-if="p.type=='String'">
 																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;" >{{p.name}} </label>
-							
-																	<div class="col-sm-9">
+																	<div class=" col-sm-9">
+																		<div >
 																		<input type="text" ng-model="p.value" ng-change="changeState()" class="col-xs-10 col-sm-5">
+																	</div>
+																	<div >
+																		<button class="btn btn-success btn-sm" ng-click="viewDateFile()"  class="col-xs-10 col-sm-5">预览</button>
+																	</div>
 																	</div>
 														</div>
 														<div class="form-group" ng-if="p.type=='select'">
 																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
-							
 																	<div class="col-sm-9">
 																		<select 
 																	    ng-options="v as v for v in p.options"
@@ -284,7 +309,6 @@
 														</div>
 														<div class="form-group" ng-if="p.type=='checkbox'">
 																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
-							
 																	<div class="col-sm-9" >
 																	 <div class="row"  style="margin: 10px 10px">
 													                	<div class="checkbox col-xs-3" ng-repeat="v in p.options">
@@ -297,36 +321,50 @@
 																	</div>
 														</div>
 														</div>
+														<div ng-if="p.dependon!=undefined&&p.dependon!=''&&p.dependon!=null" >
+															<div class="form-group" ng-if="p.type=='String'&&a.param[p.dependon-1].value=='是'">
+																		<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;" >{{p.name}} </label>
+																		<div class=" col-sm-9">
+																		<div >
+																			<input type="text" ng-model="p.value" ng-change="changeState()" class="col-xs-10 col-sm-5">
+																		</div>
+																		<div >
+																			<button class="btn btn-success btn-sm" ng-click="viewDateFile()"  class="col-xs-10 col-sm-5">预览</button>
+																		</div>
+																		</div>
+															</div>
+															<div class="form-group" ng-if="p.type=='select'&&a.param[p.dependon-1].value=='是'">
+																		<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
+								
+																		<div class="col-sm-9">
+																			<select 
+																		    ng-options="v as v for v in p.options"
+																		    ng-model="p.value">
+																			</select>
+																		</div>
+															</div>
+															<div class="form-group" ng-if="p.type=='checkbox'&&a.param[p.dependon-1].value=='是'">
+																		<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
+																		<div class="col-sm-9" >
+																		 <div class="row"  style="margin: 10px 10px">
+														                	<div class="checkbox col-xs-3" ng-repeat="v in p.options">
+																				<label>
+																					<input type="checkbox" class="ace"  ng-checked="isSelected(v,p.value)" ng-click="updateSelection($event,v,p.value)">
+																					<span class="lbl">{{v}}</span>
+																				</label>
+																			</div>
+														                </div>
+																		</div>
+															</div>
+														</div>
+														
+														
+														</div>
 													</div>
 												</div>
 											</div>
 										</div>
 														</div> 
-														
-														<%-- <div class="form-group">
-																<label class="control-label col-xs-12 col-sm-3 no-padding-right" >算法</label>
-
-																<div class="col-xs-12 col-sm-9">
-																	<div class="clearfix">
-																		<select class="input-medium" ng-model="algorithmNum" name="platform">
-																			<option value="">------------------</option>
-																			<option value="0">人工神经网络</option>
-																			<option value="1">统计量分析</option>
-																			<option value="2">概率分布</option>
-																			<option value="3">K-means聚类</option>
-																			<option value="4">K-中心点聚类(PAM算法)</option>
-																			<option value="5">关联规则挖掘</option>
-																		</select>
-																	</div>
-																</div>
-														</div>
-														<div class="form-group">
-														<label class="control-label col-xs-12 col-sm-3 no-padding-right" >参数</label>
-														<div class="col-xs-12 col-sm-9">
-														 
-														</div>
-														
-														</div> --%>
 														
 													</div>
 													</form>
@@ -424,6 +462,7 @@
 								            </div>
 								        </div>
 								    </div>
+								    
 								    <div class="modal fade" id="newModelInfo" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 								         aria-hidden="true">
 								         
@@ -464,10 +503,27 @@
 								         
 								        
 								    </div>
+								    	 <!-- view模态框 -->
+									<div class="modal fade " id="viewFileModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+								         aria-hidden="true">
+								         
+								          <div class="modal-dialog" style=" height:700px;width: 65%;">
+								            <div style="text-align:center;background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
+												<label style="padding: 5px;float:center;font-size:18px">文件内容预览 </label>
+												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												<button class="btn btn-primary btn-sm" onclick="">确定</button>
+												<button class="btn btn-sm pull-right" style="width:50px;padding: 9.5px;" data-dismiss="modal"><i class="ace-icon glyphicon glyphicon-remove"></i></button>
+											</div>
+								            <div id="modalContent"  class="modal-content" style="height: 700px;overflow:scroll;overflow-x:auto;overflow-y:auto ">
+								            	<table class="table"><tbody id="table_body"></tbody></table>
+								            </div>
+								        </div>  
+								    </div>
+									
 									</div><!-- /.widget-body -->
 								</div>
 								
-
+						
 
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
@@ -505,6 +561,8 @@
 			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
 			</a>
+		
+			
 		</div><!-- /.main-container -->
 		<!-- basic scripts -->
 
@@ -540,7 +598,9 @@
 		<script src="assets/js/ace-elements.min.js"></script>
 		<script src="assets/js/ace.min.js"></script>
 		<script type="text/javascript">
-			
+		 var pos;
+    	 var lines;
+    	 var isNext;
 				//jquery accordion
 				$( "#accordion" ).accordion({
 					collapsible: true ,
@@ -548,6 +608,7 @@
 					animate: 250,
 					header: ".accordion-header"
 				});
+				
 		</script>
 		<script type="text/javascript">
 			var project_modelapp=angular.module('newProject', ['ngRoute']);
@@ -570,7 +631,7 @@
 			$scope.project={
 			name:'',
 			describe:'',
-			userid:userid,
+//			userid:userid,
 			datafileid:'',
 			modelid:''
 			};
@@ -697,15 +758,18 @@
                            .success(function (data) {
                              console.log("创建Project成功"+data);	
                              bootbox.dialog({
-     						message: "您的分析任务已被提交，请稍后到我的项目中查看详情！", 
+     						message: "您的分析任务已被提交，点击跳转到项目列表页面!", 
      						buttons: {
      							"success" : {
      								"label" : "OKay",
-     								"className" : "btn-sm btn-primary"
+     								"className" : "btn-sm btn-primary",
+     								"callback":function(){
+     									window.location.href = "<%=request.getContextPath()%>/project.jsp";
+     								}
      							}
      						}
      					}); 
-                             
+            
                              
 	                       })
                            .error(function (data) {
@@ -753,16 +817,62 @@
 			     $scope.isSelected = function(v,value){
 			         return value.indexOf()>=0;
 			     };
-
+			     $scope.viewDateFile=function(){
+			    	// $('#viewModal').empty();
+			    	// var s=functionaaaa();//设计成缓存100行数据
+			    	 //$('#viewModal-body').append(s);
+			    	
+			    	 $('#table_body').empty();
+			    	 pos = 0;
+			    	 isNext = "true";
+			    	 lines = 25;
+			    	 //  $('#modalContent').empty();
+			    	 viewData();
+			    	 $('#modalContent').scrollTop(0);
+			    	 $('#viewFileModal').modal();
+			     };   
     }]);
 		</script>
 		<script type="text/javascript">
+		function viewData(){
+		//	var viewData =null;
+			$.post("readFileToShow_dynamicView.action",{
+				dataFileId:$('div[ng-controller="project_modelCtrl"]').scope().project.datafileid,
+				pos:pos,
+				lines:lines
+			},function(data){
+				var dataArray = JSON.parse(data.jsonData); 
+				//console.log(dataArray);
+				
+				isNext = data.isNext;
+				var viewData = "";
+				if(pos==0){
+					var checkBoxsStr="<tr>";
+					for(var j = 0;j<dataArray[0].length;j++){
+						//viewData = viewData+"<td>"+dataArray[i][j]+"</td>";
+						checkBoxsStr=checkBoxsStr+"<td style='text-align:center;'><input type='checkbox' value='"+dataArray[0][j]+"' onclick='' ></input></td>";
+					}
+					 checkBoxsStr= checkBoxsStr+"</tr>";
+					$('#table_body').append(checkBoxsStr);
+				} 
+				for(var i = 0;i<dataArray.length;i++){
+					viewData = viewData+"<tr>";
+					for(var j = 0;j<dataArray[i].length;j++){
+						viewData = viewData+"<td>"+dataArray[i][j]+"</td>";
+					}
+					viewData = viewData+"</tr>";
+				}
+				pos = data.pos;
+				$('#table_body').append(viewData);
+			});
+		//	return viewData;
+		}
 		$("#upload").change(function(){
-			console.log("userid"+userid);
+	//		console.log("userid"+userid);
 			$.ajaxFileUpload({
 				url:"<%=request.getContextPath()%>/DataFile_saveDataFile.action",
 				type:'post',
-				data:{userid:userid},
+				/* data:{userid:userid}, */
 				dataType:'json',
 				fileElementId:'upload',
 				success:function(data){
@@ -781,6 +891,14 @@
 			});
 		});
 			jQuery(function($) {
+				$('#modalContent').scroll(function(){
+		    		 console.log($('#modalContent').scrollTop()+'|'+$('#modalContent')[0].scrollHeight);
+		    		 if($('#modalContent').scrollTop()+1000>($('#modalContent')[0].scrollHeight)&&isNext !="false"){
+		    			 //console.log("加载一次");
+		    			 viewData();  
+		    			 //totalHeight=$('#modalContent')[0].scrollHeight;
+		    		 }
+		    	 });
 			
 				//var $validation = false;//禁用表单验证
 				var controllerScope = $('div[ng-controller="project_modelCtrl"]').scope();
@@ -802,25 +920,20 @@
 					if(info.step == 2 ) {
 					//console.log("222222前");
 					//在这点击下一步后，更新文件“是否包含表头”的信息。
-					$.post("<%=request.getContextPath()%>/DataFile_updateDataFile.action",
-							{
-								fileid: $('div[ng-controller="project_modelCtrl"]').scope().project.datafileid,
-								hasheader:$("#gender").val(),
-							},
-							function(data,status){
-							    //alert("Data: " + data + "\nStatus: " + status);
-							  });
-			/* 		$.ajax({
-									url:'DataFile_save
-									DataFile.action',
-												success:function(data){
-										    	console.log("支持inittable之后!");
-											},
-											error:function(){
-											 e.preventDefault();
-												console.log("服务器响应失败!");
-											}
-						}); */
+						if(controllerScope.project.datafileid==""){
+							alert("文件未上传完毕！");
+							e.preventDefault();
+						} else{
+							$.post("<%=request.getContextPath()%>/DataFile_updateDataFile.action",
+									{
+										fileid: $('div[ng-controller="project_modelCtrl"]').scope().project.datafileid,
+										hasheader:$("#gender").val(),
+									},
+									function(data,status){
+									    //alert("Data: " + data + "\nStatus: " + status);
+									  });
+						}
+			
 					}
 					if(info.step == 3 ) {
 					//console.log("33333前");
@@ -929,7 +1042,67 @@
 			
 				
 			});
-			
+			function selectFile(){
+				$.post("Project_getProjectTree.action",function(data){
+					var projectArray = JSON.parse(data.projectData);
+					var projectString ="<ul id='directory-listing' class='nav nav-pills nav-stacked'>";
+					for(var i = 0;i<projectArray.length;i++){
+						projectString = projectString+"<li>"
+						+"<a href='javascript:void(0)' onclick='getDataFileType("+projectArray[i].projectId+")'><div class='row'>"
+						+"<span class='file-name col-md-7 col-sm-6 col-xs-9'>"
+						+"<i class='fa fa-folder fa-fw'></i>"+projectArray[i].projectName+"<span></div></li>";
+					}
+					projectString =projectString+"</ul>";
+					$('#directory-listing').remove();
+					$('#return').remove();
+					$('#modal_content').append(projectString);
+					$('#selectFileModal').modal();
+				});
+			}
+			function getDataFileType(pid){
+				  $.post("DataFile_getDataFileTypeTree.action",{
+					  projectId:pid,
+				  },function(data){
+					  var dataFileTypeArray = JSON.parse(data.dataFileTypeData);
+					  var dataFileTypeString = "<button id='return' class='btn btn-primary btn-sm' onclick='selectFile()''>返回上级目录</button><ul id='directory-listing' class='nav nav-pills nav-stacked'>";
+					  for(var i = 0;i<dataFileTypeArray.length;i++){
+						  var temp = dataFileTypeArray[i].dataFileType+"";
+						  dataFileTypeString = dataFileTypeString+"<li>"
+							+"<a href='javascript:void(0)' onclick="+'getDataFile('+pid+',\"'+temp+'\")'+"><div class='row'>"
+							+"<span class='file-name col-md-7 col-sm-6 col-xs-9'>"
+							+"<i class='fa fa-folder fa-fw'></i>"+dataFileTypeArray[i].dataFileType+"<span></div></li>";
+						}
+					  dataFileTypeString=dataFileTypeString+"</ul>";
+					  $('#return').remove();
+					  $('#directory-listing').remove();
+					  $('#modal_content').append(dataFileTypeString);
+				  });
+			}
+			var getDataFile=function(pid,dataFileType){
+				$.post("DataFile_getDataFileTree.action",{
+					project_id:pid,
+					datafile_type:dataFileType
+				},function(data){
+					//console.log(JSON.parse(data.dataFileData));
+					var dataFileArray = JSON.parse(data.dataFileData);
+					 var dataFileString = "<button id='return'  class='btn btn-primary btn-sm' onclick='getDataFileType("+pid+")'>返回上级目录</button><ul id='directory-listing' class='nav nav-pills nav-stacked'>";
+					for(var i = 0;i<dataFileArray.length;i++){
+						dataFileString = dataFileString+"<li>"
+						+"<a href='javascript:void(0)' onclick='selectedFile("+dataFileArray[0].did+")'><div class='row'>"
+						+"<span class='file-name col-md-7 col-sm-6 col-xs-9'>"
+						+"<i class='fa fa-file fa-fw'></i>"+dataFileArray[0].name+"<span></div></li>";
+					}
+					dataFileString = dataFileString + "</ul>";
+					 $('#directory-listing').remove();
+					 $('#return').remove();
+					 $('#modal_content').append(dataFileString);
+				});
+			};
+			var selectedFile = function(id){
+				$('div[ng-controller="project_modelCtrl"]').scope().project.datafileid = id;
+				console.log("id已赋值为:"+id);
+				$('#selectFileModal').modal("hide");
+			};
 </script>
 
 	</body>

@@ -225,5 +225,36 @@ public class DataFileDaoImpl {
 			e.printStackTrace();
 		}
 		return count;
+	}
+	public List<Object> getDataFileTypeByProjectId(int projectId) {
+		List<Object> list = null;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select distinct d.d_type from datafile as d,project as p where p.p_id = d.pro_dataid and p.p_id = '"+projectId+"';";
+	//		System.out.println("sql"+sql);
+			list = session.createSQLQuery(sql).list();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return list;
+	}
+	public List<Object> getDataFilesByProjectIdAndDataFileType(int adminId,
+			int project_id, String datafile_type) {
+		List<Object> list = null;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select d.d_id,d.d_name,d.d_size,d_createTime from datafile as d where d.admin_dataid = '"+adminId+"' and d.pro_dataid='"+project_id+"' and d.d_type = '"+datafile_type+"';";
+		//	System.out.println("sql:"+sql);
+			list = session.createSQLQuery(sql).list();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return list;
 	} 
 }

@@ -39,7 +39,7 @@ public class AdviceAction extends ActionSupport{
 	public String QueryNotRead(){
 		list = new ArrayList<Advice>();
 		map = new HashMap<String, Object>();
-		list = adviceBiz.getNotReadById(1);
+		list = adviceBiz.getNotReadById(((Admin)ActionContext.getContext().getSession().get("user")).getId());
 		if(list.size()>0){
 			JSONArray ja = new JSONArray(list);
 			map.put("count",list.size());

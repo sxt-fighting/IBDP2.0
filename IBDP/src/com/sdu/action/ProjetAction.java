@@ -231,6 +231,20 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 		map.put("message","success");
 		return "delSuccess";
 	}
+	public String getProjectTree(){
+		int adminId = ((Admin)ActionContext.getContext().getSession().get("user")).getId();
+		List<Project> list = projectBiz.getProjectTree(adminId);
+		JSONArray array = new JSONArray();
+		for(int i = 0;i<list.size();i++){
+			JSONObject object = new JSONObject();
+			object.put("projectId",list.get(i).getP_id());
+			object.put("projectName",list.get(i).getP_name());
+			array.put(object);
+		}
+		map = new HashMap<String,Object>();
+		map.put("projectData",array.toString());
+		return "getSuccess";
+	}
 }
 
 /*原先的projectaction

@@ -39,6 +39,18 @@
     			var username = '<%=userobj.getName()%>';
     			var userid='<%=userobj.getId()%>';
 			</script>
+			<style type="text/css">
+			.popover {
+			  width: 600px;
+			  height: 300px;
+			  /* overflow: scroll;
+			  overflow-x:hidden; */
+			}
+			.btn-a{
+			  width:100%;
+			  margin:1px
+			}
+			</style>
 	</head>
 	<body ng-app="addModel" class="no-skin">
 		<%@include file="template.jsp" %>
@@ -124,14 +136,17 @@
 																<h4 class="panel-title">
 																	<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$index}}">
 																		<i class="ace-icon fa fa-angle-right bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-																		&nbsp;算法{{$index+1}}：{{a.name}}
+																		&nbsp;算法{{$index+1}}：{{a.name}}&nbsp;&nbsp;&nbsp;<button class="btn btn-default btn-minier btn-danger" ng-click="removeAlgorithm($index)">移除</button>
 																	</a>
 																</h4>
 															</div>
 	
 															<div class="panel-collapse collapse" id="collapse{{$index}}">
-																<div class="panel-body" ng-repeat="p in a.param">
-																	<div class="form-group">
+																<div class="panel-body">
+																	<div style="text-align:right">
+																		<a my-popover herf="#" data-html="true" data-toggle="tooltip"  guide="{{a.guide}}"><i class="ace-icon fa fa-question-circle blue bigger-150"></i></a>
+																	</div>
+																	<div class="form-group" ng-repeat="p in a.param">
 																		<label class="col-sm-3 control-label no-padding-right" for="Statistics_column">{{p.name}} </label>
 																		<div class="col-sm-9">
 																			<input type="text" ng-model="p.value" ng-change="changeState()" class="col-xs-10 col-sm-5">
@@ -143,7 +158,7 @@
 														</div>
 													</div>
 												</div> 
-												 <div class="modal fade" id="showAlgorithmList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+												<!-- <div class="modal fade" id="showAlgorithmList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 											        <div class="modal-dialog" style="width: 50%">
 											            <div class="modal-content">
 											                <div style="background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
@@ -156,7 +171,36 @@
 											                </div>
 											            </div>
 											        </div>
+											    </div> -->
+											    
+											    
+											    <div class="modal fade" style="width:100%" id="showAlgorithmList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+											        <div class="modal-dialog" style="width: 70%">
+											            <div class="modal-content">
+											                <div style="background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
+											                    <p style="padding: 5px;text-align:center">请选择要添加的算法</p>
+											                </div>
+											                <h3 class="header smaller lighter green">数据清理算法</h3>
+											                <div class="row"  style="margin: 10px 10px">
+											                	<div class="col-xs-3" style="text-align:center" ng-repeat="a in algorithmList[0] ">
+											                	<button type="button " class="btn btn-sm btn-info btn-a" ng-click="addAlgorithm(a)" data-dismiss="modal">{{a.name}}</button>
+											                	
+											                	</div>
+											                   
+											                </div>
+											                <h3 class="header smaller lighter purple">数据分析算法</h3>
+											                <div class="row"  style="margin: 10px 10px">
+											                	<div class="col-xs-3" style="text-align:center" ng-repeat="a in algorithmList[1] ">
+											                	<button type="button " class="btn btn-sm btn-info btn-a" ng-click="addAlgorithm(a)" data-dismiss="modal">{{a.name}}</button>
+											                	
+											                	</div>
+											                   
+											                </div>
+											            </div>
+											        </div>
 											    </div>
+											    
+											    
 												<div class="row" align="center">
 													<button class="btn btn-app btn-info btn-sm" ng-click="createModel()">创建模型</button>
 													<button class="btn btn-app btn-info btn-sm" ng-click="back()">返回</button>
@@ -236,6 +280,20 @@
 		</script>
 		<script type="text/javascript">
 			var addmodel = angular.module('addModel', ['ngRoute']);
+			addmodel.directive('myPopover', function () {
+		        return {
+		            restrict: 'AE',
+		            link: function (scope, ele, attrs) {
+		                $(ele).data('title','算法指导：');
+		                $(ele).data('content', "<div id ='popDiv'></div>");
+		                $(ele).popover({ html: true, trigger: 'hover focus ',placement:'left'});
+		                $(ele).on('shown.bs.popover',function() {
+		                    var popDiv = $('#popDiv');
+		                    popDiv.html(attrs.guide);
+		                });
+		            }
+		    	};
+		    });
 			addmodel.controller('addmodelCtrl', ['$http','$scope','$location',function($http,$scope,$location) {
 				$scope.algorithmList = algorithmJSONList;//从静态文件Myjs/algorithmList.js中读取
 				$scope.algorithmValList = [];//将要被传到后台的对象数组
@@ -267,6 +325,12 @@
 		        		}
 		        	}
 		        	return true;
+		        };
+		        
+		        $scope.removeAlgorithm = function($index){
+		        	$scope.algorithmValList.splice($index,1);
+		        	$scope.changeState();
+		        	//console.log("移除算法index="+$index);
 		        };
 		        
 		        $scope.createModel=function(){

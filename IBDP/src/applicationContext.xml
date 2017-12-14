@@ -89,6 +89,7 @@
 		<!-- 	<property name="dataFileBiz" ref="dataFileBizImpl" /> -->
 		<property name="dataFileBiz" ref="dataFileBiz" /> 
 		<property name="projectBiz" ref="projectBiz" />
+		<property name="modelBizImpl" ref="modelBizImpl" />
 	</bean>
 	<!-- 定义modelDao类 -->
 	<bean id="modelDaoImpl" class="com.sdu.dao.impl.ModelDaoImpl">
