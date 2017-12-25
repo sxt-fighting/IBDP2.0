@@ -102,6 +102,7 @@ public class ReadFileNew {
 		//循环每一行
 		//while (reader.readRecord()) {
 		int sizeTemp = 0;
+		int sizeFirstRow=0;
 		for(int rowNum = 0; reader.readRecord(); rowNum++){
 				sizeTemp = sizeTemp + 1 ;
 				DataNew vo = new DataNew();
@@ -110,16 +111,26 @@ public class ReadFileNew {
 				List<String> dataList = new ArrayList<String>();
 				for(int i=0;;i++){
 					data = reader.get(i);
-					if(data == ""){
-						break;
+					if (data == "") {
+						if (i<=sizeFirstRow) {
+							data = "NA";
+						}else {
+							break;
+						}
+						
 					}
+					
 					dataList.add(data);
+					
 					//System.out.println(data);
+				}
+				if (rowNum==0) {
+					sizeFirstRow=dataList.size();
 				}
 				vo.setData(dataList);
 				list.add(vo);
 			}
-		
+
 		return list;
 	}
 

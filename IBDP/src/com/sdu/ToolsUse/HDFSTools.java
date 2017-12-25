@@ -133,20 +133,18 @@ public class HDFSTools {
 		outputStream.write(buffer,0,buffer.length);
 		outputStream.close();
 	}
-	public static void HDFSToFileSystem(String filename) throws Exception
+	public static void HDFSToFileSystem(String hdfsPath,String filePath) throws Exception
 	{
 		Configuration configuration=new Configuration();
-	    //FileSystem hdfs=FileSystem.get(configuration);
-	    Path inputDir=new Path("D://"+filename);
-	    Path hdfsFilePath=new Path("hdfs://211.87.227.9:8020/user/acceptFile");
-	    System.setProperty("hadoop.home.dir", "D:\\hadoop-2.7.4\\hadoop-2.7.4");
- 	     System.setProperty("HADOOP_COMMON_LIB_NATIVE_DIR", "D:\\hadoop-2.7.4\\hadoop-2.7.4\\lib\\native");
- 	     System.setProperty("HADOOP_OPTS", "D:\\hadoop-2.7.4\\hadoop-2.7.4\\lib");
+	    Path hdfsFilePath=new Path(hdfsPath);
+	//    System.setProperty("hadoop.home.dir", "D:\\hadoop-2.7.4\\hadoop-2.7.4");
+ 	//     System.setProperty("HADOOP_COMMON_LIB_NATIVE_DIR", "D:\\hadoop-2.7.4\\hadoop-2.7.4\\lib\\native");
+ 	//     System.setProperty("HADOOP_OPTS", "D:\\hadoop-2.7.4\\hadoop-2.7.4\\lib");
  	     FileSystem hdfs=hdfsFilePath.getFileSystem(configuration);
-	    hdfs.mkdirs(hdfsFilePath);
-	    Path dst=new Path("hdfs://211.87.227.9:8020/user/acceptFile/"+filename);
+	 
+	    Path dst=new Path(filePath);
 		
-	    hdfs.copyToLocalFile(dst,inputDir);
+	    hdfs.copyToLocalFile(dst,hdfsFilePath);
 	    FileStatus files[]=hdfs.listStatus(dst);
 	    for (FileStatus file : files) {
 			System.out.println(file.getPath());

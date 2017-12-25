@@ -115,19 +115,17 @@ public class SshCommandExcute {
 				System.out.println("已经连接OK");
 				ssh = conn.openSession();
 				ssh.execCommand(command);
+				System.out.println("输出执行结果");
 				InputStream is = new StreamGobbler(ssh.getStdout());
 				BufferedReader brs = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-				while (true) {
-					// System.out.println(brs.readLine());
-					String line = brs.readLine();
-					if (line == null) {
-						break;
-					}
-					
+				String line =null;
+				while ((line = brs.readLine())!=null) {
+					 System.out.println(line);
+				
 					result += line + "\r\n";
-					if(line.contains("候选集")){
+					/*if(line.contains("候选集")){
 						break;
-					}
+					}*/
 				}
 			}
 			// 连接的Session和Connection对象都需要关闭

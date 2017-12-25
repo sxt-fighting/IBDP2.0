@@ -132,7 +132,7 @@
 								
 								<a href="http://211.87.227.9:50070/explorer.html#/" target="_blank" >
 									<i class="menu-icon fa fa-caret-right"></i>
-									HDFP文件浏览
+									HDFS文件浏览
 								</a>
 
 								<b class="arrow"></b>

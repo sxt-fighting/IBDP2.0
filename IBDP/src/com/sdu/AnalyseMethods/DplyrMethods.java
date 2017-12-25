@@ -138,8 +138,9 @@ public class DplyrMethods extends BasicMethod{
  	
  	if(index==algorithmJSON.length()-1)
 	{
- 		if(aa.equalsIgnoreCase("csv")||aa.equalsIgnoreCase("xls")||aa.equalsIgnoreCase("xlsx"))
+ 		if(aa.equalsIgnoreCase(".csv")||aa.equalsIgnoreCase(".xls")||aa.equalsIgnoreCase(".xlsx"))
  		{
+ 			resultFileName=resultFileName+".csv";
  			c.eval("write.csv(datafile,\""+resultFileName+".csv\",row.names = FALSE,quote = FALSE)");
  		}
  		else
