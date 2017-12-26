@@ -92,9 +92,10 @@ public class ModelDaoImpl {
 		/*	Model model = getModelById(id);*/
 			if("".equals(model.getM_name())){
 				session.delete(model);
+				result = true;
 			}
 			tx.commit();
-			result = true;
+			
 		}catch(Exception e){
 			tx.rollback();
 			e.printStackTrace();
