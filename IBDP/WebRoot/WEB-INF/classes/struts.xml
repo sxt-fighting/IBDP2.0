@@ -62,8 +62,8 @@
 <result name="input">/index.jsp</result>
 </action>
 
-<!-- 层此聚类 -->
-<action name="Hcluster" class="com.sdu.action.HclusterAction">
+<!-- RunSpark -->
+<action name="RunSpark" class="com.sdu.action.RunSparkAction">
 <param name="savePath">/MyUploadFile</param>
 <result name="success">/basic.jsp</result>
 <result name="input">/index.jsp</result>
