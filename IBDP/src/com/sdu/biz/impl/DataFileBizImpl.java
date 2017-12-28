@@ -104,4 +104,20 @@ public class DataFileBizImpl {
 		return dataFileDao.getDataFilesByProjectIdAndDataFileType(adminId, project_id, datafile_type);
 		
 	}
+	public int getAdminIdByProjectId(int dataFileId){
+		return dataFileDao.getAdminIdByProjectId(dataFileId);
+	}
+	public boolean projectIsNull(int fileId) {
+		return dataFileDao.projectIsNull(fileId);
+	}
+	public void  clone(DataFile dataFile1,DataFile dataFile2){
+		dataFile2.setD_name(dataFile1.getD_name());
+		dataFile2.setD_size(dataFile1.getD_size());
+		dataFile2.setD_type(dataFile1.getD_type());
+		dataFile2.setD_suffix(dataFile1.getD_suffix());
+		dataFile2.setD_createTime(dataFile1.getD_createTime());
+		dataFile2.setD_localpath(dataFile1.getD_localpath());
+		dataFile2.setD_HDFSpath(dataFile1.getD_HDFSpath());
+		dataFile2.setD_hasheader(dataFile1.getD_hasheader());
+	}
 }

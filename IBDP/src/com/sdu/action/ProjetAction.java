@@ -161,8 +161,21 @@ public class ProjetAction extends ActionSupport implements SessionAware{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		project.setP_createTime(sdf.format(date));
 		fileId = obj.getInt("datafileid");
+		
 		//System.out.println(obj.getInt("modelid"));
-	    projectid=projectBiz.saveProject(project,obj.getInt("modelid"),obj.getInt("datafileid"));
+		//判断是不是选择的已上传的文件
+		if(!dataFileBiz.projectIsNull(fileId)){
+			DataFile df1 =  dataFileBiz.getById(fileId);
+			DataFile df2 = new DataFile();
+			dataFileBiz.clone(df1, df2);
+			fileId = dataFileBiz.save(df2,dataFileBiz.getAdminIdByProjectId(fileId)+"");
+		}
+		//需要做一下的更改
+		//在数据库中先建一条数据
+		//改变savaProject中的形参
+		//改变projectJSON中的datafileid的值(为了执行时不影响结果)
+	//    projectid=projectBiz.saveProject(project,obj.getInt("modelid"),obj.getInt("datafileid"));
+		 projectid=projectBiz.saveProject(project,obj.getInt("modelid"),fileId);
 		//多线程运行
        	ThreadPoolExecutor poolExecutor=new ThreadPoolExecutor(3, 4, 1, TimeUnit.MINUTES, new LinkedBlockingDeque());
        	poolExecutor.submit(new Runnable() {

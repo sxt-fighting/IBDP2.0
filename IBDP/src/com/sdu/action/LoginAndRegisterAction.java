@@ -20,10 +20,15 @@ public class LoginAndRegisterAction extends ActionSupport implements RequestAwar
 	private String company;
 	private String phone;
 	private String email;
+	private int isAdmin = 1;
 	AdminBizImpl adminBizImpl;
 	Map<String, Object> session;
 	Map<String, Object> request;
 	
+	
+	public void setIsAdmin(int isAdmin) {
+		this.isAdmin = isAdmin;
+	}
 	public void setSession(Map<String, Object> session) {
 		this.session = session;
 	}
@@ -84,19 +89,23 @@ public class LoginAndRegisterAction extends ActionSupport implements RequestAwar
 	}
 	public String Login()
 	{
+		System.out.println("进入login");
+		System.out.println("name:"+name);
+		System.out.println("password:"+password);
+		System.out.println("type"+type);
 		List<Admin> list;
 		if("adminlogin".equals(type))
 		{
 			Admin condition =new Admin();
 			condition.setName(name);
 			condition.setPassword(password);
+			condition.setIsAdmin(0);
 			list=adminBizImpl.Login(condition);
-			System.out.println(list.size());
-			if(list.size()>0)
+			if(list!=null && list.size()>0)
 				{
 				session.put("user",list.get(0));
-				System.out.println(list.get(0).getId());
-				System.out.println("管理员账号登陆成功");
+	//			System.out.println(list.get(0).getId());
+	//			System.out.println("管理员账号登陆成功");
 				return "login";
 				}
 			
@@ -104,12 +113,14 @@ public class LoginAndRegisterAction extends ActionSupport implements RequestAwar
 			Admin condition =new Admin();
 			condition.setName(name);
 			condition.setPassword(password);
+			condition.setIsAdmin(1);
 			list=adminBizImpl.Login(condition);
-			if(list.size()>0)
+			if(list!=null && list.size()>0)
 				{
+	//			System.out.println("进了if");
 				session.put("user",list.get(0));
-				System.out.println(list.get(0).getId());
-				System.out.println("普通用户登陆成功");
+	//			System.out.println(list.get(0).getId());
+	//			System.out.println("普通用户登陆成功");
 				return "login";
 				}
 			
@@ -125,7 +136,9 @@ public class LoginAndRegisterAction extends ActionSupport implements RequestAwar
 		user.setName(username);
 		user.setPassword(userpassword);
 		user.setTelephone(phone);
-		System.out.println(username+" "+userpassword+" "+email+" "+phone+" "+company);
+		user.setIsAdmin(isAdmin);
+		user.setImgName("./userHeadPhoto/default.jpg");
+//		System.out.println(username+" "+userpassword+" "+email+" "+phone+" "+company);
 		boolean register=adminBizImpl.Register(user);
 		if(register==true)
 		{

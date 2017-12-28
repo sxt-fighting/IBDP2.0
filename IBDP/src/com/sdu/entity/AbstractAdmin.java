@@ -8,7 +8,7 @@ import java.util.Set;
  * entity. @author MyEclipse Persistence Tools
  */
 
-public abstract class AbstractAdmin implements java.io.Serializable {
+public abstract class AbstractAdmin{
 
 	// Fields
 
@@ -18,6 +18,8 @@ public abstract class AbstractAdmin implements java.io.Serializable {
 	private String company;
 	private String telephone;
 	private String email;
+	private int isAdmin;
+	private String imgName;
     private Set a_project=new HashSet(0);//拥有的项目
     private Set a_model=new HashSet(0);//创建的模型
     private Set a_datafile = new HashSet(0);//导入的数据
@@ -37,18 +39,20 @@ public abstract class AbstractAdmin implements java.io.Serializable {
 	
 
 	public AbstractAdmin(Integer id, String name, String password,
-			String company, String telephone, String email, Set a_project,
-			Set a_model, Set a_datafile, Set admin_advices) {
+			String company, String telephone, String email, int isAdmin,Set a_project,
+			Set a_model, Set a_datafile, Set admin_advices,String imgName) {
 		this.id = id;
 		this.name = name;
 		this.password = password;
 		this.company = company;
 		this.telephone = telephone;
 		this.email = email;
+		this.isAdmin = isAdmin;
 		this.a_project = a_project;
 		this.a_model = a_model;
 		this.a_datafile = a_datafile;
 		this.admin_advices = admin_advices;
+		this.imgName = imgName;
 	}
 
 	// Property accessors
@@ -99,6 +103,25 @@ public abstract class AbstractAdmin implements java.io.Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	
+
+	public int getIsAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(int isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
+	
+	public String getImgName() {
+		return imgName;
+	}
+
+	public void setImgName(String imgName) {
+		this.imgName = imgName;
 	}
 
 	public Set getA_project() {

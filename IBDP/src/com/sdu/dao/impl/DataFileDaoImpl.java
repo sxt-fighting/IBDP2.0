@@ -255,5 +255,38 @@ public class DataFileDaoImpl {
 			e.printStackTrace();
 		}
 		return list;
+	}
+	public boolean projectIsNull(int fileId) {
+		boolean result = false;
+		List<DataFile> list = null;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql ="select * from datafile where datafile.d_id = '"+fileId+"' and datafile.pro_dataid is null;";
+			list = session.createQuery(sql).list();
+			tx.commit();
+			if(list.size()>0){
+				result = true;
+			}
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return result;
 	} 
+	public int getAdminIdByProjectId(int dataFileId){
+		int adminId = 0;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select datafile.admin_dataid from datafile where datafile.d_id = '"+dataFileId+"';";
+			adminId = ((Number)session.createSQLQuery(sql).uniqueResult()).intValue();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return adminId;
+	}
+	
 }

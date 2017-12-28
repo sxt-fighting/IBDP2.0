@@ -155,6 +155,40 @@
 		<param name="root">map</param>
 	</result>
 </action>
+<!-- userAction -->
+<action name="user_update" class="com.sdu.action.userAction" method="update">
+<interceptor-ref name="json"></interceptor-ref>
+ <result name="updateSuccess" type="json">
+   <param name="root">map</param>
+  </result>
+</action>
+<action name="user_adminUpdate" class="com.sdu.action.userAction" method="adminUpdate">
+<interceptor-ref name="json"></interceptor-ref>
+ <result name="adminUpdate" type="json">
+   <param name="root">map</param>
+  </result>
+</action>
+
+<action name="user_*" class="com.sdu.action.userAction" method="{1}">
+  <result name="showSuccess" type="json">
+   <param name="root">map</param>
+  </result>
+  <result name="showAll" type="json">
+   <param name="root">map</param>
+  </result>
+  <result name="deleteSuccess" type="json">
+   <param name="root">map</param>
+  </result>
+  <result name="deletes" type="json">
+    <param name="root">map</param>
+  </result>
+  <result name="showUser" type="json">
+    <param name="root">map</param>
+  </result>
+  <result name="upload" type="json">
+    <param name="root">map</param>
+  </result>
+</action>
 <!-- projectAction -->
 <action name="Project_addProject" class="com.sdu.action.ProjetAction" method="addProject">
 <interceptor-ref name="json"></interceptor-ref>
