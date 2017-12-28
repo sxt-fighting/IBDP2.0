@@ -156,20 +156,20 @@
 	</result>
 </action>
 <!-- userAction -->
-<action name="user_update" class="com.sdu.action.userAction" method="update">
+<action name="user_update" class="com.sdu.action.UserAction" method="update">
 <interceptor-ref name="json"></interceptor-ref>
  <result name="updateSuccess" type="json">
    <param name="root">map</param>
   </result>
 </action>
-<action name="user_adminUpdate" class="com.sdu.action.userAction" method="adminUpdate">
+<action name="user_adminUpdate" class="com.sdu.action.UserAction" method="adminUpdate">
 <interceptor-ref name="json"></interceptor-ref>
  <result name="adminUpdate" type="json">
    <param name="root">map</param>
   </result>
 </action>
 
-<action name="user_*" class="com.sdu.action.userAction" method="{1}">
+<action name="user_*" class="com.sdu.action.UserAction" method="{1}">
   <result name="showSuccess" type="json">
    <param name="root">map</param>
   </result>
