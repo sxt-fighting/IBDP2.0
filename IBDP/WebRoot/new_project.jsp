@@ -291,12 +291,12 @@
 																	<div >
 																	<input type="text" ng-model="p.value" ng-change="changeState()" class="col-xs-10 col-sm-5">
 																</div>
-																<div >
+																<div ng-if="p.selectable" >
 																	<button class="btn btn-success btn-sm" ng-click="viewDateFile(p)"  class="col-xs-10 col-sm-5">预览</button>
 																</div>
 																</div>
 													</div>
-													<div class="form-group" ng-if="p.type=='select'">
+													<div class="form-group" ng-if="p.type=='Select'">
 																<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
 																<div class="col-sm-9">
 																	<select 
@@ -305,7 +305,7 @@
 																	</select>
 																</div>
 													</div>
-													<div class="form-group" ng-if="p.type=='checkbox'">
+													<div class="form-group" ng-if="p.type=='Checkbox'">
 																<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
 																<div class="col-sm-9" >
 																 <div class="row"  style="margin: 10px 10px">
@@ -326,7 +326,7 @@
 																	<div >
 																		<input type="text" ng-model="p.value" ng-change="changeState()" class="col-xs-10 col-sm-5">
 																	</div>
-																	<div >
+																	<div ng-if="p.selectable" >
 																		<button class="btn btn-success btn-sm" ng-click="viewDateFile(p)"  class="col-xs-10 col-sm-5">预览</button>
 																	</div>
 																	</div>
@@ -499,11 +499,16 @@
 							         aria-hidden="true">
 							         
 							          <div class="modal-dialog" style=" height:700px;width: 65%;">
-							            <div style="text-align:center;background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
-											<label style="padding: 5px;float:center;font-size:18px">文件内容预览 </label>
-											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-											<button class="btn btn-primary btn-sm" ng-click="fill('+')"  data-dismiss="modal">确定</button>
-											<button class="btn btn-sm pull-right" style="width:50px;padding: 9.5px;" ng-click="position=null;" data-dismiss="modal"><i class="ace-icon glyphicon glyphicon-remove"></i></button>
+							            <div style="text-align:center;background-color: #F5F5F5 ;height:33px;color: #1d6fa6;font-size: large;padding: 0px 1px;">
+							            	<label style="padding: 5px;float:center;font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文件内容预览 </label>
+											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											<button class="btn btn-danger btn-sm " style="float:right;margin:0 1px;padding: 1px 0px;border-width: 7px;" ng-click="position=null;" data-dismiss="modal">关闭</button>
+											<button class="btn btn-primary btn-sm " style="float:right;margin:0 1px;padding: 1px 0px;border-width: 7px;" ng-click="fill()"  data-dismiss="modal">确定</button>
+											<button class="btn btn-primary btn-sm " style="float:right;margin:0 1px;padding: 1px 0px;border-width: 7px;" ng-click="checkToggle()" >反选</button>
+											<button class="btn btn-primary btn-sm " style="float:right;margin:0 1px;padding: 1px 0px;border-width: 7px;" ng-click="checkAll()" >全选</button>
+											
+											<!-- <button class="btn btn-sm " style="float:right;width:50px;padding: 9.5px;" ng-click="position=null;" data-dismiss="modal"><i class="ace-icon glyphicon glyphicon-remove"></i></button>-->
+							            	
 										</div>
 							            <div id="modalContent"  class="modal-content" style="height: 700px;overflow:scroll;overflow-x:auto;overflow-y:auto ">
 							            	<table class="table"><tbody id="table_body"></tbody></table>
@@ -513,9 +518,59 @@
 											</div><!-- /.widget-body -->
 										</div><!-- R分析项目 -->
 										<div id="jar" class="tab-pane">
+											<div class="widget-body"  >
+											<div class="widget-main">
+											<form class="form-horizontal"  action="RunSpark" name="RunSparkForm" id="RunSparkForm" method="post" enctype="multipart/form-data" >
+												<legend ><center><h2>提交运行程序</h2></center></legend>
+												<div class="form-group row">
+															<label class="col-sm-3 control-label no-padding-right" for="MainClass"> 主类名 </label>
+					
+															<div class="col-sm-9">
+																<input  type="text" class="col-xs-10 col-sm-5" id="MainClass" name="MainClass" placeholder="请包含包名，例如[PackagesName].[MainclassName]" />
+																
+															</div>
+														</div>
+												<div class="form-group row">
+															<label class="col-sm-3 control-label no-padding-right" for="argument"> 其他参数 </label>
+					
+															<div class="col-sm-9">
+																<input type="text" class="col-xs-10 col-sm-5" id="argument" name="argument" placeholder="请以空格隔开！" />
+																
+															</div>
+														</div>
+									
+												<div class="form-group row">
+														<label class="col-sm-3 control-label no-padding-right"  for="jarfile">上传运行程序文件</label>
+							     						<div class="col-sm-9">
+														<input type="file" id="jarfile" name="jarfile" required="true" class="col-xs-10 col-sm-5" />
+									
+														</div>
+												</div>
+												<div class="form-group row">
+														<label class="col-sm-3 control-label no-padding-right"  for="datafile">上传数据文件</label>
+							     						<div class="col-sm-9">
+														<input type="file" id="datafile" name="datafile" required="true" class="col-xs-10 col-sm-5" />
+									
+														</div>
+												</div>
+												<div class="form-group row">
+													<div class="col-md-offset-3 col-md-9">
+													<button  class="btn btn-info" id="RgBtn"  type="submit" value="提交">
+														<i class="ace-icon fa fa-check bigger-110"></i>
+														提交
+													</button>
+					
+													&nbsp; &nbsp; &nbsp;
+													<button class="btn" type="reset" value="重置">
+														<i class="ace-icon fa fa-undo bigger-110"></i>
+														重置
+													</button>
+												</div>
+												</div>
+											</form>
 											
-										
-											<p>将上传自己JAR文件的form表单放在这里</p>
+											</div></div>
+											
 										</div>
 									</div>
 								</div>
@@ -769,8 +824,6 @@
      							}
      						}
      					}); 
-            
-                             
 	                       })
                            .error(function (data) {
                              alert("创建Project失败");
@@ -784,11 +837,11 @@
                            data:{modelJSONStr:JSON.stringify($scope.model)}
                        })
                            .success(function (data) {
-                              console.log("创建Model成功");
-                              console.log(JSON.stringify(data));
-                              console.log("modelid:"+data.modelid);
+                              //console.log("创建Model成功");
+                              //console.log(JSON.stringify(data));
+                              //console.log("modelid:"+data.modelid);
                               $('div[ng-controller="project_modelCtrl"]').scope().project.modelid= data.modelid;
-				            $scope.createProject();             
+				              $scope.createProject();             
 	                       })
                             .error(function (data) {
                               alert("创建Model失败");
@@ -841,11 +894,17 @@
 						var viewDataStr = "";
 						if(pos==0&&($("#gender").val()==='是')){//判断一下如果是初始加载，并且含有表头，就为文件预览的表头添加复选框来实现用户点击复选框完成参数（公式）的填充
 							var checkBoxsStr="<tr>";
-							for(var j = 0;j<dataArray[0].length;j++){
-								//viewDataStr = viewDataStr+"<td>"+dataArray[i][j]+"</td>";
-								checkBoxsStr=checkBoxsStr+"<td style='text-align:center;'><input type='checkbox' name='tableheader' value='"+dataArray[0][j]+"' onclick='' ></input></td>";
+							if($scope.position.linkvalue=='column'){
+								for(var j = 0;j<dataArray[0].length;j++){//将列号（从1到n，不是从0开始）绑定到checkbox上
+								checkBoxsStr=checkBoxsStr+"<td style='text-align:center;'><input type='checkbox' name='tableheader' value='"+(j+1)+"' onclick='' ></input></td>";
+								}
 							}
-							 checkBoxsStr= checkBoxsStr+"</tr>";
+							else if($scope.position.linkvalue=='header'){
+								for(var j = 0;j<dataArray[0].length;j++){//将表头的内容绑定到checkbox上
+								checkBoxsStr=checkBoxsStr+"<td style='text-align:center;'><input type='checkbox' name='tableheader' value='"+dataArray[0][j]+"' onclick='' ></input></td>";
+								}
+							}
+							checkBoxsStr= checkBoxsStr+"</tr>";
 							$('#table_body').append(checkBoxsStr);
 						} 
 						for(var i = 0;i<dataArray.length;i++){
@@ -859,15 +918,27 @@
 						$('#table_body').append(viewDataStr);
 					});
 			     };
-			     $scope.fill=function(linkchar){///这里用jQuery遍历table表头checkbox，将勾选的内容用linkchar拼接成字符串填充到参数值上。
-			     	 ////////
+			     $scope.fill=function(){///这里用jQuery遍历table表头checkbox，将勾选的内容用linkchar拼接成字符串填充到参数值上。
+			     	 ////////linkchar最好从param(这里是position)里取
 			     	 var value_array=new Array(); 
 			     	 $('input[name="tableheader"]:checked').each(function (){
 			     	 	value_array.push($(this).val());
-			     	 	console.log('v=='+$(this).val());
+			     	 	//console.log('v=='+$(this).val());
 			     	 });
-				     $scope.position.value=value_array.join(linkchar);
+				     $scope.position.value=value_array.join(($scope.position.linkchar)?$scope.position.linkchar:'+');
+				     $scope.changeState();
 				     $scope.position=null;
+			     };
+			     $scope.checkAll=function(){
+			     	$('input[name="tableheader"]').each(function (){
+			     		$(this).prop('checked',true);
+			     	});
+			     };
+			     $scope.checkToggle=function(){
+		     		$('input[name="tableheader"]').each(function (){
+		     			
+			     		$(this).prop('checked',!$(this).is(':checked'));
+			     	});
 			     };
     }]);
 		</script>
@@ -941,7 +1012,7 @@
 				//console.log('跳转完成后，step='+info.step);
 				})
 				.on('finished.fu.wizard', function(e) {
-				console.log("提交ajax请求");
+				//console.log("提交ajax请求");
 				if(controllerScope.hasLegalVal()){
 					if(controllerScope.model.m_id==undefined||controllerScope.model.m_id==""||controllerScope.model.m_id==null){//如果模型是新建的或是修改的，就创建新模型
 						controllerScope.createModel();
@@ -950,7 +1021,7 @@
 						controllerScope.createProject();
 					}
 				}
-				console.log("请求完成");
+				//console.log("请求完成");
 				
 				//console.log("提交结果后");
 					/* bootbox.dialog({
