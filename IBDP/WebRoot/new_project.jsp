@@ -89,217 +89,251 @@
   <body ng-app="newProject" class="no-skin">
 		 <%@include file="template.jsp" %>
 		 <%@include file="top_menu.jsp" %>
-					<div class="main-container ace-save-state" id="main-container">
- 			
-
+<div class="main-container ace-save-state" id="main-container">
 			<script type="text/javascript">
 				try{ace.settings.loadState('main-container')}catch(e){}
 			</script>
-			
 
+	<div class="main-content">
+		<div class="main-content-inner">
+			<div class="page-content">
 
-			<div class="main-content">
-				<div class="main-content-inner">
-					
-
-					<div class="page-content">
+				<div class="row">
+					<div class="col-xs-12">
+						<!-- PAGE CONTENT BEGINS -->
 						
-						
+							<div class="widget-box">
+								<div class="widget-header widget-header-blue widget-header-flat">
+									<h4 class="widget-title lighter">新建项目</h4>
+								</div>
+								<div class="tabbable">
+									<ul class="nav nav-tabs padding-12 tab-color-blue " id="myTab4">
+											<li class="active">
+												<a data-toggle="tab" href="#r">使用平台的算法</a>
+											</li>
+											<li>
+												<a data-toggle="tab" href="#jar">上传自己的算法</a>
+											</li>
+									</ul>
+									<div class="tab-content">
+										<div id="r" class="tab-pane in active">
+											<div class="widget-body" ng-controller="project_modelCtrl" >
+											<div class="widget-main">
+										<div id="fuelux-wizard-container">
+											<div>
+												<ul class="steps">
+													<li data-step="1" class="active">
+														<span class="step">1</span>
+														<span class="title">创建项目</span>
+													</li>
 
-						<div class="row">
-							<div class="col-xs-12">
-								<!-- PAGE CONTENT BEGINS -->
-								
+													<li data-step="2">
+														<span class="step">2</span>
+														<span class="title">上传数据</span>
+													</li>
 
-								<div class="hr hr-18 hr-double dotted"></div><!--水平分割线-->
+													<li data-step="3">
+														<span class="step">3</span>
+														<span class="title">选择模型</span>
+													</li>
 
-								<div class="widget-box">
-									<div class="widget-header widget-header-blue widget-header-flat">
-										<h4 class="widget-title lighter">新建项目</h4>
-										
-									</div>
+													<!-- <li data-step="4">
+														<span class="step">4</span>
+														<span class="title">上传数据</span>
+													</li>
+													<li data-step="5">
+														<span class="step">5</span>
+														<span class="title">设置参数</span>
+													</li> -->
+												</ul>
+											</div>
+											<hr />
 
-									<div class="widget-body" ng-controller="project_modelCtrl" >
-										<div class="widget-main">
-											<div id="fuelux-wizard-container">
-												<div>
-													<ul class="steps">
-														<li data-step="1" class="active">
-															<span class="step">1</span>
-															<span class="title">创建项目</span>
-														</li>
-
-														<li data-step="2">
-															<span class="step">2</span>
-															<span class="title">上传数据</span>
-														</li>
-
-														<li data-step="3">
-															<span class="step">3</span>
-															<span class="title">选择模型</span>
-														</li>
-
-														<!-- <li data-step="4">
-															<span class="step">4</span>
-															<span class="title">上传数据</span>
-														</li>
-														<li data-step="5">
-															<span class="step">5</span>
-															<span class="title">设置参数</span>
-														</li> -->
-													</ul>
-												</div>
-												<hr />
-
-		<div style="border: 1px solid;border-color: rgba(175,175,175,0.16);width: 90%;text-align: left;margin:0 auto;padding: 10px 30px">
-		
-												<div class="step-content pos-rel">
-												<form class="form-horizontal" id="validation-form" method="get">
-													<div class="step-pane active" data-step="1">
-														<h3 class="lighter block green">填写项目信息</h3>
-														
-															<div class="form-group">
-																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">项目名称:</label>
-
-																<div class="col-xs-12 col-sm-9">
-																	<div class="clearfix">
-																		<input type="text" name="name" ng-model="project.name" class="col-xs-12 col-sm-5" />
-																	</div>
-																</div>
-															</div>
-
-															<div class="space-2"></div>
-
-															<div class="form-group">
-																<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="comment">项目描述:</label>
-
-																<div class="col-xs-12 col-sm-9">
-																	<div class="clearfix">
-																		<textarea class="col-xs-12 col-sm-5" name="describe"  ng-model="project.describe"></textarea>
-																	</div>
-																</div>
-															</div>
-
-
-															
-														
-													</div>
-
-													<div class="step-pane" data-step="2">
+	<div style="border: 1px solid;border-color: rgba(175,175,175,0.16);width: 90%;text-align: left;margin:0 auto;padding: 10px 30px">
+	
+											<div class="step-content pos-rel">
+											<form class="form-horizontal" id="validation-form" method="get">
+												<div class="step-pane active" data-step="1">
+													<h3 class="lighter block green">填写项目信息</h3>
 													
-													<!-- <div class="center"> -->
-															<div class="form-group">
-																<label class="control-label col-xs-12 col-sm-3 no-padding-right">上传文件:</label>
+														<div class="form-group">
+															<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">项目名称:</label>
 
-																<div class="col-xs-12 col-sm-9">
-																	<div class="clearfix">
-																		<input type="file" multiple="" accept="*/*" id="upload" name="uploadFile">
-																		<button  class="btn btn-primary btn-sm" onclick="selectFile()">选择已上传文件</button>
-																		
-																		<!--选择文件的模态框-->
-																		<div class="modal fade" id="selectFileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    																		<div class="modal-dialog">
-        																		<div class="modal-content">
-           																	 	<div class="modal-header" >
-                																	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                																	<h5 class="modal-title">选择文件列表</h5>
-            																	</div>
-            																	<div class="modal-body">
-            																		<div id="modal_content">
-            																			
-            																		</div>
-            																	</div>
-        																		</div><!-- /.modal-content -->
-    																		</div><!-- /.modal -->
-																		</div>
-																		<!-- 模态框结束 -->	
-																	
-																	</div>
+															<div class="col-xs-12 col-sm-9">
+																<div class="clearfix">
+																	<input type="text" name="name" ng-model="project.name" class="col-xs-12 col-sm-5" />
 																</div>
+															</div>
+														</div>
+
+														<div class="space-2"></div>
+
+														<div class="form-group">
+															<label class="control-label col-xs-12 col-sm-3 no-padding-right" for="comment">项目描述:</label>
+
+															<div class="col-xs-12 col-sm-9">
+																<div class="clearfix">
+																	<textarea class="col-xs-12 col-sm-5" name="describe"  ng-model="project.describe"></textarea>
+																</div>
+															</div>
+														</div>
+
+
+														
+													
+												</div>
+
+												<div class="step-pane" data-step="2">
+												
+												<!-- <div class="center"> -->
+														<div class="form-group">
+															<label class="control-label col-xs-12 col-sm-3 no-padding-right">上传文件:</label>
+
+															<div class="col-xs-12 col-sm-9">
+																<div class="clearfix">
+																	<input type="file" multiple="" accept="*/*" id="upload" name="uploadFile">
+																	<button  class="btn btn-primary btn-sm" onclick="selectFile()">选择已上传文件</button>
+																	
+																	<!--选择文件的模态框-->
+																	<div class="modal fade" id="selectFileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   																		<div class="modal-dialog">
+       																		<div class="modal-content">
+          																	 	<div class="modal-header" >
+               																	<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               																	<h5 class="modal-title">选择文件列表</h5>
+           																	</div>
+           																	<div class="modal-body">
+           																		<div id="modal_content">
+           																			
+           																		</div>
+           																	</div>
+       																		</div><!-- /.modal-content -->
+   																		</div><!-- /.modal -->
+																	</div>
+																	<!-- 模态框结束 -->	
+																
+																</div>
+															</div>
+															
+														</div>
+														<div class="space-2"></div>
+														<div class="form-group">
+															<label class="control-label col-xs-12 col-sm-3 no-padding-right">是否包含表头</label>
+
+															<div class="col-xs-12 col-sm-9">
+																
+																	<select id="gender">
+																		<option>是</option>
+																		<option>否</option>
+																	</select>
 																
 															</div>
-															<div class="space-2"></div>
-															<div class="form-group">
-																<label class="control-label col-xs-12 col-sm-3 no-padding-right">是否包含表头</label>
-
-																<div class="col-xs-12 col-sm-9">
-																	
-																		<select id="gender">
-																			<option>是</option>
-																			<option>否</option>
-																		</select>
-																	
-																</div>
-															</div>
-												<!-- 		</div> -->
-													
-												
-													</div>
-
-													<div class="step-pane" data-step="3">
-													<div  style="z-index: 9999; position: fixed ! important; right: 25px; top: 300px;">  
-														<button class="btn btn-app btn-info btn-sm " ng-click="search_models()"
-																data-toggle="modal" data-target="#searchModels">
-														<i class="ace-icon fa fa-cloud-download bigger-180"></i>
-														导入模型
-														</button>  
-													</div>  
-												
-													<div  style="z-index: 9999; position: fixed ! important; right: 25px; top: 380px;">
-														<button class="btn btn-app btn-info btn-sm" 
-														data-toggle="modal" data-target="#showAlgorithmList"> 
-														<i class="ace-icon fa fa-plus-circle bigger-180"></i>
-														添加算法
-														</button>
-													</div>
-														<div>
-															<div class="alert alert-info">
-																<button type="button" class="close" data-dismiss="alert">
-																	<i class="ace-icon fa fa-times"></i>
-																</button>
-																<strong>注意:</strong>
-																项目模型可以导入已有模型或添加新模型。
-																<br />
-															</div>
 														</div>
-														
-														<div class="hr hr-dotted"></div>
-														<h3 class="lighter block green">模型详情</h3>
-														<div class="center" ng-show="algorithmValList.length==0"><span>模型为空，请选择导入模型或添加算法</span></div> 
-														 <div class="row">
-														<div id="accordion" class="accordion-style1 panel-group" ng-repeat="a in algorithmValList track by $index">
+											<!-- 		</div> -->
+												
 											
-											<div class="panel panel-default">
-												<div class="panel-heading">
-													<h4 class="panel-title">
-														<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$index}}">
-															<i class="ace-icon fa fa-angle-right bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-															&nbsp;算法{{$index+1}}：{{a.name}}&nbsp;&nbsp;&nbsp;<button class="btn btn-default btn-minier   btn-danger" ng-click="removeAlgorithm($index)">移除</button>
-														</a>
-														  
-													</h4>
 												</div>
 
-												<div class="panel-collapse collapse" id="collapse{{$index}}">
-													<div class="panel-body">
-													<div style="text-align:right">
-													<a my-popover herf="#" data-html="true" data-toggle="tooltip"  guide="{{a.guide}}"><i class="ace-icon fa fa-question-circle blue bigger-150"></i></a>
+												<div class="step-pane" data-step="3">
+												<div  style="z-index: 9999; position: fixed ! important; right: 25px; top: 300px;">  
+													<button class="btn btn-app btn-info btn-sm " ng-click="search_models()"
+															data-toggle="modal" data-target="#searchModels">
+													<i class="ace-icon fa fa-cloud-download bigger-180"></i>
+													导入模型
+													</button>  
+												</div>  
+											
+												<div  style="z-index: 9999; position: fixed ! important; right: 25px; top: 380px;">
+													<button class="btn btn-app btn-info btn-sm" 
+													data-toggle="modal" data-target="#showAlgorithmList"> 
+													<i class="ace-icon fa fa-plus-circle bigger-180"></i>
+													添加算法
+													</button>
+												</div>
+													<div>
+														<div class="alert alert-info">
+															<button type="button" class="close" data-dismiss="alert">
+																<i class="ace-icon fa fa-times"></i>
+															</button>
+															<strong>注意:</strong>
+															项目模型可以导入已有模型或添加新模型。
+															<br />
+														</div>
 													</div>
-														<div  ng-repeat="p in a.param">
-														<div ng-if="p.dependon==undefined||p.dependon==''||p.dependon==null">
-															<div class="form-group" ng-if="p.type=='String'">
+													
+													<div class="hr hr-dotted"></div>
+													<h3 class="lighter block green">模型详情</h3>
+													<div class="center" ng-show="algorithmValList.length==0"><span>模型为空，请选择导入模型或添加算法</span></div> 
+													 <div class="row">
+													<div id="accordion" class="accordion-style1 panel-group" ng-repeat="a in algorithmValList track by $index">
+										
+										<div class="panel panel-default">
+											<div class="panel-heading">
+												<h4 class="panel-title">
+													<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse{{$index}}">
+														<i class="ace-icon fa fa-angle-right bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+														&nbsp;算法{{$index+1}}：{{a.name}}&nbsp;&nbsp;&nbsp;<button class="btn btn-default btn-minier   btn-danger" ng-click="removeAlgorithm($index)">移除</button>
+													</a>
+													  
+												</h4>
+											</div>
+
+											<div class="panel-collapse collapse" id="collapse{{$index}}">
+												<div class="panel-body">
+												<div style="text-align:right">
+												<a my-popover herf="#" data-html="true" data-toggle="tooltip"  guide="{{a.guide}}"><i class="ace-icon fa fa-question-circle blue bigger-150"></i></a>
+												</div>
+													<div  ng-repeat="p in a.param">
+													<div ng-if="p.dependon==undefined||p.dependon==''||p.dependon==null">
+														<div class="form-group" ng-if="p.type=='String'">
+																<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;" >{{p.name}} </label>
+																<div class=" col-sm-9">
+																	<div >
+																	<input type="text" ng-model="p.value" ng-change="changeState()" class="col-xs-10 col-sm-5">
+																</div>
+																<div ng-if="p.selectable" >
+																	<button class="btn btn-success btn-sm" ng-click="viewDateFile(p)"  class="col-xs-10 col-sm-5">预览</button>
+																</div>
+																</div>
+													</div>
+													<div class="form-group" ng-if="p.type=='Select'">
+																<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
+																<div class="col-sm-9">
+																	<select 
+																    ng-options="v as v for v in p.options"
+																    ng-model="p.value">
+																	</select>
+																</div>
+													</div>
+													<div class="form-group" ng-if="p.type=='Checkbox'">
+																<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
+																<div class="col-sm-9" >
+																 <div class="row"  style="margin: 10px 10px">
+												                	<div class="checkbox col-xs-3" ng-repeat="v in p.options">
+																		<label>
+																			<input type="checkbox" class="ace"  ng-checked="isSelected(v,p.value)" ng-click="updateSelection($event,v,p.value)">
+																			<span class="lbl">{{v}}</span>
+																		</label>
+																	</div>
+												                </div>
+																</div>
+													</div>
+													</div>
+													<div ng-if="p.dependon!=undefined&&p.dependon!=''&&p.dependon!=null" >
+														<div class="form-group" ng-if="p.type=='String'&&a.param[p.dependon-1].value==a.param[p.dependon-1].options[0]">
 																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;" >{{p.name}} </label>
 																	<div class=" col-sm-9">
-																		<div >
+																	<div >
 																		<input type="text" ng-model="p.value" ng-change="changeState()" class="col-xs-10 col-sm-5">
 																	</div>
-																	<div >
-																		<button class="btn btn-success btn-sm" ng-click="viewDateFile()"  class="col-xs-10 col-sm-5">预览</button>
+																	<div ng-if="p.selectable" >
+																		<button class="btn btn-success btn-sm" ng-click="viewDateFile(p)"  class="col-xs-10 col-sm-5">预览</button>
 																	</div>
 																	</div>
 														</div>
-														<div class="form-group" ng-if="p.type=='select'">
+														<div class="form-group" ng-if="p.type=='select'&&a.param[p.dependon-1].value==a.param[p.dependon-1].options[0]">
 																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
+							
 																	<div class="col-sm-9">
 																		<select 
 																	    ng-options="v as v for v in p.options"
@@ -307,7 +341,7 @@
 																		</select>
 																	</div>
 														</div>
-														<div class="form-group" ng-if="p.type=='checkbox'">
+														<div class="form-group" ng-if="p.type=='checkbox'&&a.param[p.dependon-1].value==a.param[p.dependon-1].options[0]">
 																	<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
 																	<div class="col-sm-9" >
 																	 <div class="row"  style="margin: 10px 10px">
@@ -320,219 +354,239 @@
 													                </div>
 																	</div>
 														</div>
-														</div>
-														<div ng-if="p.dependon!=undefined&&p.dependon!=''&&p.dependon!=null" >
-															<div class="form-group" ng-if="p.type=='String'&&a.param[p.dependon-1].value=='是'">
-																		<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;" >{{p.name}} </label>
-																		<div class=" col-sm-9">
-																		<div >
-																			<input type="text" ng-model="p.value" ng-change="changeState()" class="col-xs-10 col-sm-5">
-																		</div>
-																		<div >
-																			<button class="btn btn-success btn-sm" ng-click="viewDateFile()"  class="col-xs-10 col-sm-5">预览</button>
-																		</div>
-																		</div>
-															</div>
-															<div class="form-group" ng-if="p.type=='select'&&a.param[p.dependon-1].value=='是'">
-																		<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
-								
-																		<div class="col-sm-9">
-																			<select 
-																		    ng-options="v as v for v in p.options"
-																		    ng-model="p.value">
-																			</select>
-																		</div>
-															</div>
-															<div class="form-group" ng-if="p.type=='checkbox'&&a.param[p.dependon-1].value=='是'">
-																		<label class="col-sm-3 control-label no-padding-right" style="font-size:20px;">{{p.name}} </label>
-																		<div class="col-sm-9" >
-																		 <div class="row"  style="margin: 10px 10px">
-														                	<div class="checkbox col-xs-3" ng-repeat="v in p.options">
-																				<label>
-																					<input type="checkbox" class="ace"  ng-checked="isSelected(v,p.value)" ng-click="updateSelection($event,v,p.value)">
-																					<span class="lbl">{{v}}</span>
-																				</label>
-																			</div>
-														                </div>
-																		</div>
-															</div>
-														</div>
-														
-														
-														</div>
+													</div>
+													
+													
 													</div>
 												</div>
 											</div>
 										</div>
-														</div> 
-														
-													</div>
-													</form>
+									</div>
+													</div> 
+													
 												</div>
-												</div>
-
+												</form>
+											</div>
 											</div>
 
-											<hr />
-											<div class="wizard-actions">
-												<button class="btn btn-info" ng-show="isChanged" data-toggle="modal"
-												 data-target="#newModelInfo">保存为模型</button>
-												<button class="btn btn-prev">
-													<i class="ace-icon fa fa-arrow-left"></i>
-													上一步
-												</button>
-												<button class="btn btn-success btn-next" data-last="提交">
-													下一步
-													<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
-												</button>
-											</div>
-										</div><!-- /.widget-main -->
-								    <div class="modal fade" id="searchModels" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-								         aria-hidden="true">
-								        <div class="modal-dialog" style="width: 50%">
-								            <div class="modal-content">
-								                <div style="background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
-								                    <p style="padding: 5px;text-align:center">请选择要导入的模型</p>
-								                </div>
-								                <div class="input-group" style="margin: 10px 10px">
-								                <div style="border:none;  float:left ;height:30px" >
-								                  索引内容： <input  type="text" placeholder="请输入模型名称或模型创建人名称进行查询" style="width:500px;height:30px"
-								                                 ng-model="searchString">
-								                </div>
-								                  
-					                                <div style="border:none;  float:left ;height:30px" class="input-group-btn">
-									                    <button style="" type="button" class=" btn btn-info btn-sm" ng-click="search_models()">
-									                        <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
-									                    </button>
-									                </div>
-								                </div>
-								                
-								                <div  style="margin: 10px 10px">
-								                    <table class="table table-bordered" ng-init="selectIndex=-1;">
-								                        <tr>
-								                            <th WIDTH="50px"></th>
-								                            <th WIDTH="200px">名称</th>
-								                            <th WIDTH="150px">来源（创建人）</th>
-								                            <th WIDTH="100px">被使用次数</th>
-								                            <th WIDTH="100px">收藏数</th>
-								
-								                        </tr>
-								                        <tr ng-repeat="m in searched_models">
-								                            <td WIDTH="50px" align="center"><input type="radio" ng-click="select_modelID($index)" value="true"
-								                                                      name="radio"></td>
-								                            <td WIDTH="200px">{{m.m_name}}</td>
-								                            <td WIDTH="150px">{{m.author}}</td>
-								                            <td WIDTH="100px">{{m.m_used}}</td>
-								                            <td WIDTH="100px">{{m.m_collect}}</td>
-								
-								                        </tr>
-								                    </table>
-								                    <div class="modal-footer">
-								                        <button type="button" class="btn btn-sm btn-info" ng-click="importModel()"  data-dismiss="modal">确定
-								                        </button>
-								                        <button type="button" class="btn  btn-sm btn-default" data-dismiss="modal">关闭</button>
-								                    </div>
-								                </div>
-								            </div>
-								        </div>
-								    </div>
-								     <div class="modal fade" style="width:100%" id="showAlgorithmList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-								         aria-hidden="true">
-								        <div class="modal-dialog" style="width: 70%">
-								            <div class="modal-content">
-								                <div style="background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
-								                    <p style="padding: 5px;text-align:center">请选择要添加的算法</p>
-								                </div>
-								                <h3 class="header smaller lighter green">数据清理算法</h3>
-								                <div class="row"  style="margin: 10px 10px">
-								                	<div class="col-xs-3" style="text-align:center" ng-repeat="a in algorithmList[0] ">
-								                	<button type="button " class="btn btn-sm btn-info btn-a" ng-click="addAlgorithm(a)" data-dismiss="modal">{{a.name}}</button>
-								                	
-								                	</div>
-								                   
-								                </div>
-								                <h3 class="header smaller lighter purple">数据分析算法</h3>
-								                <div class="row"  style="margin: 10px 10px">
-								                	<div class="col-xs-3" style="text-align:center" ng-repeat="a in algorithmList[1] ">
-								                	<button type="button " class="btn btn-sm btn-info btn-a" ng-click="addAlgorithm(a)" data-dismiss="modal">{{a.name}}</button>
-								                	
-								                	</div>
-								                   
-								                </div>
-								            </div>
-								        </div>
-								    </div>
-								    
-								    <div class="modal fade" id="newModelInfo" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-								         aria-hidden="true">
-								         
-								          <div class="modal-dialog" style="width: 50%">
-								            <div class="modal-content">
-								                <div style="background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
-								                    <p style="padding: 5px;text-align:center">请填写新建模型的必要信息</p>
-								                </div>
-								                 <div class="input-group" style="margin: 10px 10px">
-								                 	 <label class="col-xs-3 control-label no-padding-right" >模型名称</label>
-												<div class="col-xs-9">
-													<input type="text" ng-model="model.m_name"  class="col-xs-5 col-sm-5"></input>
-												</div>
-												<label class="col-xs-3 control-label no-padding-right" >模型介绍</label>
-												<div class="col-xs-9">
-													<textarea  ng-model="model.m_describe"  class="col-xs-5 col-sm-5"></textarea>
-												</div>
-												<label class="col-xs-3 control-label no-padding-right" >可见性</label>
-												<div class="col-xs-9">
-													<select class="input-medium"   ng-model="model.m_state"  class="col-xs-5 col-sm-5">
-																			<option value="0">私有模型</option>
-																			<option value="1">公有模型</option>
-																		</select>
-												</div>
-								                 </div>
-								                 
-								                
-								                <div  style="margin: 10px 10px">
-								                    
-								                    <div class="modal-footer">
-								                        <button type="button" class="btn btn-sm btn-info" ng-click="saveModelInfo()" data-dismiss="modal">确定
-								                        </button>
-								                        <button type="button" class="btn  btn-sm btn-default" ng-click="cancel_newModel()" data-dismiss="modal">关闭</button>
-								                    </div>
-								                </div>
-								            </div>
-								        </div>
-								         
-								        
-								    </div>
-								    	 <!-- view模态框 -->
-									<div class="modal fade " id="viewFileModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-								         aria-hidden="true">
-								         
-								          <div class="modal-dialog" style=" height:700px;width: 65%;">
-								            <div style="text-align:center;background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
-												<label style="padding: 5px;float:center;font-size:18px">文件内容预览 </label>
-												&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-												<button class="btn btn-primary btn-sm" onclick="">确定</button>
-												<button class="btn btn-sm pull-right" style="width:50px;padding: 9.5px;" data-dismiss="modal"><i class="ace-icon glyphicon glyphicon-remove"></i></button>
-											</div>
-								            <div id="modalContent"  class="modal-content" style="height: 700px;overflow:scroll;overflow-x:auto;overflow-y:auto ">
-								            	<table class="table"><tbody id="table_body"></tbody></table>
-								            </div>
-								        </div>  
-								    </div>
+										</div>
+
+										<hr />
+										<div class="wizard-actions">
+											<button class="btn btn-info" ng-show="isChanged" data-toggle="modal"
+											 data-target="#newModelInfo">保存为模型</button>
+											<button class="btn btn-prev">
+												<i class="ace-icon fa fa-arrow-left"></i>
+												上一步
+											</button>
+											<button class="btn btn-success btn-next" data-last="提交">
+												下一步
+												<i class="ace-icon fa fa-arrow-right icon-on-right"></i>
+											</button>
+										</div>
+									</div><!-- /.widget-main -->
+										    <div class="modal fade" id="searchModels" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+										         aria-hidden="true">
+										        <div class="modal-dialog" style="width: 50%">
+										            <div class="modal-content">
+										                <div style="background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
+										                    <p style="padding: 5px;text-align:center">请选择要导入的模型</p>
+										                </div>
+										                <div class="input-group" style="margin: 10px 10px">
+										                <div style="border:none;  float:left ;height:30px" >
+										                  索引内容： <input  type="text" placeholder="请输入模型名称或模型创建人名称进行查询" style="width:500px;height:30px"
+										                                 ng-model="searchString">
+										                </div>
+										                  
+							                                <div style="border:none;  float:left ;height:30px" class="input-group-btn">
+											                    <button style="" type="button" class=" btn btn-info btn-sm" ng-click="search_models()">
+											                        <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+											                    </button>
+											                </div>
+										                </div>
+										                
+										                <div  style="margin: 10px 10px">
+										                    <table class="table table-bordered" ng-init="selectIndex=-1;">
+										                        <tr>
+										                            <th WIDTH="50px"></th>
+										                            <th WIDTH="200px">名称</th>
+										                            <th WIDTH="150px">来源（创建人）</th>
+										                            <th WIDTH="100px">被使用次数</th>
+										                            <th WIDTH="100px">收藏数</th>
+										
+										                        </tr>
+										                        <tr ng-repeat="m in searched_models">
+										                            <td WIDTH="50px" align="center"><input type="radio" ng-click="select_modelID($index)" value="true"
+										                                                      name="radio"></td>
+										                            <td WIDTH="200px">{{m.m_name}}</td>
+										                            <td WIDTH="150px">{{m.author}}</td>
+										                            <td WIDTH="100px">{{m.m_used}}</td>
+										                            <td WIDTH="100px">{{m.m_collect}}</td>
+										
+										                        </tr>
+										                    </table>
+										                    <div class="modal-footer">
+										                        <button type="button" class="btn btn-sm btn-info" ng-click="importModel()"  data-dismiss="modal">确定
+										                        </button>
+										                        <button type="button" class="btn  btn-sm btn-default" data-dismiss="modal">关闭</button>
+										                    </div>
+										                </div>
+										            </div>
+										        </div>
+										    </div>
+										    <div class="modal fade" style="width:100%" id="showAlgorithmList" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+										         aria-hidden="true">
+										        <div class="modal-dialog" style="width: 70%">
+										            <div class="modal-content">
+										                <div style="background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
+										                    <p style="padding: 5px;text-align:center">请选择要添加的算法</p>
+										                </div>
+										                <h3 class="header smaller lighter green">数据清理算法</h3>
+										                <div class="row"  style="margin: 10px 10px">
+										                	<div class="col-xs-3" style="text-align:center" ng-repeat="a in algorithmList[0] ">
+										                	<button type="button " class="btn btn-sm btn-info btn-a" ng-click="addAlgorithm(a)" data-dismiss="modal">{{a.name}}</button>
+										                	
+										                	</div>
+										                   
+										                </div>
+										                <h3 class="header smaller lighter purple">数据分析算法</h3>
+										                <div class="row"  style="margin: 10px 10px">
+										                	<div class="col-xs-3" style="text-align:center" ng-repeat="a in algorithmList[1] ">
+										                	<button type="button " class="btn btn-sm btn-info btn-a" ng-click="addAlgorithm(a)" data-dismiss="modal">{{a.name}}</button>
+										                	
+										                	</div>
+										                   
+										                </div>
+										            </div>
+										        </div>
+										    </div>
+										    <div class="modal fade" id="newModelInfo" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+										         aria-hidden="true">
+										          <div class="modal-dialog" style="width: 50%">
+										            <div class="modal-content">
+										                <div style="background-color: #F5F5F5 ;height:40px;color: #1d6fa6;font-size: large">
+										                    <p style="padding: 5px;text-align:center">请填写新建模型的必要信息</p>
+										                </div>
+										                 <div class="input-group" style="margin: 10px 10px">
+										                 	 <label class="col-xs-3 control-label no-padding-right" >模型名称</label>
+														<div class="col-xs-9">
+															<input type="text" ng-model="model.m_name"  class="col-xs-5 col-sm-5"></input>
+														</div>
+														<label class="col-xs-3 control-label no-padding-right" >模型介绍</label>
+														<div class="col-xs-9">
+															<textarea  ng-model="model.m_describe"  class="col-xs-5 col-sm-5"></textarea>
+														</div>
+														<label class="col-xs-3 control-label no-padding-right" >可见性</label>
+														<div class="col-xs-9">
+															<select class="input-medium"   ng-model="model.m_state"  class="col-xs-5 col-sm-5">
+																					<option value="0">私有模型</option>
+																					<option value="1">公有模型</option>
+																				</select>
+														</div>
+										                 </div>
+										                <div  style="margin: 10px 10px">
+										                    
+										                    <div class="modal-footer">
+										                        <button type="button" class="btn btn-sm btn-info" ng-click="saveModelInfo()" data-dismiss="modal">确定
+										                        </button>
+										                        <button type="button" class="btn  btn-sm btn-default" ng-click="cancel_newModel()" data-dismiss="modal">关闭</button>
+										                    </div>
+										                </div>
+										            </div>
+										        </div>
+										    </div>
+											<div class="modal fade " id="viewFileModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+							         aria-hidden="true">
+							         
+							          <div class="modal-dialog" style=" height:700px;width: 65%;">
+							            <div style="text-align:center;background-color: #F5F5F5 ;height:33px;color: #1d6fa6;font-size: large;padding: 0px 1px;">
+							            	<label style="padding: 5px;float:center;font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文件内容预览 </label>
+											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+											<button class="btn btn-danger btn-sm " style="float:right;margin:0 1px;padding: 1px 0px;border-width: 7px;" ng-click="position=null;" data-dismiss="modal">关闭</button>
+											<button class="btn btn-primary btn-sm " style="float:right;margin:0 1px;padding: 1px 0px;border-width: 7px;" ng-click="fill()"  data-dismiss="modal">确定</button>
+											<button class="btn btn-primary btn-sm " style="float:right;margin:0 1px;padding: 1px 0px;border-width: 7px;" ng-click="checkToggle()" >反选</button>
+											<button class="btn btn-primary btn-sm " style="float:right;margin:0 1px;padding: 1px 0px;border-width: 7px;" ng-click="checkAll()" >全选</button>
+											
+											<!-- <button class="btn btn-sm " style="float:right;width:50px;padding: 9.5px;" ng-click="position=null;" data-dismiss="modal"><i class="ace-icon glyphicon glyphicon-remove"></i></button>-->
+							            	
+										</div>
+							            <div id="modalContent"  class="modal-content" style="height: 700px;overflow:scroll;overflow-x:auto;overflow-y:auto ">
+							            	<table class="table"><tbody id="table_body"></tbody></table>
+							            </div>
+							        </div>  
+							    </div>
+											</div><!-- /.widget-body -->
+										</div><!-- R分析项目 -->
+										<div id="jar" class="tab-pane">
+											<div class="widget-body"  >
+											<div class="widget-main">
+											<form class="form-horizontal"  action="RunSpark" name="RunSparkForm" id="RunSparkForm" method="post" enctype="multipart/form-data" >
+												<legend ><center><h2>提交运行程序</h2></center></legend>
+												<div class="form-group row">
+															<label class="col-sm-3 control-label no-padding-right" for="MainClass"> 主类名 </label>
+					
+															<div class="col-sm-9">
+																<input  type="text" class="col-xs-10 col-sm-5" id="MainClass" name="MainClass" placeholder="请包含包名，例如[PackagesName].[MainclassName]" />
+																
+															</div>
+														</div>
+												<div class="form-group row">
+															<label class="col-sm-3 control-label no-padding-right" for="argument"> 其他参数 </label>
+					
+															<div class="col-sm-9">
+																<input type="text" class="col-xs-10 col-sm-5" id="argument" name="argument" placeholder="请以空格隔开！" />
+																
+															</div>
+														</div>
 									
-									</div><!-- /.widget-body -->
+												<div class="form-group row">
+														<label class="col-sm-3 control-label no-padding-right"  for="jarfile">上传运行程序文件</label>
+							     						<div class="col-sm-9">
+														<input type="file" id="jarfile" name="jarfile" required="true" class="col-xs-10 col-sm-5" />
+									
+														</div>
+												</div>
+												<div class="form-group row">
+														<label class="col-sm-3 control-label no-padding-right"  for="datafile">上传数据文件</label>
+							     						<div class="col-sm-9">
+														<input type="file" id="datafile" name="datafile" required="true" class="col-xs-10 col-sm-5" />
+									
+														</div>
+												</div>
+												<div class="form-group row">
+													<div class="col-md-offset-3 col-md-9">
+													<button  class="btn btn-info" id="RgBtn"  type="submit" value="提交">
+														<i class="ace-icon fa fa-check bigger-110"></i>
+														提交
+													</button>
+					
+													&nbsp; &nbsp; &nbsp;
+													<button class="btn" type="reset" value="重置">
+														<i class="ace-icon fa fa-undo bigger-110"></i>
+														重置
+													</button>
+												</div>
+												</div>
+											</form>
+											
+											</div></div>
+											
+										</div>
+									</div>
 								</div>
 								
+							</div>
 						
+					<!-- <div class="hr hr-18 hr-double dotted"></div> --><!--水平分割线-->
 
-								<!-- PAGE CONTENT ENDS -->
-							</div><!-- /.col -->
-						</div><!-- /.row -->
-					</div><!-- /.page-content -->
-				</div>
-			</div><!-- /.main-content -->
+						<!-- PAGE CONTENT ENDS -->
+					</div><!-- /.col -->
+				</div><!-- /.row -->
+			</div><!-- /.page-content -->
+		</div>
+	</div><!-- /.main-content -->
 				
-			<div class="footer">
+	<div class="footer">
 				<div class="footer-inner">
 					<div class="footer-content">
 						<span class="bigger-120">
@@ -558,12 +612,12 @@
 				</div>
 			</div>
 
-			<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
-				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-			</a>
+	<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+		<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+	</a>
 		
 			
-		</div><!-- /.main-container -->
+</div><!-- /.main-container -->
 		<!-- basic scripts -->
 
 		<!--[if !IE]> -->
@@ -572,8 +626,8 @@
 		<!-- <![endif]-->
 
 		<!--[if IE]>
-<script src="assets/js/jquery-1.11.3.min.js"></script>
-<![endif]-->
+		<script src="assets/js/jquery-1.11.3.min.js"></script>
+		<![endif]-->
 		<script type="text/javascript">
 			if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
 		</script>
@@ -627,33 +681,16 @@
 		    };
 		    });
 			project_modelapp.controller('project_modelCtrl', ['$http','$scope','$location',function($http,$scope,$location) {
+			//加载angular应用时，在对应控制器中首先初始化一些变量和对象
 			$scope.searchString='';
 			$scope.project={
 			name:'',
 			describe:'',
-//			userid:userid,
 			datafileid:'',
 			modelid:''
 			};
 			$scope.isChanged=false;
-			
 			$scope.searched_models=[];
-		/* 	[{
-				name:'模型A12',
-				type:'训练模型',
-				createDate:new Date(),
-				used:421,
-				collection:23,
-				author:'administrator'			
-			},{
-				name:'模型B123',
-				type:'测试模型',
-				createDate:new Date(),
-				used:161,
-				collection:13,
-				author:'administrator'		
-			}
-			]; */
 			$scope.algorithmList=algorithmJSONList;//从静态文件Myjs/algorithmList.js中读取
 			$scope.algorithmValList=[];//将要被传到后台的对象数组
 			$scope.model={
@@ -668,7 +705,16 @@
 				author:'',
 				algorithmString:''
 			};
-			//$scope.models=null;
+			$scope.position=null;//定位要自动填充的参数值
+				angular.element('#modalContent').bind('scroll',function(){//为预览模态框绑定滚动事件，实现动态加载
+		            setTimeout(function(){
+		               		 //console.log($('#modalContent').scrollTop()+'|'+$('#modalContent')[0].scrollHeight);
+				    		 if($('#modalContent').scrollTop()+1000>($('#modalContent')[0].scrollHeight)&&isNext !="false"){
+				    			 $scope.viewData();  
+				    		 }
+		            },1000);
+		        })
+      
 				$scope.search_models=function(){
 					$http({
                            method:'POST',
@@ -704,7 +750,7 @@
 		        };
 		        
 		        $scope.importModel=function () {
-		             if($scope.selectIndex!=-1){
+		             if($scope.selectIndex!=-1){//导入模型前需要清空现有模型中的算法，然后再添加导入模型中的 算法和参数
 		                //$scope.models.push($scope.searched_models[$scope.selectIndex]);
 		                //$scope.algorithmValList=[];
 		                $scope.algorithmValList.splice(0,$scope.algorithmValList.length);
@@ -738,10 +784,19 @@
 		        	else{
 		        	for(var i=0;i<$scope.algorithmValList.length;i++){
 		        		for(var j=0;j<$scope.algorithmValList[i].param.length;j++){
-		        		if($scope.algorithmValList[i].param[j].value==undefined||$scope.algorithmValList[i].param[j].value==null||$scope.algorithmValList[i].param[j].value==""){
-		        		console.log('参数值为空，坐标：i='+i+',j='+j);
-		        		alert('"'+$scope.algorithmValList[i].name+'"的"'+$scope.algorithmValList[i].param[j].name+'"参数不能为空，请修改后重新提交');
-		        		return false;
+		        		if($scope.algorithmValList[i].param[j].dependon==null||$scope.algorithmValList[i].param[j].dependon==""||$scope.algorithmValList[i].param[j].dependon==undefined){
+		        			if($scope.algorithmValList[i].param[j].value==undefined||$scope.algorithmValList[i].param[j].value==null||$scope.algorithmValList[i].param[j].value==""){
+			        		console.log('参数值为空，坐标：i='+i+',j='+j);
+			        		alert('"'+$scope.algorithmValList[i].name+'"的"'+$scope.algorithmValList[i].param[j].name+'"参数不能为空，请修改后重新提交');
+			        		return false;
+			        		}
+		        		}else{///具有依赖关系的参数项，当参数显示出来的时候，必须验证是否为空
+		        			if(($scope.algorithmValList[i].param[$scope.algorithmValList[i].param[j].dependon-1].value==$scope.algorithmValList[i].param[$scope.algorithmValList[i].param[j].dependon-1].options[0])&&($scope.algorithmValList[i].param[j].value==undefined||$scope.algorithmValList[i].param[j].value==null||$scope.algorithmValList[i].param[j].value=="")){
+		        			//console.log('这是具有依赖关系的参数的参数检验，当看见这条信息时说明参数没填');
+		        			console.log('参数值为空，坐标：i='+i+',j='+j);
+			        		alert('"'+$scope.algorithmValList[i].name+'"的"'+$scope.algorithmValList[i].param[j].name+'"参数不能为空，请修改后重新提交');
+			        		return false;
+		        			}
 		        		}
 		        		}
 		        	}
@@ -769,8 +824,6 @@
      							}
      						}
      					}); 
-            
-                             
 	                       })
                            .error(function (data) {
                              alert("创建Project失败");
@@ -784,11 +837,11 @@
                            data:{modelJSONStr:JSON.stringify($scope.model)}
                        })
                            .success(function (data) {
-                              console.log("创建Model成功");
-                              console.log(JSON.stringify(data));
-                              console.log("modelid:"+data.modelid);
+                              //console.log("创建Model成功");
+                              //console.log(JSON.stringify(data));
+                              //console.log("modelid:"+data.modelid);
                               $('div[ng-controller="project_modelCtrl"]').scope().project.modelid= data.modelid;
-				            $scope.createProject();             
+				              $scope.createProject();             
 	                       })
                             .error(function (data) {
                               alert("创建Model失败");
@@ -817,56 +870,79 @@
 			     $scope.isSelected = function(v,value){
 			         return value.indexOf()>=0;
 			     };
-			     $scope.viewDateFile=function(){
-			    	// $('#viewModal').empty();
-			    	// var s=functionaaaa();//设计成缓存100行数据
-			    	 //$('#viewModal-body').append(s);
-			    	
+			     $scope.viewDateFile=function(param){
+			     	 $scope.position=param;
 			    	 $('#table_body').empty();
 			    	 pos = 0;
 			    	 isNext = "true";
 			    	 lines = 25;
 			    	 //  $('#modalContent').empty();
-			    	 viewData();
+			    	 $scope.viewData();
 			    	 $('#modalContent').scrollTop(0);
 			    	 $('#viewFileModal').modal();
 			     };   
+			     $scope.viewData=function(){
+			    	$.post("readFileToShow_dynamicView.action",{
+						dataFileId:$('div[ng-controller="project_modelCtrl"]').scope().project.datafileid,
+						pos:pos,
+						lines:lines
+					},function(data){
+						var dataArray = JSON.parse(data.jsonData); 
+						//console.log(dataArray);
+						
+						isNext = data.isNext;
+						var viewDataStr = "";
+						if(pos==0&&($("#gender").val()==='是')){//判断一下如果是初始加载，并且含有表头，就为文件预览的表头添加复选框来实现用户点击复选框完成参数（公式）的填充
+							var checkBoxsStr="<tr>";
+							if($scope.position.linkvalue=='column'){
+								for(var j = 0;j<dataArray[0].length;j++){//将列号（从1到n，不是从0开始）绑定到checkbox上
+								checkBoxsStr=checkBoxsStr+"<td style='text-align:center;'><input type='checkbox' name='tableheader' value='"+(j+1)+"' onclick='' ></input></td>";
+								}
+							}
+							else if($scope.position.linkvalue=='header'){
+								for(var j = 0;j<dataArray[0].length;j++){//将表头的内容绑定到checkbox上
+								checkBoxsStr=checkBoxsStr+"<td style='text-align:center;'><input type='checkbox' name='tableheader' value='"+dataArray[0][j]+"' onclick='' ></input></td>";
+								}
+							}
+							checkBoxsStr= checkBoxsStr+"</tr>";
+							$('#table_body').append(checkBoxsStr);
+						} 
+						for(var i = 0;i<dataArray.length;i++){
+							viewDataStr = viewDataStr+"<tr>";
+							for(var j = 0;j<dataArray[i].length;j++){
+								viewDataStr = viewDataStr+"<td>"+dataArray[i][j]+"</td>";
+							}
+							viewDataStr = viewDataStr+"</tr>";
+						}
+						pos = data.pos;
+						$('#table_body').append(viewDataStr);
+					});
+			     };
+			     $scope.fill=function(){///这里用jQuery遍历table表头checkbox，将勾选的内容用linkchar拼接成字符串填充到参数值上。
+			     	 ////////linkchar最好从param(这里是position)里取
+			     	 var value_array=new Array(); 
+			     	 $('input[name="tableheader"]:checked').each(function (){
+			     	 	value_array.push($(this).val());
+			     	 	//console.log('v=='+$(this).val());
+			     	 });
+				     $scope.position.value=value_array.join(($scope.position.linkchar)?$scope.position.linkchar:'+');
+				     $scope.changeState();
+				     $scope.position=null;
+			     };
+			     $scope.checkAll=function(){
+			     	$('input[name="tableheader"]').each(function (){
+			     		$(this).prop('checked',true);
+			     	});
+			     };
+			     $scope.checkToggle=function(){
+		     		$('input[name="tableheader"]').each(function (){
+		     			
+			     		$(this).prop('checked',!$(this).is(':checked'));
+			     	});
+			     };
     }]);
 		</script>
 		<script type="text/javascript">
-		function viewData(){
-		//	var viewData =null;
-			$.post("readFileToShow_dynamicView.action",{
-				dataFileId:$('div[ng-controller="project_modelCtrl"]').scope().project.datafileid,
-				pos:pos,
-				lines:lines
-			},function(data){
-				var dataArray = JSON.parse(data.jsonData); 
-				//console.log(dataArray);
-				
-				isNext = data.isNext;
-				var viewData = "";
-				if(pos==0){
-					var checkBoxsStr="<tr>";
-					for(var j = 0;j<dataArray[0].length;j++){
-						//viewData = viewData+"<td>"+dataArray[i][j]+"</td>";
-						checkBoxsStr=checkBoxsStr+"<td style='text-align:center;'><input type='checkbox' value='"+dataArray[0][j]+"' onclick='' ></input></td>";
-					}
-					 checkBoxsStr= checkBoxsStr+"</tr>";
-					$('#table_body').append(checkBoxsStr);
-				} 
-				for(var i = 0;i<dataArray.length;i++){
-					viewData = viewData+"<tr>";
-					for(var j = 0;j<dataArray[i].length;j++){
-						viewData = viewData+"<td>"+dataArray[i][j]+"</td>";
-					}
-					viewData = viewData+"</tr>";
-				}
-				pos = data.pos;
-				$('#table_body').append(viewData);
-			});
-		//	return viewData;
-		}
 		$("#upload").change(function(){
 	//		console.log("userid"+userid);
 			$.ajaxFileUpload({
@@ -891,15 +967,6 @@
 			});
 		});
 			jQuery(function($) {
-				$('#modalContent').scroll(function(){
-		    		 console.log($('#modalContent').scrollTop()+'|'+$('#modalContent')[0].scrollHeight);
-		    		 if($('#modalContent').scrollTop()+1000>($('#modalContent')[0].scrollHeight)&&isNext !="false"){
-		    			 //console.log("加载一次");
-		    			 viewData();  
-		    			 //totalHeight=$('#modalContent')[0].scrollHeight;
-		    		 }
-		    	 });
-			
 				//var $validation = false;//禁用表单验证
 				var controllerScope = $('div[ng-controller="project_modelCtrl"]').scope();
 				var wizard = $('#fuelux-wizard-container').data('fu.wizard');
@@ -945,7 +1012,7 @@
 				//console.log('跳转完成后，step='+info.step);
 				})
 				.on('finished.fu.wizard', function(e) {
-				console.log("提交ajax请求");
+				//console.log("提交ajax请求");
 				if(controllerScope.hasLegalVal()){
 					if(controllerScope.model.m_id==undefined||controllerScope.model.m_id==""||controllerScope.model.m_id==null){//如果模型是新建的或是修改的，就创建新模型
 						controllerScope.createModel();
@@ -954,7 +1021,7 @@
 						controllerScope.createProject();
 					}
 				}
-				console.log("请求完成");
+				//console.log("请求完成");
 				
 				//console.log("提交结果后");
 					/* bootbox.dialog({

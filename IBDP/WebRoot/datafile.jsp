@@ -15,6 +15,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+		<link rel="stylesheet" href="assets/css/dropzone.css">
 		<link rel="stylesheet" href="assets/font-awesome/4.5.0/css/font-awesome.min.css" />
 		<!-- 引入bootstrap-table样式 -->
 		<link href="assets/css/bootstrap-table.css" rel="stylesheet">
@@ -125,10 +126,10 @@
 												</button>
 												<ul class="dropdown-menu">
 													<li>
-														<a href="#">上传文件
- 														 <span>
- 														  <input title="点击选择文件"  id="upload" multiple="" accept="*/*" type="file" name="uploadFile" style="position:absolute;opacity:0;top:0;left:0;width:100%;height:30px">
- 														 </span>
+														<a href="javascript:void(0)" onclick="uploadFile()">上传文件
+ 														  <!--<input title="点击选择文件"  id="upload" multiple="" accept="*/*" type="file" name="uploadFile" style="position:absolute;opacity:0;top:0;left:0;width:100%;height:30px"> -->
+ 														 <!-- 	<button onclick=""></button> -->
+ 														 	
 														</a>
 													</li>
 
@@ -143,11 +144,25 @@
 													</li>
 												</ul>
 											</div>
-											 
+											 <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    											<div class="modal-dialog">
+        											<div class="modal-content">
+           												<div class="modal-header" >
+                											<h5 class="modal-title">选择文件</h5>
+            											</div>
+            											<div id="drop_content" class="modal-body">
+            												
+            											</div>
+            											<div class="modal-footer">
+            												<button onclick="hideModal()">关闭</button>
+            											</div>
+        											</div>
+    											</div>
+											</div>
 											 <button id="download" class="btn  btn-white btn-info"  onclick="downClick()">
 											            <i class="fa fa-cloud-download"></i> 下载
 											   			
-											        </button>   
+											  </button>   
 											 <button id="new" class="btn btn-white btn-info" data-toggle="modal" data-target="#newDir">
 											            <i class="fa  fa-folder"></i> 新建文件夹
 											 </button>
@@ -304,6 +319,7 @@
 		<!-- ace scripts -->
 		<script src="assets/js/ace-elements.min.js"></script>
 		<script src="assets/js/ace.min.js"></script>
+		<script src="assets/js/dropzone.js"></script>
 		<script type="text/javascript">
 		var $table = $('#project-table'),
 	        $remove = $('#remove'),
@@ -445,6 +461,18 @@
                          }); 
             		 }
             	 });
+     	      	Dropzone.autoDiscover = false;
+     	    	/* $('#dropz').dropzone({
+     	            url:"DataFile_saveDataFile.action",
+     	             type:'post',
+     	            data:{
+     					project_id:project_id,
+     					datafile_type:datafile_type
+     				},
+     				dataType:'json',
+     	            maxFiles: 10,
+     	            maxFilesize:10240, 
+     	        });*/
              }
              //事件注册
              function BindEvent()
@@ -611,9 +639,9 @@
               valign: 'middle',
               width: 260, // 定义列的宽度，单位为像素px
               formatter: function (value, row, index) {
-            	  console.log(row.name);
-            	  console.log(row.id);
-            	  console.log(row.localpath);
+            	 // console.log(row.name);
+            	//  console.log(row.id);
+            	//  console.log(row.localpath);
                    return '<button class="btn btn-xs btn-info btn-sm" data-toggle="tooltip" data-placement="bottom" title="预览" onclick="viewdata(\'' + row.id + '\')"><i class="ace-icon fa fa-search-plus bigger-120"></i></button>'
                    			+'<button class="btn btn-xs btn-success btn-sm" title="下载" onclick="download(\'' + row.id + '\')"><i class="ace-icon fa fa-download bigger-120"></i></button>'
               				 +'<button class="btn btn-xs btn-warning btn-sm" title="开始任务" onclick="executeTask(\'' + row.id + '\')"><i class="ace-icon fa fa-caret-square-o-right bigger-120"></i></button>'
@@ -654,7 +682,7 @@
     
    
     $(function () {
-    	$("#viewFileModal").on('hidden.bs.modal', function () {
+    	$("#viewFileModal").on('hidden.b	s.modal', function () {
         	 $(this).removeData("bs.modal");
 			  // 执行一些动作...
 			});
@@ -687,8 +715,34 @@
     		download(ids[i]);
     	}
     }
+    function uploadFile(){
+    	console.log("uploadFile中project_id:"+project_id);
+    	console.log("uploadFile中的datafile_type"+datafile_type);
+    	/*  $('#dropz').dropzone({
+	            url:"DataFile_saveDataFile.action?project_id="+project_id+"&datafile_type="+datafile_type,
+	            type:'post',
+	            paramName:'uploadFile',
+	            maxFiles: 10,
+	            maxFilesize:10240,
+	     }); */
+	     $('#drop_content').append("<div id='dropz' class='dropzone'></div>")
+    	 var myDropzone = new Dropzone("#dropz", {
+	            url:"DataFile_saveDataFile.action?project_id="+project_id+"&datafile_type="+datafile_type,
+	            type:'post',
+	            paramName:'uploadFile',
+	            maxFiles: 10,
+	            maxFilesize:10240,
+	     });
+    	$('#uploadModal').modal();
+    	
+    }
+    function hideModal(){
+    	$('#dropz').remove();
+    	$('#uploadModal').modal("hide");
+    	$table.bootstrapTable('refresh');
+    }
     //上传
-    $("#upload").change(function(){
+    /* $("#upload").change(function(){
     	fileChange();
 	});
     function fileChange(){
@@ -708,25 +762,21 @@
             processData:false,
 			async:false,
 			success:function(data){
-/* 				console.log("上传成功!");
+ 				console.log("上传成功!");
 				console.log(data);
-				console.log("执行inittable之前"); */
+				console.log("执行inittable之前"); 
 				 $table.bootstrapTable('refresh');
-/* 		    	console.log("支持inittable之后!"); */
+ 		    	console.log("支持inittable之后!"); 
 			},
 			error:function(){
-//				console.log("服务器响应失败!");
+				console.log("服务器响应失败!");
 			}
 		});
 		$("#upload").change(function(){
 	    	fileChange();
 		});
 		
-    }
-    
- 
+    } */
 </script>
-
-	</body>
-	
+</body>	
 </html>

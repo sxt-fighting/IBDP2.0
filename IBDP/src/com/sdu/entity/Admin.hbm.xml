@@ -25,6 +25,12 @@
         <property name="email" type="java.lang.String">
             <column name="email" />
         </property>
+        <property name="isAdmin" type="java.lang.Integer">
+            <column name="isAdmin"></column>
+        </property>
+        <property name="imgName" type="java.lang.String">
+            <column name="imgName" />
+        </property>
         <set name="a_project" inverse="true">
             <key> <!-- 外键 -->
                 <column name="admin_proid" not-null="true" />

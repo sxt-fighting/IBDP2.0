@@ -1,18 +1,12 @@
 package com.sdu.dao.impl;
 
-import java.util.Iterator;
 import java.util.List;
-
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.criterion.Example;
 
 import com.sdu.entity.Admin;
-import com.sdu.entity.Work;
 
 public class AdminDaoImpl {
 	SessionFactory sessionFactory;
@@ -45,19 +39,15 @@ public class AdminDaoImpl {
 	   public List<Admin> search(Admin condition)
 	   {
 		   List<Admin> list =null;
-		   //通过sessionFactory来获得session
 		   Session session=sessionFactory.getCurrentSession();
 		   Transaction tx =session.beginTransaction();
-		   try {
-			//创建criteria对象
-			   Criteria c =session.createCriteria(Admin.class);
-			   //使用Example 工具类创建示例对象example作为查询条件
-			   Example example=Example.create(condition);
-			   c.add(example);
-			   list=c.list();
+		   System.out.println("isAdmin:"+condition.getIsAdmin());
+		   try {			
+			   String hql = "from Admin admin where admin.name = '"+condition.getName()+"' and admin.password = '"+condition.getPassword()+"' and admin.isAdmin = '"+condition.getIsAdmin()+"'";
+			   System.out.println("hql:"+hql);
+			   list = session.createQuery(hql).list();
 			   tx.commit();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			tx.rollback();
 		}
 		   return list;
@@ -71,7 +61,6 @@ public class AdminDaoImpl {
 				transaction.commit();
 				 session.close();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				transaction.rollback();
 			}
 		return true;
@@ -85,7 +74,7 @@ public class AdminDaoImpl {
 				transaction.commit();
 				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+				e.printStackTrace();
 				transaction.rollback();
 			}
 		return true;
@@ -99,10 +88,104 @@ public class AdminDaoImpl {
 			transaction.commit();
 			session.close();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				transaction.rollback();
 			}
 			   return true;
 		  
 	   }
+
+	public List<Object> show(int id) {
+		List<Object> list = null;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql = "select * from admin where ID ='"+id+"';";
+			list=session.createSQLQuery(sql).list();
+			System.out.println("list++++++"+list);
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public List<Object> showAll(int userid) {
+		List<Object> list = null;
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		String sql=null;
+		try{			
+			sql = "select * from admin where isAdmin ="+1+";";			
+			list=session.createSQLQuery(sql).list();
+			System.out.println("list______"+list);
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	public boolean delete(int id) {
+		Session session =sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			String sql="delete from admin where ID="+id+";";
+			session.createSQLQuery(sql).executeUpdate();
+			tx.commit();
+		}catch(Exception e){
+			tx.rollback();
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	public void updateAdmin(Admin admin) {
+		 Session session=sessionFactory.getCurrentSession();
+		   Transaction transaction = session.beginTransaction();
+		   try {
+				session.update(admin);
+				transaction.commit();
+			} catch (Exception e) {
+				e.printStackTrace();
+				transaction.rollback();
+			}
+	}
+
+	public boolean deleteUsers(String[] idArray) {
+		for(int i = 0;i < idArray.length;i++){
+			int id = Integer.parseInt(idArray[i]);
+			System.out.println("delID=="+id);
+			Session session = sessionFactory.getCurrentSession();
+			Transaction tx = session.beginTransaction();
+			try {
+				String sql="delete from admin where ID="+id+";";
+				session.createSQLQuery(sql).executeUpdate();
+				tx.commit();
+			} catch (Exception e) {
+				e.printStackTrace();
+				tx.rollback();
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void upload(String path, int userid) {
+		Session session =sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+		try{
+			System.out.println("path===="+path);
+			String sql = "update admin set imgName='"+path+"'where ID="+userid+";";
+			session.createSQLQuery(sql).executeUpdate();
+			tx.commit();
+		}catch(Exception e){
+			e.printStackTrace();
+			tx.rollback();
+		}
+		
+	}
+	
 }
