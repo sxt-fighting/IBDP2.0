@@ -37,11 +37,12 @@ public class RegressionMethod extends BasicMethod{
 	{
 		
 		String filepath=dataFile.getD_localpath();
-		String dataFileName=dataFile.getD_name();	
+		String dataFileName=dataFile.getD_name();
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String formula=params.getJSONObject(0).getString("value");
+		String y=params.getJSONObject(0).getString("value");
+		String x=params.getJSONObject(1).getString("value");
 		
 		
     	System.out.println("链接Rserve，开始分析任务");
@@ -51,7 +52,7 @@ public class RegressionMethod extends BasicMethod{
 		c= new RConnection();
 		
     	System.out.println("Rserve连接成功");
-    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+formula);
+    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+y+"~"+x);
     	//String  savePath="/home/jc/IBDP2/"+user.getId()+"/DataFiles";
     	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
     	System.out.println(savePath);
@@ -86,9 +87,9 @@ public class RegressionMethod extends BasicMethod{
  	//master = "yarn-client", version="1.6.0", spark_home = '/opt/cloudera/parcels/CDH/lib/spark/'
 
  	
- 	c.eval("fit <- lm("+formula+",datafile)");
+ 	c.eval("fit <- lm("+y+"~"+x+",datafile)");
 	
- 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_bayes";
+ 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_LR";
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
@@ -96,7 +97,7 @@ public class RegressionMethod extends BasicMethod{
 		{
 	 		resultFileName=resultFileName+".txt";
 	 	    c.eval("sink(\""+resultFileName+"\")");
-			c.eval("print(summary(linear_model))");
+			c.eval("print(summary(fit))");
 			c.eval("sink()");
 			//生成结果文件并进行保存修改数据库
 			resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"ResultFile");
@@ -110,7 +111,7 @@ public class RegressionMethod extends BasicMethod{
 	 	else
 	 	{
 	 		resultFileName=resultFileName+".Rdata";
-	 		c.eval("save(linear_model,\""+resultFileName+"\" )");
+	 		c.eval("save(fit,\""+resultFileName+"\" )");
 	 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"IntermediateFile");
 		
 	 	}
@@ -128,11 +129,13 @@ public class RegressionMethod extends BasicMethod{
 	{
 		
 		String filepath=dataFile.getD_localpath();
-		String dataFileName=dataFile.getD_name();	
+		String dataFileName=dataFile.getD_name();
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String formula=params.getJSONObject(0).getString("value");
+		String y=params.getJSONObject(0).getString("value");
+		String x=params.getJSONObject(1).getString("value");
+		
 		
 		
     	System.out.println("链接Rserve，开始分析任务");
@@ -142,7 +145,7 @@ public class RegressionMethod extends BasicMethod{
 		c= new RConnection();
 		
     	System.out.println("Rserve连接成功");
-    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+formula);
+    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+y+"~"+x);
     	//String  savePath="/home/jc/IBDP2/"+user.getId()+"/DataFiles";
     	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
     	System.out.println(savePath);
@@ -179,9 +182,9 @@ public class RegressionMethod extends BasicMethod{
  	c.eval("sc<-spark_connect(master = \"local\" )"); 
  	System.out.println("spark连接成功");
  	c.eval("data_tbl <- copy_to(sc, datafile, \"datafile\", overwrite = TRUE)");
- 	c.eval("linear_model <- data_tbl %>% ml_linear_regression("+formula+")");
+ 	c.eval("linear_model <- data_tbl %>% ml_linear_regression("+y+"~"+x+")");
 	
- 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_bayes";
+ 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_LR";
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片

@@ -83,7 +83,7 @@
 
 									
 			 <div class="col-xs-6 col-sm-4 col-md-3">
-			  <div class="thumbnail search-thumbnail" onclick="viewInstance('http://211.87.227.91:18080/waterCC/index.jsp')">
+			  <div class="thumbnail search-thumbnail" onclick="viewInstance('waterquality.jsp')">
 				<%-- <span class="search-promotion label label-success arrowed-in arrowed-in-right">S</span> --%>
 					<img class="media-object" src="img/1.jpg" style="width:233px;height:200px;" />
 						<div class="caption">

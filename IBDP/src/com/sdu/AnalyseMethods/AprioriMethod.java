@@ -10,16 +10,19 @@ import com.sdu.entity.Admin;
 import com.sdu.entity.DataFile;
 import com.sdu.entity.Project;
 
-public class statisticsMethod extends BasicMethod{
-
+public class AprioriMethod extends BasicMethod{
 	public DataFile beiginAnalyse(int index, DataFile dataFile, Admin user, Project project, JSONObject projectJSON, JSONArray algorithmJSON)
 	{
-		System.out.println("统计分析");
+		System.out.println("关联规则挖掘");
 		//获取collect所需参数
 		String filepath=dataFile.getD_localpath();
-		String dataFileName=dataFile.getD_name();
+		String dataFileName=dataFile.getD_name();	
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
+		String sep=params.getJSONObject(0).getString("value");
+		String support=params.getJSONObject(1).getString("value");
+		String confidence=params.getJSONObject(2).getString("value");
+		
 		
 		
     	DataFile resultFile=new DataFile();//要返回的文件
@@ -38,12 +41,12 @@ public class statisticsMethod extends BasicMethod{
     		c.eval("datafile <- read.xlsx(\""+dataFileName+"\",1)");
 		  }else  if (aa.equals(".txt"))
 		  {
-			  c.eval("datafile <- read.table(\""+dataFileName+"\",header="+dataFile.getD_hasheader()+")");
-		
+			  c.eval("datafile <- read.transactions(\""+dataFileName+"\",format=\"basket\",sep=\""+sep+"\")");
+				
 		  }else if (aa.equals(".csv"))
 		  {
-			  c.eval("datafile<-read.csv(\""+dataFileName+"\",header="+dataFile.getD_hasheader()+",sep=\",\")");
-		  }else if(aa.equals(".Rdata"))
+			  c.eval("datafile<-read.transactions(\""+dataFileName+"\",format=\"basket\",sep=\",\")");
+		 }else if(aa.equals(".Rdata"))
 		  {
 			  c.eval("load(\""+dataFileName+"\")");
 		  }
@@ -54,58 +57,23 @@ public class statisticsMethod extends BasicMethod{
  	//c.eval("sc<-spark_connect(master = \"local\" )"); 
  	System.out.println("spark连接成功");
  	//开始考虑具体的数据清理算法
- 	String column=params.getJSONObject(0).getString("value");
-	JSONArray works=params.getJSONObject(1).getJSONArray("value");
-	c.eval("data<-datafile[,"+column+"]");
-	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_statistics";
- 	System.out.println("开始写入结果文件:"+resultFileName);
+ 	c.eval(" rules=apriori(datafile,parameter = list(support="+support+",confidence="+confidence+"))");
+		
  	
-	c.eval("sink(\""+resultFileName+".txt\")");
-	for(int i=0;i<works.length();i++)
-	{
-		String workI=works.getString(i);
-		//'均值','中位数','众数','极差','标准差','第一四分位数','第三四分位数
-		if(workI.equals("均值"))
-		{
-			c.eval("print(mean(data,na.rm = T))");
-		}
-		if(workI.equals("中位数"))
-		{
-			c.eval("print(median(data,na.rm = T))");
-		}
-		if(workI.equals("众数"))
-		{
-			c.eval("print(data[which.max(table(data))])");	
-		}
-		if(workI.equals("极差"))
-		{
-			c.eval("print(max(data,na.rm=T)-min(data,na.rm=T))");			
-		}
-		if(workI.equals("变异系数"))
-		{
-		c.eval("print(sqrt(var(data,na.rm=T))/(mean(data,na.rm=T)))");			
-		}
-		if(workI.equals("标准差"))
-		{
-			c.eval("print(sqrt(var(data,na.rm=T)))");	
-		}
-		if(workI.equals("第一四分位数"))
-		{
-			c.eval("print(quantile(data,0.25,na.rm=T))");				
-		}
-		if(workI.equals("第三四分位数"))
-		{
-			c.eval("print(quantile(data,0.75,na.rm=T))");				
-		}
-	}
-	c.eval("sink()");	
+ 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_Apriori";
+ 	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
  	if(index==algorithmJSON.length()-1)
 	{
  		
+ 		resultFileName=resultFileName+".txt";
+ 	    c.eval("sink(\""+resultFileName+"\")");
+		c.eval("print(inspect(rules))");
+		c.eval("sink()");
+ 		
 		//生成结果文件并进行保存修改数据库
-		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName+".txt", savePath+"/"+resultFileName+".txt","ResultFile");
+		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"ResultFile");
 		 
 	    resultFile.setD_type("ResultFile");
 		DataFileHibernate.saveDataFile(resultFile);
@@ -117,7 +85,7 @@ public class statisticsMethod extends BasicMethod{
  	else
  	{
  		resultFileName=resultFileName+".Rdata";
- 		c.eval("save(data,file=\""+resultFileName+"\")");
+ 		c.eval("save(datafile,file=\""+resultFileName+"\" )");
  		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"IntermediateFile");
 		resultFile.setD_type("IntermediateFile");
  	}

@@ -62,8 +62,8 @@
 <result name="input">/index.jsp</result>
 </action>
 
-<!-- 层此聚类 -->
-<action name="Hcluster" class="com.sdu.action.HclusterAction">
+<!-- RunSpark -->
+<action name="RunSpark" class="com.sdu.action.RunSparkAction">
 <param name="savePath">/MyUploadFile</param>
 <result name="success">/basic.jsp</result>
 <result name="input">/index.jsp</result>
@@ -265,6 +265,7 @@
 	<result name="tab">/visualData/showFileData.jsp</result>
 	<result name="txt">/visualData/showTxtData.jsp</result>
 	<result name="picture">/visualData/showPictureData.jsp</result>
+	<result name="pdffile">/visualData/showPdfFile.jsp</result>
 </action>
 <action name="readFileToShow_*" class="com.sdu.action.ReadFileToShowAction" method="{1}">
 	<result name="dynamicViewSuccess" type="json">

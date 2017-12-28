@@ -143,6 +143,7 @@ public class DataFileDaoImpl {
 		try{
 			String sql = "select distinct datafile.pro_dataid,datafile.d_type from datafile where datafile.admin_dataid = '"+adminId+"';";
 			list = session.createSQLQuery(sql).list();
+			//System.out.println("-----------------------sql:"+sql);
 			tx.commit();
 		}catch(Exception e){
 			tx.rollback();

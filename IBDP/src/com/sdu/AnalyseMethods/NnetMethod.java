@@ -1,5 +1,6 @@
 package com.sdu.AnalyseMethods;
 
+import org.apache.tomcat.jni.Library;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.rosuda.REngine.Rserve.RConnection;
@@ -9,12 +10,12 @@ import com.sdu.ToolsUse.HDFSTools;
 import com.sdu.entity.Admin;
 import com.sdu.entity.DataFile;
 import com.sdu.entity.Project;
-import com.sun.xml.bind.v2.runtime.output.Pcdata;
 
-public class PCAMethod extends BasicMethod{
+public class NnetMethod extends BasicMethod{
+
 	public DataFile beiginAnalyse(int index, DataFile dataFile, Admin user, Project project, JSONObject projectJSON, JSONArray algorithmJSON)
 	{
-		System.out.println("主成分分析");
+		System.out.println("神经网络");
 			
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		 String based=algorithm_obj.getString("based");
@@ -34,9 +35,12 @@ public class PCAMethod extends BasicMethod{
 		String dataFileName=dataFile.getD_name();
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
-		//String hasheader=params.getJSONObject(0).getString("value");
-		String PCAcolumn=params.getJSONObject(0).getString("value");
+		String type=params.getJSONObject(0).getString("value");
+		String y=params.getJSONObject(1).getString("value");
+		String x=params.getJSONObject(2).getString("value");
 		
+		String size=params.getJSONObject(3).getString("value");
+		String maxit=params.getJSONObject(4).getString("value");
 		
     	System.out.println("链接Rserve，开始分析任务");
     	DataFile resultFile=new DataFile();//要返回的文件
@@ -45,12 +49,12 @@ public class PCAMethod extends BasicMethod{
 		c= new RConnection();
 		
     	System.out.println("Rserve连接成功");
-    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+PCAcolumn);
+    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+y+"~"+x);
     	//String  savePath="/home/jc/IBDP2/"+user.getId()+"/DataFiles";
     	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
     	System.out.println(savePath);
     	c.eval("setwd(\""+savePath+"\")");
-    	c.eval("library(openxlsx)"); 
+    	c.eval("library(openxlsx)"); c.eval("library(nnet)");c.eval("library(devtools)");
     	String aa = dataFileName.substring(dataFileName.lastIndexOf("."));
     	
     	if(aa.equals(".xlsx"))
@@ -78,77 +82,93 @@ public class PCAMethod extends BasicMethod{
  	//c.eval("Sys.setenv(HADOOP_CONF_DIR='/usr/hdp/current/hadoop-client/conf')");
  	//c.eval("Sys.setenv(YARN_CONF_DIR='/etc/hadoop/2.4.3.0-227/0')");
  	//master = "yarn-client", version="1.6.0", spark_home = '/opt/cloudera/parcels/CDH/lib/spark/'
-
+ 	if(type.equals("回归"))
+ 	{
+ 		c.eval("model <- nnet("+y+"~"+x+", data=datafile,size="+size+",decay=5e-4,maxit="+maxit+",linout=TRUE)");
+ 		
+ 		c.eval("pred<-predict(model,datafile)");
+ 		
+ 	}else {
+ 		c.eval("model <- nnet("+y+"~"+x+", data=datafile,size="+size+",decay=5e-4,maxit="+maxit+")");
  	
- 	c.eval("datafile<-prcomp(datafile[,c("+PCAcolumn+")],scale=TRUE)");
-
- 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_PCA";
+ 		c.eval("pred<-predict(model,datafile,type=\"class\")");
+	}
+	
+	
+ 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_nnet";
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
  	 	if(index==algorithmJSON.length()-1)
 		{
+	 		//resultFileName=resultFileName+".txt";
 	 	    c.eval("sink(\""+resultFileName+".txt\")");
-			c.eval("print(summary(datafile))");
+	 	    
+			c.eval("print(pred)");
+			c.eval("print(table(datafile$"+y+", pred))");
 			c.eval("sink()");
 			c.eval("png(file=\""+resultFileName+".png\", bg=\"transparent\")");
-			c.eval("print(plot(datafile,type=\"lines\"))");     
-			c.eval("dev.off()");
+			c.eval("source_url('https://gist.githubusercontent.com/fawda123/7471137/raw/466c1474d0a505ff044412703516c34f1a4684a5/nnet_plot_update.r')");
+	 		c.eval("plot.nnet(model,max.sp=TRUE)");
+	 		c.eval("dev.off()");
 			//生成结果文件并进行保存修改数据库
-			resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName+".txt","ResultFile");
+	 		
+	 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName+".txt", savePath+"/"+resultFileName+".txt","ResultFile");
 			
 			DataFileHibernate.saveDataFile(resultFile);
 			HDFSTools.LoadSingleFileToHDFS(resultFile);
 			
-			resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName+".png","ResultFile");
-			
+			resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName+".png", savePath+"/"+resultFileName+".png","ResultFile");
+			 
 			DataFileHibernate.saveDataFile(resultFile);
 			HDFSTools.LoadSingleFileToHDFS(resultFile);
+				
 			//通知分析完成
 			FormResultFileAndAdvice.FormAdvice(user, project);
 		}
 	 	else
 	 	{
 	 		resultFileName=resultFileName+".Rdata";
-	 		c.eval("save(datafile,\""+resultFileName+"\" )");
+	 		c.eval("save(model,\""+resultFileName+"\" )");
 	 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"IntermediateFile");
-			resultFile.setD_type("IntermediateFile");
+		
 	 	}
 	 	//c.eval("save(bayes_predict,"+resultFileName+")");
-		
-		
 	} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 	}finally{
 		c.close();
 		System.out.println("Rserve连接关闭");
-		
 	}
 		return resultFile;
 	}
 	public DataFile BasedOnSpark(int index, DataFile dataFile, Admin user, Project project, JSONObject projectJSON, JSONArray algorithmJSON)
 	{
+		
 		String filepath=dataFile.getD_localpath();
 		String dataFileName=dataFile.getD_name();	
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
-		//String hasheader=params.getJSONObject(0).getString("value");
-		String PCAcolumn=params.getJSONObject(0).getString("value");		
+		String y=params.getJSONObject(1).getString("value");
+		String x=params.getJSONObject(2).getString("value");
+		
+		String size=params.getJSONObject(3).getString("value");
+		String maxit=params.getJSONObject(4).getString("value");
 		
     	System.out.println("链接Rserve，开始分析任务");
     	DataFile resultFile=new DataFile();//要返回的文件
     	RConnection c=null;
-		try {
+    	try {
 		c= new RConnection();
 		
     	System.out.println("Rserve连接成功");
-    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+PCAcolumn);
+    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+y+"~"+x);
     	//String  savePath="/home/jc/IBDP2/"+user.getId()+"/DataFiles";
     	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
     	System.out.println(savePath);
     	c.eval("setwd(\""+savePath+"\")");
-    	c.eval("library(openxlsx)"); 
+    	c.eval("library(openxlsx)"); c.eval("library(devtools)");
     	String aa = dataFileName.substring(dataFileName.lastIndexOf("."));
     	
     	if(aa.equals(".xlsx"))
@@ -179,19 +199,22 @@ public class PCAMethod extends BasicMethod{
 
  	c.eval("sc<-spark_connect(master = \"local\" )"); 
  	System.out.println("spark连接成功");
+ 	if(size.indexOf("，")!=-1)
+		size.replaceAll("，", ",");
  	c.eval("data_tbl <- copy_to(sc, datafile, \"datafile\", overwrite = TRUE)");
- 	c.eval("datafile <- data_tbl %>% select("+PCAcolumn+") %>% ml_pca()");
 	
- 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_PCA";
+	c.eval("model<-ml_multilayer_perceptron(data_tbl, "+y+"~"+x+", iter.max= "+maxit+", layers=c("+size+")");
+	c.eval("dt_predict<-sdf_predict(model,data_tbl)");
+	
+ 	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_MLP";
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
  	if(index==algorithmJSON.length()-1)
 	{
  		resultFileName=resultFileName+".txt";
- 	    c.eval("sink(\""+resultFileName+"\")");
-		c.eval("print(datafile)");
-		c.eval("sink()");
+ 		c.eval("write.table(dt_predict,\""+resultFileName+"\")");
+		
 		//生成结果文件并进行保存修改数据库
 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"ResultFile");
 		 
@@ -204,11 +227,12 @@ public class PCAMethod extends BasicMethod{
  	else
  	{
  		resultFileName=resultFileName+".Rdata";
- 		c.eval("save(datafile,\""+resultFileName+"\" )");
+ 		c.eval("save(linear_model,\""+resultFileName+"\" )");
  		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"IntermediateFile");
 		resultFile.setD_type("IntermediateFile");
  	}
  	//c.eval("save(bayes_predict,"+resultFileName+")");
+		
 		
 	} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -216,6 +240,7 @@ public class PCAMethod extends BasicMethod{
 	}finally{
 		c.close();
 		System.out.println("Rserve连接关闭");
+		
 	}
 		return resultFile;
 	}

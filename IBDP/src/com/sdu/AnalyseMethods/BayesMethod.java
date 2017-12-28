@@ -25,11 +25,13 @@ public class BayesMethod extends BasicMethod{
 			System.out.println("bayes method");
 			//获取贝叶斯算法所需参数
 			String filepath=dataFile.getD_localpath();
-			String dataFileName=dataFile.getD_name();	
+			String dataFileName=dataFile.getD_name();
+			
 			JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 			JSONArray params= algorithm_obj.getJSONArray("param");
 			//String hasheader=params.getJSONObject(0).getString("value");
-			String formula=params.getJSONObject(0).getString("value");
+			String y=params.getJSONObject(0).getString("value");
+			String x=params.getJSONObject(1).getString("value");
 			
 			
 	    	System.out.println("链接Rserve，开始分析任务");
@@ -39,7 +41,7 @@ public class BayesMethod extends BasicMethod{
 			c= new RConnection();
 			
 	    	System.out.println("Rserve连接成功");
-	    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+formula);
+	    	System.out.println("输入参数为："+filepath+ "  "+dataFileName+"  "+y+"~"+x);
 	    	//String  savePath="/home/jc/IBDP2/"+user.getId()+"/DataFiles";
 	    	String savePath=filepath.substring(0,filepath.lastIndexOf('/'));
 	    	System.out.println(savePath);
@@ -76,8 +78,8 @@ public class BayesMethod extends BasicMethod{
      	c.eval("sc<-spark_connect(master = \"local\" )"); 
      	System.out.println("spark连接成功");
      	c.eval("data_tbl <- copy_to(sc, datafile, \"datafile\", overwrite = TRUE)");
-     	System.out.println("model<-ml_naive_bayes(data_tbl,"+formula+")");
-     	c.eval("model<-ml_naive_bayes(data_tbl,"+formula+")");
+     	System.out.println("model<-ml_naive_bayes(data_tbl,"+y+"~"+x+")");
+     	c.eval("model<-ml_naive_bayes(data_tbl,"+y+"~"+x+")");
      	c.eval("bayes_predict<-sdf_predict(model,data_tbl)");
 	    	
      	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_bayes";

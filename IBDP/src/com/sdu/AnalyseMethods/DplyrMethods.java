@@ -24,7 +24,7 @@ public class DplyrMethods extends BasicMethod{
 		System.out.println("Dplyr Packages");
 		//获取collect所需参数
 		String filepath=dataFile.getD_localpath();
-		String dataFileName=dataFile.getD_name();	
+		String dataFileName=filepath.substring(filepath.lastIndexOf("/")+1);	
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		String method_name=algorithm_obj.getString("method");
 		JSONArray params= algorithm_obj.getJSONArray("param");
@@ -105,20 +105,51 @@ public class DplyrMethods extends BasicMethod{
  		 else
  	 	c.eval("datafile<-datafile[!is.na(datafile[,"+variable+"],]");
  	}
+	if(method_name.equals("sample"))
+ 	{
+ 		variable=params.getJSONObject(0).getString("value");
+ 	    
+ 	    System.out.println("ind<-sample(2,nrow(datafile),replace=TRUE,prob=c("+variable+"))");
+ 	 	c.eval("ind<-sample(2,nrow(datafile),replace=TRUE,prob=c("+variable+"))");
+ 	    c.eval("traindata<-datafile[ind==1,]");
+ 	    c.eval("testdata<-datafile[ind==2,]");
+ 	    c.eval("save(traindata,file=\"traindata.Rdata\" )");
+		c.eval("save(testdata,file=\"testdata.Rdata\" )");
+ 		
+		resultFile=FormResultFileAndAdvice.formFile(user, project, "testdata.Rdata", savePath+"/testdata.Rdata","ResultFile");
 		
+		DataFileHibernate.saveDataFile(resultFile);
+		HDFSTools.LoadSingleFileToHDFS(resultFile);
+		
+		resultFile=FormResultFileAndAdvice.formFile(user, project, "traindata.Rdata", savePath+"/traindata.Rdata","ResultFile");
+		
+		DataFileHibernate.saveDataFile(resultFile);
+		HDFSTools.LoadSingleFileToHDFS(resultFile);
+		//通知分析完成
+		FormResultFileAndAdvice.FormAdvice(user, project); 
+ 	    c.close();
+ 	    return resultFile ;
+ 	}	
  	
  	String resultFileName=dataFileName.substring(0,dataFileName.lastIndexOf('.'))+"_"+method_name;
  	System.out.println("开始写入结果文件:"+resultFileName);
  	//假如文件是中间文件的话，文件类别为IntermediateFile，存储为Rdata数据
  	//假如文件是结果文件的话，文件类别为ResultFile，存储为txt数据或者是图片
+ 	
  	if(index==algorithmJSON.length()-1)
 	{
- 		
- 		resultFileName=resultFileName+".txt";
+ 		if(aa.equalsIgnoreCase(".csv")||aa.equalsIgnoreCase(".xls")||aa.equalsIgnoreCase(".xlsx"))
+ 		{
+ 			resultFileName=resultFileName+".csv";
+ 			c.eval("write.csv(datafile,\""+resultFileName+".csv\",row.names = FALSE,quote = FALSE)");
+ 		}
+ 		else
+ 		{
+ 			resultFileName=resultFileName+".txt";
  	    c.eval("sink(\""+resultFileName+"\")");
 		c.eval("print(as.data.frame(datafile))");
 		c.eval("sink()");
- 		
+ 		}
 		//生成结果文件并进行保存修改数据库
 		resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName, savePath+"/"+resultFileName,"ResultFile");
 		 
@@ -128,6 +159,11 @@ public class DplyrMethods extends BasicMethod{
 			
 		//通知分析完成
 		FormResultFileAndAdvice.FormAdvice(user, project);
+		if(method_name.equals("sample"))
+		{
+			
+		}
+		
 	}
  	else
  	{

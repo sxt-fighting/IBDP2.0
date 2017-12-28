@@ -63,6 +63,7 @@ public class ProjectBizImpl {
 		if(!modelDao.removeNONameModelById(project.getP_model().getM_id())){
 			projectDao.delProject(id);
 		}
+		
 		return true;
 	}
 	public boolean delProjects(int[] ids) {

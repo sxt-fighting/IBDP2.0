@@ -183,15 +183,15 @@ public class DataFileAction extends ActionSupport{
 		dataFile.setD_name(uploadFileFileName);
 		String suffix = uploadFileFileName.substring(uploadFileFileName.lastIndexOf(".")+1);
 		//生成随机数文件名
-		UUID uid = UUID.randomUUID();
-		String fileName = (uid.getLeastSignificantBits()+"."+suffix).replace("-", "");
+		//UUID uid = UUID.randomUUID();
+	//	String fileName = (uid.getLeastSignificantBits()+"."+suffix).replace("-", "");
 		
 		dataFile.setD_suffix(suffix);	
 		//将其换成mb
 		double size = uploadFile.length()/1024.0;	
 		//保存文件操作
 		InputStream is = new FileInputStream(uploadFile);
-		OutputStream os = new FileOutputStream(new File("D:/user/"+fileName));
+		OutputStream os = new FileOutputStream(new File("D:/user/"+uploadFileFileName));
 		byte flush[]= new byte[1024];
 		int len = 0;
 		while(0<=(len = is.read(flush))){
@@ -209,7 +209,7 @@ public class DataFileAction extends ActionSupport{
 		String temp=size+"";
 		temp = temp.substring(0,temp.indexOf(".")+2);
 		dataFile.setD_size(temp+unit);
-		dataFile.setD_localpath("D:/user/"+fileName);
+		dataFile.setD_localpath("D:/user/"+uploadFileFileName);
 		dataFile.setD_type("DataFile");
 		Date date=new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	
@@ -333,7 +333,7 @@ public class DataFileAction extends ActionSupport{
 	public String getTree(){
 		map = new HashMap<String,Object>();
 		List<Project> projectTree = projectBiz.getProjectTree(((Admin)ActionContext.getContext().getSession().get("user")).getId());
-		List<Object> dataFileTree =  dataFileBiz.getDateFileTree(((Admin)ActionContext.getContext().getSession().get("user")).getId());
+		List<Object> dataFileTree = dataFileBiz.getDateFileTree(((Admin)ActionContext.getContext().getSession().get("user")).getId());
 		JSONArray projectArray = new JSONArray();
 		for(int i = 0;i<projectTree.size();i++){
 			JSONObject projectObject= new JSONObject();
@@ -343,7 +343,10 @@ public class DataFileAction extends ActionSupport{
 			JSONArray dataFileArray = new JSONArray();
 			//添加projectNode中的信息
 			for(int j = 0;j<dataFileTree.size();j++){
+				//System.out.println("project_id:"+projectTree.get(i).getP_id());
+				
 				Object[] object = (Object[]) dataFileTree.get(j);
+				//System.out.println("object[0]"+object[0]);
 //				System.out.println("object[0] = "+object[0]);
 				if(projectTree.get(i).getP_id().equals(object[0])){
 					JSONObject dataFileObject = new JSONObject();
@@ -351,6 +354,7 @@ public class DataFileAction extends ActionSupport{
 					dataFileObject.put("text", object[1]);
 					dataFileObject.put("height", 3);
 					dataFileObject.put("project_id",projectTree.get(i).getP_id());
+					//System.out.println("object[1]:"+object[1]);
 					dataFileObject.put("datafile_type",object[1]);
 					dataFileArray.put(dataFileObject);
 				}
