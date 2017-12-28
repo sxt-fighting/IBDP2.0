@@ -120,8 +120,13 @@ public class RunSparkAction extends ActionSupport{
 		InputStream is = new FileInputStream(jarfile);
 		 
     	String uploadPath=ServletActionContext.getServletContext().getRealPath(savePath);    	
-    	
+    	File upFilePathFile=new File(uploadPath);
+    	if(!upFilePathFile.exists())
+    	{
+    		upFilePathFile.mkdir();
+    	}
     	File toFile=new File(uploadPath,this.getJarfileFileName());
+    	
     	OutputStream os = new FileOutputStream(toFile);
     	byte[]buffer=new byte[1024];
         int length=0;
