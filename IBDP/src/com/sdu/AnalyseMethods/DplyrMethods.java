@@ -64,7 +64,9 @@ public class DplyrMethods extends BasicMethod{
  	//开始考虑具体的数据清理算法
  	if(method_name.equals("select"))
  	{
+ 		
  		variable=params.getJSONObject(0).getString("value");
+ 		System.out.println(variable);
  		variable=variable.replaceAll("，", ",");
  	 	c.eval("datafile<-select(datafile,c("+variable+"))");
  	}
@@ -141,7 +143,7 @@ public class DplyrMethods extends BasicMethod{
  		if(aa.equalsIgnoreCase(".csv")||aa.equalsIgnoreCase(".xls")||aa.equalsIgnoreCase(".xlsx"))
  		{
  			resultFileName=resultFileName+".csv";
- 			c.eval("write.csv(datafile,\""+resultFileName+".csv\",row.names = FALSE,quote = FALSE)");
+ 			c.eval("write.csv(datafile,\""+resultFileName+"\",row.names = FALSE,quote = FALSE)");
  		}
  		else
  		{

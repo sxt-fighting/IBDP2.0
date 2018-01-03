@@ -264,7 +264,7 @@ public class DataFileDaoImpl {
 		Transaction tx = session.beginTransaction();
 		try{
 			String sql ="select * from datafile where datafile.d_id = '"+fileId+"' and datafile.pro_dataid is null;";
-			list = session.createQuery(sql).list();
+			list = session.createSQLQuery(sql).list();
 			tx.commit();
 			if(list.size()>0){
 				result = true;

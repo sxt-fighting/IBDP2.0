@@ -28,8 +28,11 @@ public class RandomForestMethod extends BasicMethod{
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String y=params.getJSONObject(0).getString("value");
-		String x=params.getJSONObject(1).getString("value");
+//		String y=params.getJSONObject(0).getString("value");
+//		String x=params.getJSONObject(1).getString("value");
+		String y=params.getJSONObject(0).getString("value").replaceAll("\"", "").trim();
+		String x=params.getJSONObject(1).getString("value").replaceAll("\"", "").replace(" ", "");
+		
 		
 		
 		

@@ -32,7 +32,7 @@ public class CorrelationMethod extends BasicMethod{
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		String chosecolumn=params.getJSONObject(1).getString("value");
 		String chosework=params.getJSONObject(0).getString("value");
-		 
+		System.out.println(chosecolumn+"    "+chosework);
 		DataFile resultFile=null;
 		 
 		 //开始执行分析相关性
@@ -82,9 +82,10 @@ public class CorrelationMethod extends BasicMethod{
 			  c.eval("dev.off()");
 			  //保存图像
 			  resultFile=FormResultFileAndAdvice.formFile(user, project, resultFileName+".png", savePath+"/"+resultFileName+".png","ResultFile");
-			  resultFile.setD_type("ResultFile");
+			 
 			  DataFileHibernate.saveDataFile(resultFile);
-			  HDFSTools.LoadSingleFileToHDFS(resultFile);
+	//		  HDFSTools.LoadSingleFileToHDFS(resultFile);
+			  System.out.println("相关性"+index+"   "+algorithmJSON.length());
 			  if(index==algorithmJSON.length()-1)
 				{
 			 		resultFileName=resultFileName+".txt";

@@ -218,7 +218,7 @@ public class ModelAction extends ActionSupport{
 				jobj.put("m_collect",obj[7]);
 				jobj.put("algorithmString",obj[8]);
 				jobj.put("admin_moid",obj[9]);
-				//System.out.println("jobj");
+				System.out.println(jobj);
 				array.put(jobj);
 				//System.out.println("array:"+array.toString());
 			}

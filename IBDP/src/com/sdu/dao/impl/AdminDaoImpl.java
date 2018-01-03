@@ -33,7 +33,7 @@ public class AdminDaoImpl {
 		   list = query.list();
 		   tx.commit();
 		   Admin admin = list.get(0);
-		   System.out.println("admin.name"+admin.getName());
+		  // System.out.println("admin.name"+admin.getName());
 		   return admin;
 	   }
 	   public List<Admin> search(Admin condition)
@@ -41,7 +41,7 @@ public class AdminDaoImpl {
 		   List<Admin> list =null;
 		   Session session=sessionFactory.getCurrentSession();
 		   Transaction tx =session.beginTransaction();
-		   System.out.println("isAdmin:"+condition.getIsAdmin());
+		 //  System.out.println("isAdmin:"+condition.getIsAdmin());
 		   try {			
 			   String hql = "from Admin admin where admin.name = '"+condition.getName()+"' and admin.password = '"+condition.getPassword()+"' and admin.isAdmin = '"+condition.getIsAdmin()+"'";
 			   System.out.println("hql:"+hql);
@@ -101,7 +101,7 @@ public class AdminDaoImpl {
 		try{
 			String sql = "select * from admin where ID ='"+id+"';";
 			list=session.createSQLQuery(sql).list();
-			System.out.println("list++++++"+list);
+			//System.out.println("list++++++"+list);
 			tx.commit();
 		}catch(Exception e){
 			tx.rollback();
@@ -118,7 +118,7 @@ public class AdminDaoImpl {
 		try{			
 			sql = "select * from admin where isAdmin ="+1+";";			
 			list=session.createSQLQuery(sql).list();
-			System.out.println("list______"+list);
+			//System.out.println("list______"+list);
 			tx.commit();
 		}catch(Exception e){
 			tx.rollback();
@@ -157,7 +157,7 @@ public class AdminDaoImpl {
 	public boolean deleteUsers(String[] idArray) {
 		for(int i = 0;i < idArray.length;i++){
 			int id = Integer.parseInt(idArray[i]);
-			System.out.println("delID=="+id);
+			//System.out.println("delID=="+id);
 			Session session = sessionFactory.getCurrentSession();
 			Transaction tx = session.beginTransaction();
 			try {
@@ -177,7 +177,7 @@ public class AdminDaoImpl {
 		Session session =sessionFactory.getCurrentSession();
 		Transaction tx = session.beginTransaction();
 		try{
-			System.out.println("path===="+path);
+			//System.out.println("path===="+path);
 			String sql = "update admin set imgName='"+path+"'where ID="+userid+";";
 			session.createSQLQuery(sql).executeUpdate();
 			tx.commit();

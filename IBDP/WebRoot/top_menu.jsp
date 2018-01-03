@@ -97,17 +97,20 @@
 						<a href="widgets.html">
 							<i class="menu-icon fa fa-list-alt"></i>
 							<span class="menu-text"> 结果 
-							<span class="badge badge-transparent tooltip-info" title="2 个新结果集">
+							<!-- <span class="badge badge-transparent tooltip-info" title="2 个新结果集">
 									<i class="ace-icon fa fa-exclamation-triangle blue bigger-100"></i>
-								</span> 
+								</span>  -->
 							</span>
 						</a>
 
 						<b class="arrow"></b>
 					</li>
-				
-
-					<li class="hover">
+					<%
+						Admin a=(Admin)session.getAttribute("user");
+						if(a.getIsAdmin()==0){
+									
+					 %>
+					 <li class="hover">
 						<a  href="#" class="dropdown-toggle">
 							<i class="menu-icon fa fa-desktop"></i>
 
@@ -185,6 +188,10 @@
 						</ul>
 						
 					</li>
+					 
+					 <% }
+						%>
+					
 
 					<li class="hover">
 						<a href="instance.jsp">

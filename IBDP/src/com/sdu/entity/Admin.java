@@ -5,7 +5,7 @@ import java.util.Set;
 /**
  * Admin entity. @author MyEclipse Persistence Tools
  */
-public class Admin extends AbstractAdmin implements java.io.Serializable {
+public class Admin extends AbstractAdmin  {
 
 	// Constructors
 

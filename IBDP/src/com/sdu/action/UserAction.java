@@ -154,7 +154,7 @@ public class UserAction extends ActionSupport{
 	public String showAll(){
 		List<Object> list = new ArrayList<>();
 		int userid = ((Admin)ActionContext.getContext().getSession().get("user")).getId();
-		System.out.println("id---"+userid);
+		//System.out.println("id---"+userid);
 		list =adminBiz.showAll(userid);
 		JSONArray array = new JSONArray();
 		for(int i = 0;i<list.size();i++){
@@ -168,7 +168,7 @@ public class UserAction extends ActionSupport{
 			jobj.put("email",obj[5]);
 			jobj.put("isAdmin",obj[6]);
 			array.put(jobj);
-			System.out.println("array===="+array);
+		//	System.out.println("array===="+array);
 		}
 		map = new HashMap<String,Object>();
 		map.put("DataJson",array.toString());
@@ -178,7 +178,7 @@ public class UserAction extends ActionSupport{
 	public String showUser(){
 		List<Object> list = new ArrayList<>();
 		int userid = ((Admin)ActionContext.getContext().getSession().get("user")).getId();
-		System.out.println("id---"+userid);
+		//System.out.println("id---"+userid);
 		list =adminBiz.show(userid);
 			JSONObject jobj = new JSONObject();
 			Object[] obj = (Object[])list.get(0);
@@ -190,8 +190,8 @@ public class UserAction extends ActionSupport{
 			jobj.put("email",obj[5]);
 			jobj.put("isAdmin",obj[6]);
 			jobj.put("imgName",obj[7]);
-			System.out.println("imgName:"+obj[7]);
-			System.out.println("jobj===="+jobj);
+		//	System.out.println("imgName:"+obj[7]);
+		//	System.out.println("jobj===="+jobj);
 		map = new HashMap<String,Object>();
 		map.put("DataJson",jobj.toString());
 		return "showUser";
@@ -209,7 +209,7 @@ public class UserAction extends ActionSupport{
 	}
 	
 	public String deletes(){
-		System.out.println("ids=="+ids);
+		//System.out.println("ids=="+ids);
 		if(adminBiz.deleteUsers(ids)){
 			System.out.println("删除成功");
 		}else{
@@ -221,8 +221,8 @@ public class UserAction extends ActionSupport{
 	}
 	
 	public String update(){
-		System.out.println("1111111");
-		System.out.println("userJSONStr=="+userJSONStr);
+		//System.out.println("1111111");
+		//System.out.println("userJSONStr=="+userJSONStr);
 		obj = new JSONObject(userJSONStr);	
 		admin = new Admin();
 		admin.setId(((Admin)ActionContext.getContext().getSession().get("user")).getId());
@@ -242,8 +242,8 @@ public class UserAction extends ActionSupport{
 	}
 	
 	public String adminUpdate(){
-		System.out.println("222222");
-		System.out.println("userJSONStr=="+userJSONStr);
+		//System.out.println("222222");
+		//System.out.println("userJSONStr=="+userJSONStr);
 		obj = new JSONObject(userJSONStr);	
 		admin = new Admin();
 	//	System.out.println(""+obj.getString("admin_id"));
@@ -254,7 +254,7 @@ public class UserAction extends ActionSupport{
 		admin.setTelephone(obj.getString("admin_tel"));
 		admin.setEmail(obj.getString("admin_email"));
 		admin.setIsAdmin(obj.getInt("admin_isAdmin"));
-		System.out.println("admin___"+admin);
+		//System.out.println("admin___"+admin);
 		adminBiz.updateAdmin(admin);
 		map = new HashMap<String,Object>();
 		return"adminUpdate";

@@ -499,7 +499,7 @@
 							         aria-hidden="true">
 							         
 							          <div class="modal-dialog" style=" height:700px;width: 65%;">
-							            <div style="text-align:center;background-color: #F5F5F5 ;height:33px;color: #1d6fa6;font-size: large;padding: 0px 1px;">
+							            <div style="text-align:center;background-color: #F5F5F5 ;height:35px;color: #1d6fa6;font-size: large;padding: 0px 1px;">
 							            	<label style="padding: 5px;float:center;font-size:18px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文件内容预览 </label>
 											&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 											<button class="btn btn-danger btn-sm " style="float:right;margin:0 1px;padding: 1px 0px;border-width: 7px;" ng-click="position=null;" data-dismiss="modal">关闭</button>
@@ -923,7 +923,7 @@
 			     	 var value_array=new Array(); 
 			     	 $('input[name="tableheader"]:checked').each(function (){
 			     	 	value_array.push($(this).val());
-			     	 	//console.log('v=='+$(this).val());
+			     	 	console.log('v=='+$(this).val());
 			     	 });
 				     $scope.position.value=value_array.join(($scope.position.linkchar)?$scope.position.linkchar:'+');
 				     $scope.changeState();

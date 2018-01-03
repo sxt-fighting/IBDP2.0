@@ -561,7 +561,7 @@
         		did:did,
   //      		project_id:project_id,
         	},function(data){
-        		alert("开始执行!");
+        		//alert("开始执行!");
         	});
         }
     function initTable() {
@@ -658,7 +658,7 @@
         $remove.click(function () {
             var ids = getIdSelections();
             console.log(typeof(ids));
-            alert("ids=="+ids);
+            //alert("ids=="+ids);
             $table.bootstrapTable('remove', {
                 field: 'name',
                 values: ids
@@ -682,7 +682,7 @@
     
    
     $(function () {
-    	$("#viewFileModal").on('hidden.b	s.modal', function () {
+    	$("#viewFileModal").on('hidden.bs.modal', function () {
         	 $(this).removeData("bs.modal");
 			  // 执行一些动作...
 			});

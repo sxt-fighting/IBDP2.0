@@ -38,13 +38,13 @@ public class AdminBizImpl {
 	}
 
 	public void updateAdmin(Admin admin) {
-		System.out.println("---------"+admin);
+		//System.out.println("---------"+admin);
 		adminDao.updateAdmin(admin);
 	}
 
 	public boolean deleteUsers(String ids) {
 		String[] idArray = ids.substring(1, ids.length()-1).split(",");
-		System.out.println("idArray==="+idArray);
+		//System.out.println("idArray==="+idArray);
 		return adminDao.deleteUsers(idArray);
 	}
 

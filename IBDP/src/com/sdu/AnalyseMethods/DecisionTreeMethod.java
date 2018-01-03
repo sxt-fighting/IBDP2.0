@@ -48,8 +48,8 @@ public class DecisionTreeMethod extends BasicMethod{
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String y=params.getJSONObject(0).getString("value");
-		String x=params.getJSONObject(1).getString("value");
+		String y=params.getJSONObject(0).getString("value").replaceAll("\"", "").trim();
+		String x=params.getJSONObject(1).getString("value").replaceAll("\"", "").replace(" ", "");
 		
 		
     	System.out.println("链接Rserve，开始分析任务");
@@ -164,8 +164,8 @@ public class DecisionTreeMethod extends BasicMethod{
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String y=params.getJSONObject(0).getString("value");
-		String x=params.getJSONObject(1).getString("value");
+		String y=params.getJSONObject(0).getString("value").replaceAll("\"", "").trim();
+		String x=params.getJSONObject(1).getString("value").replaceAll("\"", "").replace(" ", "");
 		
     	System.out.println("链接Rserve，开始分析任务");
     	DataFile resultFile=new DataFile();//要返回的文件
@@ -266,8 +266,8 @@ public class DecisionTreeMethod extends BasicMethod{
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String y=params.getJSONObject(0).getString("value");
-		String x=params.getJSONObject(1).getString("value");
+		String y=params.getJSONObject(0).getString("value").replaceAll("\"", "").trim();
+		String x=params.getJSONObject(1).getString("value").replaceAll("\"", "").replace(" ", "");
 		
     	System.out.println("链接Rserve，开始分析任务");
     	DataFile resultFile=new DataFile();//要返回的文件
@@ -360,8 +360,8 @@ public class DecisionTreeMethod extends BasicMethod{
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String y=params.getJSONObject(0).getString("value");
-		String x=params.getJSONObject(1).getString("value");
+		String y=params.getJSONObject(0).getString("value").replaceAll("\"", "").trim();
+		String x=params.getJSONObject(1).getString("value").replaceAll("\"", "").replace(" ", "");
 		
     	System.out.println("链接Rserve，开始分析任务");
     	DataFile resultFile=new DataFile();//要返回的文件
@@ -462,8 +462,8 @@ public class DecisionTreeMethod extends BasicMethod{
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		//String hasheader=params.getJSONObject(0).getString("value");
-		String y=params.getJSONObject(0).getString("value");
-		String x=params.getJSONObject(1).getString("value");
+		String y=params.getJSONObject(0).getString("value").replaceAll("\"", "").trim();
+		String x=params.getJSONObject(1).getString("value").replaceAll("\"", "").replace(" ", "");
 		
     	System.out.println("链接Rserve，开始分析任务");
     	DataFile resultFile=new DataFile();//要返回的文件

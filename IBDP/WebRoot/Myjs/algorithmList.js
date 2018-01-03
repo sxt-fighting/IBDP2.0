@@ -18,7 +18,7 @@ var algorithmJSONList=[
     				introduction:'变量选择是数据处理的一种方法',
     				param:[
     					
-    					{name:'选择变量',field:'CollectVariable',type:'String',selectable:true,linkvalue:'header',linkchar:'+'}
+    					{name:'选择变量',field:'CollectVariable',type:'String',selectable:true,linkvalue:'column',linkchar:','}
     				]
     			},
     			{

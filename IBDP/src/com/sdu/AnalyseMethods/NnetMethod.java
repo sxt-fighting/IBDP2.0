@@ -36,8 +36,11 @@ public class NnetMethod extends BasicMethod{
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
 		String type=params.getJSONObject(0).getString("value");
-		String y=params.getJSONObject(1).getString("value");
-		String x=params.getJSONObject(2).getString("value");
+		//String y=params.getJSONObject(1).getString("value");
+	//	String x=params.getJSONObject(2).getString("value");
+		String y=params.getJSONObject(1).getString("value").replaceAll("\"", "").trim();
+		String x=params.getJSONObject(2).getString("value").replaceAll("\"", "").replace(" ", "");
+		
 		
 		String size=params.getJSONObject(3).getString("value");
 		String maxit=params.getJSONObject(4).getString("value");
@@ -150,8 +153,11 @@ public class NnetMethod extends BasicMethod{
 		String dataFileName=dataFile.getD_name();	
 		JSONObject algorithm_obj=algorithmJSON.getJSONObject(index); 
 		JSONArray params= algorithm_obj.getJSONArray("param");
-		String y=params.getJSONObject(1).getString("value");
-		String x=params.getJSONObject(2).getString("value");
+		//String y=params.getJSONObject(1).getString("value");
+		//String x=params.getJSONObject(2).getString("value");
+		String y=params.getJSONObject(1).getString("value").replaceAll("\"", "").trim();
+		String x=params.getJSONObject(2).getString("value").replaceAll("\"", "").replace(" ", "");
+		
 		
 		String size=params.getJSONObject(3).getString("value");
 		String maxit=params.getJSONObject(4).getString("value");

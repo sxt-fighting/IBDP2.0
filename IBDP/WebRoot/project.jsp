@@ -279,7 +279,7 @@
         
    function delProjecs(){
         var ids = getIdSelections();
-        alert("ids=="+ids);
+        //alert("ids=="+ids);
         $.post("Project_delProjects.action",{
         	ids:JSON.stringify(ids)
         },function(data,status){
@@ -289,7 +289,7 @@
        
     }
     function del(id){
-    	alert("id:"+id);
+    	//alert("id:"+id);
     	$.post("Project_delProject.action",{
     		id:id
     	},function(data,status){
@@ -365,7 +365,7 @@
        
         $remove.click(function () {
             var ids = getIdSelections();
-            alert("ids=="+ids);
+            //alert("ids=="+ids);
             $table.bootstrapTable('remove', {
                 field: 'name',
                 values: ids
